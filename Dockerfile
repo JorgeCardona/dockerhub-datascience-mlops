@@ -183,6 +183,7 @@ RUN pip install isort
 RUN pip install autopep8
 RUN pip install yapf
 RUN pip install pycodestyle
+RUN pip install --upgrade pip
 
 ###############################################################
 ################## CONFIGURACIONES FINALES ####################
