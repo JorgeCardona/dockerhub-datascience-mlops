@@ -172,6 +172,7 @@ RUN pip install pyxtension
 RUN pip install pyspark
 RUN pip install delta-spark
 RUN pip install mlflow
+RUN pip install papermill
 
 RUN pip install jupyterlab_code_formatter
 RUN pip install jupyterlab-indent-guides
