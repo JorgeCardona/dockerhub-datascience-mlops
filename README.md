@@ -34,11 +34,11 @@ echo "Julia Version" && julia -version && echo
 
 #  TEMPORAL CONTAINER
 ## 🔥If you want to just test the image and do not keep the container when you finish running the container use the next command🔥:
-#### ``` docker run --name jorgecardona-datascience-mlops --rm -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 jorgecardona/datascience-mlops:main```
+#### ``` docker run --name jorgecardona-datascience-mlops --rm -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 jorgecardona/datascience-mlops:latest```
 
 # PERSISTENT CONTAINER
 ## 💦If you want to keep the container, save the notebooks, and continue working on this container use the next command:💦
-#### ``` docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:main```
+#### ``` docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest```
 
 #  ACCESS TO JUPYTER LAB AND SPARK UI 
 ##  🐱 access to JUPYTERLAB ```http://localhost:8888```  <a href=" http://localhost:8888" target="_blank">CLICK HERE </a> 🐱
