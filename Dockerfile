@@ -178,6 +178,7 @@ RUN pip install tables
 RUN pip install openpyxl
 RUN pip install jupyterlab-spreadsheet
 RUN pip install pandas-dataset-handler
+RUN pip install notebook-orchestration-and-execution-manager
 
 RUN pip install jupyterlab_code_formatter
 RUN pip install jupyterlab-indent-guides
