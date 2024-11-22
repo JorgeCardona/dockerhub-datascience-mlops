@@ -2,7 +2,7 @@
 # docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
 
 # Base image python:3.11.10, python:3.12.7
-FROM python:3.11.10
+FROM python:3.12.7
 
 # etiqueta creador de la imagen
 LABEL maintainer="Jorge Cardona"
