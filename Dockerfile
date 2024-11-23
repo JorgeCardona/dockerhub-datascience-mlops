@@ -2,7 +2,7 @@
 # docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
 
 # Base image python:3.11.10, python:3.12.7
-FROM python:3.12.7
+FROM python:3.11.10
 
 # etiqueta creador de la imagen
 LABEL maintainer="Jorge Cardona"
@@ -28,7 +28,6 @@ RUN curl -O https://downloads.lightbend.com/scala/${VERSION_SCALA}/${VERSION_SCA
     ln -s /usr/local/share/scala/bin/scalac /usr/local/bin/scalac && \
     rm ${VERSION_SCALA_KERNEL}.tgz
 
-	
 # INSTALA lenguaje R
 RUN apt-get update && apt-get install -y r-base
 
@@ -71,21 +70,19 @@ RUN wget https://archive.apache.org/dist/kafka/${VERSION_KAFKA_KERNEL}/${VERSION
 	mkdir -p ${KAFKA_HOME}/data/zookeeper && \
     rm ${VERSION_KAFKA}.tgz
 
-
-	
 ###############################################################
 ############ INSTALACION DE KERNELS EN JUPYTER LAB ############
 ###############################################################
 
 # Instala JupyterLab
-RUN pip install jupyterlab==4.3.0
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab==4.3.0
 
 # Instala el kernel de R
 RUN echo "install.packages(c('IRkernel'), repos='http://cran.rstudio.com/', dependencies=TRUE)"  > /tmp/packages.R && Rscript /tmp/packages.R
 RUN echo 'IRkernel::installspec()' > /tmp/temp.R && Rscript /tmp/temp.R
 
 # Instala el kernel de C++
-RUN pip install jupyter-cpp-kernel
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyter-cpp-kernel
 
 # Instala el kernel de go
 RUN go install github.com/gopherdata/gophernotes@v0.7.5 && \
@@ -103,7 +100,7 @@ RUN wget https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-${V
     rm ijava-${VERSION_JAVA_KERNEL}.zip
 	
 # Instala el kernel de Kotlin
-RUN pip install kotlin-jupyter-kernel	
+RUN pip install --no-cache-dir -i https://pypi.org/simple kotlin-jupyter-kernel	
 
 # Instala el kernel de Scala
 # https://almond.sh/docs/quick-start-install
@@ -142,55 +139,55 @@ RUN apt install -y vim
 # Set the working directory
 WORKDIR /notebooks
 
-RUN pip install jupyterlab-git
-RUN pip install scikit-learn
-RUN pip install opencv-python
-RUN pip install spacy
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-git
+RUN pip install --no-cache-dir -i https://pypi.org/simple scikit-learn
+RUN pip install --no-cache-dir -i https://pypi.org/simple opencv-python
+RUN pip install --no-cache-dir -i https://pypi.org/simple spacy
 
-RUN pip install mysql-connector-python
-RUN pip install psycopg2
-RUN pip install pymongo
-RUN pip install confluent-kafka
+RUN pip install --no-cache-dir -i https://pypi.org/simple mysql-connector-python
+RUN pip install --no-cache-dir -i https://pypi.org/simple psycopg2
+RUN pip install --no-cache-dir -i https://pypi.org/simple pymongo
+RUN pip install --no-cache-dir -i https://pypi.org/simple confluent-kafka
 
-RUN pip install pytest
-RUN pip install itables 
-RUN pip install faker 
-RUN pip install panel 
-RUN pip install seaborn 
-RUN pip install bokeh 
-RUN pip install diagrams
-RUN pip install dask
-RUN pip install dask-labextension
-RUN pip install duckdb
+RUN pip install --no-cache-dir -i https://pypi.org/simple pytest
+RUN pip install --no-cache-dir -i https://pypi.org/simple itables 
+RUN pip install --no-cache-dir -i https://pypi.org/simple faker 
+RUN pip install --no-cache-dir -i https://pypi.org/simple panel 
+RUN pip install --no-cache-dir -i https://pypi.org/simple seaborn 
+RUN pip install --no-cache-dir -i https://pypi.org/simple bokeh 
+RUN pip install --no-cache-dir -i https://pypi.org/simple diagrams
+RUN pip install --no-cache-dir -i https://pypi.org/simple dask
+RUN pip install --no-cache-dir -i https://pypi.org/simple dask-labextension
+RUN pip install --no-cache-dir -i https://pypi.org/simple duckdb
 
-RUN pip install pandas
-RUN pip install apache-beam[interactive]
-RUN pip install apache-airflow
-RUN pip install dbt-core
-RUN pip install dbt-postgres
-RUN pip install pyxtension
-RUN pip install pyspark
-RUN pip install delta-spark
-RUN pip install mlflow
-RUN pip install papermill
-RUN pip install lxml
-RUN pip install tables
-RUN pip install openpyxl
-RUN pip install jupyterlab-spreadsheet
-RUN pip install pandas-dataset-handler
-RUN pip install notebook-orchestration-and-execution-manager
+RUN pip install --no-cache-dir -i https://pypi.org/simple pandas
+RUN pip install --no-cache-dir -i https://pypi.org/simple apache-beam[interactive]
+RUN pip install --no-cache-dir -i https://pypi.org/simple apache-airflow
+RUN pip install --no-cache-dir -i https://pypi.org/simple dbt-core
+RUN pip install --no-cache-dir -i https://pypi.org/simple dbt-postgres
+RUN pip install --no-cache-dir -i https://pypi.org/simple pyxtension
+RUN pip install --no-cache-dir -i https://pypi.org/simple pyspark
+RUN pip install --no-cache-dir -i https://pypi.org/simple delta-spark
+RUN pip install --no-cache-dir -i https://pypi.org/simple mlflow
+RUN pip install --no-cache-dir -i https://pypi.org/simple papermill
+RUN pip install --no-cache-dir -i https://pypi.org/simple lxml
+RUN pip install --no-cache-dir -i https://pypi.org/simple tables
+RUN pip install --no-cache-dir -i https://pypi.org/simple openpyxl
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-spreadsheet
+RUN pip install --no-cache-dir -i https://pypi.org/simple pandas-dataset-handler
+RUN pip install --no-cache-dir -i https://pypi.org/simple notebook-orchestration-and-execution-manager
+RUN pip install --no-cache-dir -i https://pypi.org/simple notebook-orchestration-and-execution-manager==0.2.27
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab_code_formatter
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-indent-guides
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-lsp
+RUN pip install --no-cache-dir -i https://pypi.org/simple python-language-server
+RUN pip install --no-cache-dir -i https://pypi.org/simple black
+RUN pip install --no-cache-dir -i https://pypi.org/simple isort
+RUN pip install --no-cache-dir -i https://pypi.org/simple autopep8
+RUN pip install --no-cache-dir -i https://pypi.org/simple yapf
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
 
-RUN pip install jupyterlab_code_formatter
-RUN pip install jupyterlab-indent-guides
-RUN pip install jupyterlab-lsp
-RUN pip install python-language-server
-RUN pip install black
-RUN pip install isort
-RUN pip install autopep8
-RUN pip install yapf
 #RUN pip install pycodestyle
-RUN pip install --upgrade pip
-
 ###############################################################
 ################## CONFIGURACIONES FINALES ####################
 ###############################################################
