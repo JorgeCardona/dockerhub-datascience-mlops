@@ -176,11 +176,12 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple openpyxl
 RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-spreadsheet
 RUN pip install --no-cache-dir -i https://pypi.org/simple pandas-dataset-handler
 RUN pip install --no-cache-dir -i https://pypi.org/simple notebook-orchestration-and-execution-manager
-RUN pip install --no-cache-dir -i https://pypi.org/simple notebook-orchestration-and-execution-manager==0.2.27
+
 RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab_code_formatter
 RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-indent-guides
 RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-lsp
 RUN pip install --no-cache-dir -i https://pypi.org/simple python-language-server
+
 RUN pip install --no-cache-dir -i https://pypi.org/simple black
 RUN pip install --no-cache-dir -i https://pypi.org/simple isort
 RUN pip install --no-cache-dir -i https://pypi.org/simple autopep8
