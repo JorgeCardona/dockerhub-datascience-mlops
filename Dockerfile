@@ -176,14 +176,15 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple openpyxl
 RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-spreadsheet
 RUN pip install --no-cache-dir -i https://pypi.org/simple pandas-dataset-handler
 RUN pip install --no-cache-dir -i https://pypi.org/simple notebook-orchestration-and-execution-manager
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyter-collaboration-ui
 
-#RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab_code_formatter
-#RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-indent-guides
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab_code_formatter
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-indent-guides
 #RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-lsp
 #RUN pip install --no-cache-dir -i https://pypi.org/simple python-language-server
 
-#RUN pip install --no-cache-dir -i https://pypi.org/simple black
-#RUN pip install --no-cache-dir -i https://pypi.org/simple isort
+RUN pip install --no-cache-dir -i https://pypi.org/simple black
+RUN pip install --no-cache-dir -i https://pypi.org/simple isort
 #RUN pip install --no-cache-dir -i https://pypi.org/simple autopep8
 #RUN pip install --no-cache-dir -i https://pypi.org/simple yapf
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
@@ -214,6 +215,10 @@ RUN mkdir -p /root/airflow/dags
 COPY /airflow_files/dbt_airflow.py /root/airflow/dags
 COPY /kafka_files/*.properties /usr/local/kafka/config
 COPY /jars/*.jar /usr/local/spark/jars/
+
+# copia los .jar para delta lake
+RUN mkdir -p /root/.ivy2/cache
+COPY delta_spark/cache/ /root/.ivy2/cache/
 
 # copia la configuracion del notebook personalizada
 COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
