@@ -75,7 +75,7 @@ RUN wget https://archive.apache.org/dist/kafka/${VERSION_KAFKA_KERNEL}/${VERSION
 ###############################################################
 
 # Instala JupyterLab
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab==4.3.0
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab==4.3.3
 
 # Instala el kernel de R
 RUN echo "install.packages(c('IRkernel'), repos='http://cran.rstudio.com/', dependencies=TRUE)"  > /tmp/packages.R && Rscript /tmp/packages.R
@@ -177,15 +177,15 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-spreadsheet
 RUN pip install --no-cache-dir -i https://pypi.org/simple pandas-dataset-handler
 RUN pip install --no-cache-dir -i https://pypi.org/simple notebook-orchestration-and-execution-manager
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab_code_formatter
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-indent-guides
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-lsp
-RUN pip install --no-cache-dir -i https://pypi.org/simple python-language-server
+#RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab_code_formatter
+#RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-indent-guides
+#RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-lsp
+#RUN pip install --no-cache-dir -i https://pypi.org/simple python-language-server
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple black
-RUN pip install --no-cache-dir -i https://pypi.org/simple isort
-RUN pip install --no-cache-dir -i https://pypi.org/simple autopep8
-RUN pip install --no-cache-dir -i https://pypi.org/simple yapf
+#RUN pip install --no-cache-dir -i https://pypi.org/simple black
+#RUN pip install --no-cache-dir -i https://pypi.org/simple isort
+#RUN pip install --no-cache-dir -i https://pypi.org/simple autopep8
+#RUN pip install --no-cache-dir -i https://pypi.org/simple yapf
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
 
 #RUN pip install pycodestyle
@@ -214,6 +214,10 @@ RUN mkdir -p /root/airflow/dags
 COPY /airflow_files/dbt_airflow.py /root/airflow/dags
 COPY /kafka_files/*.properties /usr/local/kafka/config
 COPY /jars/*.jar /usr/local/spark/jars/
+
+# copia la configuracion del notebook personalizada
+COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
+COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/completer-extension/manager.jupyterlab-settings
 
 # Start JupyterLab when the container launches
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--LabApp.token=''"]
