@@ -35,7 +35,7 @@
     },
     "documentWideUndoRedo": false,
     "showHiddenCellsButton": true,
-    "renderingLayout": "default",
+    "renderingLayout": "side-by-side",
     "sideBySideLeftMarginOverride": "10px",
     "sideBySideRightMarginOverride": "10px",
     "sideBySideOutputRatio": 1,
