@@ -11,6 +11,13 @@ Jorge Cardona
 <a href="https://jorgecardona.github.io/portfolio/" target="_blank"><img src="https://raw.githubusercontent.com/JorgeCardona/PipPackageInstaller/refs/heads/main/imagenes/github.svg" width="80" height="80"></a>
 -------------------     ----------------------------
 
+# Jupyter Lab Icons and Commands references
+```
+https://jupyterlab.readthedocs.io/en/stable/user/commands.html
+
+https://github.com/jupyterlab/jupyterlab/blob/main/packages/ui-components/src/icon/iconimports.ts
+```
+
 # Available Kernels, Languages And Packages
 <img src="https://raw.githubusercontent.com/JorgeCardona/recursos/main/docker_hub/data_science_3.11.7.png"/>
 

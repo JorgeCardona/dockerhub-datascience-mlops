@@ -1,0 +1,36 @@
+{
+    "toolbar": [
+        {
+            "name": "run-cell",
+            "args": {},
+            "command": "notebook:run-cell",
+            "disabled": false,
+            "icon": "ui-components:run",
+            "rank": 50
+        },
+        {
+            "name": "collapse-code",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:code-check",
+            "rank": 50,
+            "command": "notebook:hide-cell-code"
+        },
+        {
+            "name": "output-scrolling-on",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:expand",
+            "rank": 50,
+            "command": "notebook:enable-output-scrolling"
+        },
+        {
+            "name": "output-scrolling-off",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:offline-bolt",
+            "rank": 50,
+            "command": "notebook:disable-output-scrolling"
+        },
+    ]
+}
