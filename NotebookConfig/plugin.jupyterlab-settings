@@ -32,5 +32,13 @@
             "rank": 50,
             "command": "notebook:disable-output-scrolling"
         },
+        {
+            "name": "clear-cell",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:cleaning",
+            "rank": 50,
+            "command": "notebook:clear-cell-output"
+        },
     ]
 }
