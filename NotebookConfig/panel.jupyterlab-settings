@@ -67,10 +67,126 @@
             "command": "notebook:toggle-virtual-scrollbar",
             "rank": 1003
         },
+        {  
+            "name": "redo-action",
+            "command": "notebook:redo",
+            "icon": "ui-components:redo",
+            "caption": "Redo Cell Content"
+        },
+        {
+            "name": "undo-action",
+            "command": "notebook:undo",
+            "icon": "ui-components:undo",
+            "caption": "Download HTML",
+            "caption": "Undo Cell Content"
+        },
+        {
+            "name": "move-cell-up",
+            "command": "notebook:move-cell-up",
+            "icon": "ui-components:move-up"
+        },
+        {
+            "name": "move-cell-down",
+            "command": "notebook:move-cell-down",
+            "icon": "ui-components:move-down"
+        },
+        {
+            "name": "collapse-cell-code",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:code-check",
+            "rank": 50,
+            "command": "notebook:hide-cell-code"
+        },
+        {
+            "name": "expand-cell-code",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:expand",
+            "rank": 50,
+            "command": "notebook:show-cell-code"
+        },
+        {
+            "name": "output-scrolling-on",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:palette",
+            "rank": 50,
+            "command": "notebook:enable-output-scrolling"
+        },
+        {
+            "name": "output-scrolling-off",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:not-trusted",
+            "rank": 50,
+            "command": "notebook:disable-output-scrolling"
+        },
+        {
+            "name": "clear-cell-output",
+            "args": {},
+            "disabled": false,
+            "icon": "ui-components:extension",
+            "rank": 50,
+            "command": "notebook:clear-cell-output"
+        },
+        {
+            "name": "redo-cell-action",
+            "command": "notebook:redo-cell-action",
+            "icon": "ui-components:caret-right"
+        },
+        {
+            "command": "notebook:undo-cell-action",
+            "name": "undo-cell-action",
+            "icon": "ui-components:caret-left"
+        },
+        {
+            "name": "hide-all-cell-code",
+            "command": "notebook:hide-all-cell-code",
+            "icon": "ui-components:numbering"
+        },
+        {
+            "name": "show-all-cell-code",
+            "command": "notebook:show-all-cell-code",
+            "icon": "ui-components:tree-view"
+        },
+        {
+            "name": "hide-all-cell-outputs",
+            "command": "notebook:hide-all-cell-outputs",
+            "icon": "ui-components:collapse-all"
+        },
+        {
+            "name": "show-all-cell-outputs",
+            "command": "notebook:show-all-cell-outputs",
+            "icon": "ui-components:expand-all"
+        },
+        {
+            "name": "clear-all",
+            "command": "editmenu:clear-all",
+            "icon": "ui-components:cleaning"
+        },
         {
             "command": "notebook:toggle-render-side-by-side-current",
             "name": "side-by-side",
             "icon": "ui-components:inspector"
-        }
+        },
+        {
+            "name": "find",
+            "command": "documentsearch:start",
+            "icon": "ui-components:search"
+        },
+        {
+            "name": "download-notebook",
+            "command": "docmanager:download",
+            "icon": "ui-components:download",
+            "caption": "Download Notebook"
+        },
+        {
+            "name": "export-to-html",
+            "command": "notebook:export-to-format",
+            "args": { "format": "html" },
+            "icon": "ui-components:html5",
+            "caption": "Download HTML"
+        },
     ]
 }
