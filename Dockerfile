@@ -222,6 +222,7 @@ COPY delta_spark/cache/ /root/.ivy2/cache/
 
 # copia la configuracion del notebook personalizada
 COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
+COPY NotebookConfig/panel.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/panel.jupyterlab-settings
 COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/completer-extension/manager.jupyterlab-settings
 COPY NotebookConfig/plugin.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/cell-toolbar-extension/plugin.jupyterlab-settings
 
