@@ -75,7 +75,7 @@ RUN wget https://archive.apache.org/dist/kafka/${VERSION_KAFKA_KERNEL}/${VERSION
 ###############################################################
 
 # Instala JupyterLab
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab==4.3.3
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab
 
 # Instala el kernel de R
 RUN echo "install.packages(c('IRkernel'), repos='http://cran.rstudio.com/', dependencies=TRUE)"  > /tmp/packages.R && Rscript /tmp/packages.R
@@ -141,6 +141,8 @@ WORKDIR /notebooks
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-git
 RUN pip install --no-cache-dir -i https://pypi.org/simple scikit-learn
+RUN pip install --no-cache-dir -i https://pypi.org/simple tensorflow
+RUN pip install --no-cache-dir -i https://pypi.org/simple keras
 RUN pip install --no-cache-dir -i https://pypi.org/simple opencv-python
 RUN pip install --no-cache-dir -i https://pypi.org/simple spacy
 
