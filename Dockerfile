@@ -189,6 +189,12 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple black
 RUN pip install --no-cache-dir -i https://pypi.org/simple isort
 #RUN pip install --no-cache-dir -i https://pypi.org/simple autopep8
 #RUN pip install --no-cache-dir -i https://pypi.org/simple yapf
+RUN pip install --no-cache-dir -i https://pypi.org/simple sos-notebook
+RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-sos
+
+# Instala SoS y la extensión para JupyterLab
+RUN python -m sos_notebook.install
+
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
 
 #RUN pip install pycodestyle
@@ -227,6 +233,7 @@ COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings
 COPY NotebookConfig/panel.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/panel.jupyterlab-settings
 COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/completer-extension/manager.jupyterlab-settings
 COPY NotebookConfig/plugin.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/cell-toolbar-extension/plugin.jupyterlab-settings
+COPY NotebookConfig/kernels/sos/kernel.json /usr/local/share/jupyter/kernels/sos/kernel.json
 
 # Start JupyterLab when the container launches
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--LabApp.token=''"]

@@ -1,0 +1,1 @@
+{"argv": ["/usr/local/bin/python", "-m", "sos_notebook.kernel", "-f", "{connection_file}"], "display_name": "SoS - Multi-language Notebook", "language": "sos"}
