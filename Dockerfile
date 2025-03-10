@@ -2,7 +2,7 @@
 # docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
 
 # Base image python:3.11.10, python:3.12.7
-FROM python:3.11.10
+FROM python:3.12.7
 
 # etiqueta creador de la imagen
 LABEL maintainer="Jorge Cardona"
@@ -139,63 +139,64 @@ RUN apt install -y vim
 # Set the working directory
 WORKDIR /notebooks
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-git
-RUN pip install --no-cache-dir -i https://pypi.org/simple scikit-learn
-RUN pip install --no-cache-dir -i https://pypi.org/simple tensorflow
-RUN pip install --no-cache-dir -i https://pypi.org/simple keras
-RUN pip install --no-cache-dir -i https://pypi.org/simple opencv-python
-RUN pip install --no-cache-dir -i https://pypi.org/simple spacy
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-git
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade scikit-learn
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade tensorflow
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade keras
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade opencv-python
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade spacy
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple mysql-connector-python
-RUN pip install --no-cache-dir -i https://pypi.org/simple psycopg2
-RUN pip install --no-cache-dir -i https://pypi.org/simple pymongo
-RUN pip install --no-cache-dir -i https://pypi.org/simple confluent-kafka
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade mysql-connector-python
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade psycopg2
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pymongo
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade confluent-kafka
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple pytest
-RUN pip install --no-cache-dir -i https://pypi.org/simple itables 
-RUN pip install --no-cache-dir -i https://pypi.org/simple faker 
-RUN pip install --no-cache-dir -i https://pypi.org/simple panel 
-RUN pip install --no-cache-dir -i https://pypi.org/simple seaborn 
-RUN pip install --no-cache-dir -i https://pypi.org/simple bokeh 
-RUN pip install --no-cache-dir -i https://pypi.org/simple diagrams
-RUN pip install --no-cache-dir -i https://pypi.org/simple dask
-RUN pip install --no-cache-dir -i https://pypi.org/simple dask-labextension
-RUN pip install --no-cache-dir -i https://pypi.org/simple duckdb
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pytest
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade itables
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade faker
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade panel
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade seaborn
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade bokeh
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade diagrams
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dask
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dask-labextension
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade duckdb
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple pandas
-RUN pip install --no-cache-dir -i https://pypi.org/simple apache-beam[interactive]
-RUN pip install --no-cache-dir -i https://pypi.org/simple apache-airflow
-RUN pip install --no-cache-dir -i https://pypi.org/simple dbt-core
-RUN pip install --no-cache-dir -i https://pypi.org/simple dbt-postgres
-RUN pip install --no-cache-dir -i https://pypi.org/simple pyxtension
-RUN pip install --no-cache-dir -i https://pypi.org/simple pyspark
-RUN pip install --no-cache-dir -i https://pypi.org/simple delta-spark
-RUN pip install --no-cache-dir -i https://pypi.org/simple mlflow
-RUN pip install --no-cache-dir -i https://pypi.org/simple papermill
-RUN pip install --no-cache-dir -i https://pypi.org/simple lxml
-RUN pip install --no-cache-dir -i https://pypi.org/simple tables
-RUN pip install --no-cache-dir -i https://pypi.org/simple openpyxl
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-spreadsheet
-RUN pip install --no-cache-dir -i https://pypi.org/simple pandas-dataset-handler
-RUN pip install --no-cache-dir -i https://pypi.org/simple notebook-orchestration-and-execution-manager
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyter-collaboration-ui
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pandas
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-beam[interactive]
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-airflow
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-core
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-postgres
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyxtension
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyspark
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade delta-spark
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade mlflow
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade papermill
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade lxml
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade tables
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade openpyxl
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-spreadsheet
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pandas-dataset-handler
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade notebook-orchestration-and-execution-manager
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyter-collaboration-ui
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab_code_formatter
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-indent-guides
-#RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-lsp
-#RUN pip install --no-cache-dir -i https://pypi.org/simple python-language-server
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab_code_formatter
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-indent-guides
+#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-lsp
+#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade python-language-server
 
-RUN pip install --no-cache-dir -i https://pypi.org/simple black
-RUN pip install --no-cache-dir -i https://pypi.org/simple isort
-#RUN pip install --no-cache-dir -i https://pypi.org/simple autopep8
-#RUN pip install --no-cache-dir -i https://pypi.org/simple yapf
-RUN pip install --no-cache-dir -i https://pypi.org/simple sos-notebook
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab-sos
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade black
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade isort
+#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade autopep8
+#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade yapf
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade sos-notebook
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-sos
 
 # Instala SoS y la extensión para JupyterLab
 RUN python -m sos_notebook.install
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
+
 
 #RUN pip install pycodestyle
 ###############################################################
@@ -225,8 +226,9 @@ COPY /kafka_files/*.properties /usr/local/kafka/config
 COPY /jars/*.jar /usr/local/spark/jars/
 
 # copia los .jar para delta lake
+# tar -czf /notebooks/cache.tar.gz -C /root .ivy2
 RUN mkdir -p /root/.ivy2/cache
-COPY delta_spark/cache/ /root/.ivy2/cache/
+COPY delta_spark/cache/ /root/.ivy2/
 
 # copia la configuracion del notebook personalizada
 COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
