@@ -1,7 +1,8 @@
 # docker build --tag jorgecardona/datascience-mlops:latest .
-# docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
+# docker run -d --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
 
 # Base image python:3.11.10, python:3.12.7
+# Base image python:3.11.13, python:3.12.10
 FROM python:3.12.7
 
 # etiqueta creador de la imagen
@@ -19,7 +20,7 @@ RUN curl -O https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb 
     export PATH=$PATH:$JAVA_HOME/bin
 
 # Download and install Scala
-ARG VERSION_SCALA=2.12.18
+ARG VERSION_SCALA=2.13.16
 ARG VERSION_SCALA_KERNEL=scala-${VERSION_SCALA}
 RUN curl -O https://downloads.lightbend.com/scala/${VERSION_SCALA}/${VERSION_SCALA_KERNEL}.tgz && \
     tar -xzf ${VERSION_SCALA_KERNEL}.tgz && \
@@ -58,8 +59,8 @@ RUN apt-get update && \
     sed -i 's/HTTP_PORT=8080/HTTP_PORT=8083/g' /etc/default/jenkins
 	
 # Install Kafka
-ARG VERSION_KAFKA_KERNEL=3.9.0
-ARG VERSION_KAFKA=kafka_2.12-3.9.0
+ARG VERSION_KAFKA_KERNEL=3.9.1
+ARG VERSION_KAFKA=kafka_2.13-3.9.1
 ARG KAFKA_HOME=/usr/local/kafka
 
 RUN wget https://archive.apache.org/dist/kafka/${VERSION_KAFKA_KERNEL}/${VERSION_KAFKA}.tgz && \
@@ -139,6 +140,7 @@ RUN apt install -y vim
 # Set the working directory
 WORKDIR /notebooks
 
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-git
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade scikit-learn
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade tensorflow
@@ -152,6 +154,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pymongo
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade confluent-kafka
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pytest
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade locust
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade itables
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade faker
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade panel
@@ -163,13 +166,14 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dask-labexte
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade duckdb
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pandas
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade polars
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-beam[interactive]
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-airflow
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-core
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-postgres
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyxtension
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyspark
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade delta-spark
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade delta-sharing
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade mlflow
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade papermill
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade lxml
@@ -179,6 +183,8 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-s
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pandas-dataset-handler
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade notebook-orchestration-and-execution-manager
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyter-collaboration-ui
+# RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-airflow
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade "apache-airflow==2.11.0"
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab_code_formatter
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-indent-guides
@@ -187,6 +193,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-i
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade black
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade isort
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade ruff
 #RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade autopep8
 #RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade yapf
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade sos-notebook
@@ -194,9 +201,6 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-s
 
 # Instala SoS y la extensión para JupyterLab
 RUN python -m sos_notebook.install
-
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
-
 
 #RUN pip install pycodestyle
 ###############################################################
@@ -224,11 +228,12 @@ RUN mkdir -p /root/airflow/dags
 COPY /airflow_files/dbt_airflow.py /root/airflow/dags
 COPY /kafka_files/*.properties /usr/local/kafka/config
 COPY /jars/*.jar /usr/local/spark/jars/
+COPY /jars_scala_2.13/*.jar /usr/local/spark/jars/
 
 # copia los .jar para delta lake
 # tar -czf /notebooks/cache.tar.gz -C /root .ivy2
-RUN mkdir -p /root/.ivy2/cache
-COPY delta_spark/cache/ /root/.ivy2/
+RUN mkdir -p /root/.ivy2.5.2
+COPY delta_spark/ivy2.5.2/ /root/.ivy2.5.2/
 
 # copia la configuracion del notebook personalizada
 COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
@@ -236,6 +241,14 @@ COPY NotebookConfig/panel.jupyterlab-settings /root/.jupyter/lab/user-settings/@
 COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/completer-extension/manager.jupyterlab-settings
 COPY NotebookConfig/plugin.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/cell-toolbar-extension/plugin.jupyterlab-settings
 COPY NotebookConfig/kernels/sos/kernel.json /usr/local/share/jupyter/kernels/sos/kernel.json
+
+# Elimina kernels de C++ que estan con otras versiones, solo se deja el de C++20
+RUN jupyter kernelspec remove -f cpp03 || true && \
+    jupyter kernelspec remove -f cpp11 || true && \
+    jupyter kernelspec remove -f cpp14 || true && \
+    jupyter kernelspec remove -f cpp17 || true && \
+    jupyter kernelspec remove -f cpp23 || true && \
+    jupyter kernelspec remove -f cpp98 || true
 
 # Start JupyterLab when the container launches
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--LabApp.token=''"]
