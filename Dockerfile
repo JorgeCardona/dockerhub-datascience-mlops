@@ -105,9 +105,16 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple kotlin-jupyter-kernel
 
 # Instala el kernel de Scala
 # https://almond.sh/docs/quick-start-install
-RUN curl -Lo coursier https://git.io/coursier-cli
-RUN chmod +x coursier
+# 1. Descargar el lanzador `cs` para Linux x86_64
+# Descargar Coursier (cs) y prepararlo
+RUN curl -fLo coursier.gz https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz \
+    && gunzip coursier.gz \
+    && chmod +x coursier
+
+# Instalar Almond con coursier
 RUN ./coursier launch --fork almond -- --install
+
+# Limpiar
 RUN rm -f coursier
 
 # Instala el kernel de Nodejs-JavaScript
