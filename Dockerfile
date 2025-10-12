@@ -1,4 +1,5 @@
 # docker build --tag jorgecardona/datascience-mlops:latest .
+# docker build --tag jorgecardona/datascience-mlops:3.13.8 .
 # docker run -d --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
 
 # Base image python:3.11.10, python:3.12.7
@@ -13,11 +14,16 @@ LABEL maintainer="Jorge Cardona"
 ###############################################################
 
 # INSTALA Java
-RUN curl -O https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb && \
-    apt install -y ./jdk-21_linux-x64_bin.deb && \
-    rm jdk-21_linux-x64_bin.deb && \
-    export JAVA_HOME=/usr/lib/jvm/jdk-21-oracle-x64 && \
-    export PATH=$PATH:$JAVA_HOME/bin
+# Definir la versión del JDK como argumento
+ARG JDK_VERSION=25
+ARG JDK_BUILD=latest
+
+# Usa los argumentos
+RUN curl -O https://download.oracle.com/java/${JDK_VERSION}/${JDK_BUILD}/jdk-${JDK_VERSION}_linux-x64_bin.deb && \
+    apt install -y ./jdk-${JDK_VERSION}_linux-x64_bin.deb && \
+    rm jdk-${JDK_VERSION}_linux-x64_bin.deb && \
+    echo "export JAVA_HOME=/usr/lib/jvm/jdk-${JDK_VERSION}-oracle-x64" >> /etc/profile.d/jdk.sh && \
+    echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> /etc/profile.d/jdk.sh
 
 # Download and install Scala
 ARG VERSION_SCALA=2.13.16
