@@ -1,13 +1,16 @@
 # docker build --tag jorgecardona/datascience-mlops:latest .
-# docker build --tag jorgecardona/datascience-mlops:3.13.8 .
+# docker build --tag jorgecardona/datascience-mlops:3.14.2 .
 # docker run -d --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
 
 # Base image python:3.11.10, python:3.12.7
-# Base image python:3.11.13, python:3.12.10
-FROM python:3.12.7
+# Base image python:3.11.13, python:3.12.10, python:3.14.2
+FROM python:3.12.12
 
 # etiqueta creador de la imagen
 LABEL maintainer="Jorge Cardona"
+
+# Evitar errores de entorno gestionado externamente en Python 3.11+
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 ###############################################################
 ############ INSTALACION DE LENGUAJES EN LA IMAGEN ############
@@ -15,12 +18,12 @@ LABEL maintainer="Jorge Cardona"
 
 # INSTALA Java
 # Definir la versión del JDK como argumento
-ARG JDK_VERSION=25
-ARG JDK_BUILD=latest
+ARG JDK_VERSION=21
+ARG JDK_BUILD=archive
 
 # Usa los argumentos
-RUN curl -O https://download.oracle.com/java/${JDK_VERSION}/${JDK_BUILD}/jdk-${JDK_VERSION}_linux-x64_bin.deb && \
-    apt install -y ./jdk-${JDK_VERSION}_linux-x64_bin.deb && \
+RUN curl -L -O https://download.oracle.com/java/${JDK_VERSION}/${JDK_BUILD}/jdk-${JDK_VERSION}_linux-x64_bin.deb && \
+    apt-get install -y ./jdk-${JDK_VERSION}_linux-x64_bin.deb && \
     rm jdk-${JDK_VERSION}_linux-x64_bin.deb && \
     echo "export JAVA_HOME=/usr/lib/jvm/jdk-${JDK_VERSION}-oracle-x64" >> /etc/profile.d/jdk.sh && \
     echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> /etc/profile.d/jdk.sh
@@ -39,7 +42,9 @@ RUN curl -O https://downloads.lightbend.com/scala/${VERSION_SCALA}/${VERSION_SCA
 RUN apt-get update && apt-get install -y r-base
 
 # INSTALA NODEJS y NPM
-RUN apt-get install nodejs npm -y
+RUN apt-get update && apt-get install -y nodejs npm libzmq3-dev build-essential && \
+    npm install -g npm@latest && \
+    npm install -g node-gyp@latest
 
 # Instalar Go
 RUN apt-get update && apt-get install -y golang
@@ -49,21 +54,21 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
     /root/.cargo/bin/rustup component add rust-src
 
 # INSTALA Julia
-RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-1.10.4-linux-x86_64.tar.gz && \
-    tar -xvzf julia-1.10.4-linux-x86_64.tar.gz && \
-    mv julia-1.10.4 /opt/julia && \
+RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.12/julia-1.12.3-linux-x86_64.tar.gz && \
+    tar -xvzf julia-1.12.3-linux-x86_64.tar.gz && \
+    mv julia-1.12.3 /opt/julia && \
     ln -s /opt/julia/bin/julia /usr/local/bin/julia && \
-    rm julia-1.10.4-linux-x86_64.tar.gz
+    rm julia-1.12.3-linux-x86_64.tar.gz
 
 # Install Jenkins	
 RUN apt-get update && \
-    apt-get install -y wget && \
-    wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian/jenkins.io-2023.key && \
-    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/" | tee /etc/apt/sources.list.d/jenkins.list > /dev/null && \
+    apt-get install -y wget gnupg ca-certificates && \
+    wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key && \
+    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list > /dev/null && \
     apt-get update && \
     apt-get install -y jenkins && \
     sed -i 's/HTTP_PORT=8080/HTTP_PORT=8083/g' /etc/default/jenkins
-	
+
 # Install Kafka
 ARG VERSION_KAFKA_KERNEL=3.9.1
 ARG VERSION_KAFKA=kafka_2.13-3.9.1
@@ -73,8 +78,8 @@ RUN wget https://archive.apache.org/dist/kafka/${VERSION_KAFKA_KERNEL}/${VERSION
     tar xvf ${VERSION_KAFKA}.tgz && \
     mv ${VERSION_KAFKA} ${KAFKA_HOME} && \
     ln -s ${KAFKA_HOME} /kafka && \
-	mkdir -p ${KAFKA_HOME}/data/logs && \
-	mkdir -p ${KAFKA_HOME}/data/zookeeper && \
+    mkdir -p ${KAFKA_HOME}/data/logs && \
+    mkdir -p ${KAFKA_HOME}/data/zookeeper && \
     rm ${VERSION_KAFKA}.tgz
 
 ###############################################################
@@ -98,14 +103,15 @@ RUN go install github.com/gopherdata/gophernotes@v0.7.5 && \
     cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.5/kernel/*  "." && \
     chmod +w ./kernel.json && \
     sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
-	
+
 ARG VERSION_JAVA_KERNEL=1.3.0
 # Instala el kernel de Java
+RUN pip install --no-cache-dir setuptools
 RUN wget https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-${VERSION_JAVA_KERNEL}.zip && \
     unzip ijava-${VERSION_JAVA_KERNEL}.zip && \
     python3 install.py --sys-prefix && \
     rm ijava-${VERSION_JAVA_KERNEL}.zip
-	
+
 # Instala el kernel de Kotlin
 RUN pip install --no-cache-dir -i https://pypi.org/simple kotlin-jupyter-kernel	
 
@@ -132,7 +138,9 @@ RUN /root/.cargo/bin/cargo install --locked evcxr_jupyter && \
     /root/.cargo/bin/evcxr_jupyter --install
 
 # Instalar Kernel Julia
-RUN julia -e 'using Pkg; Pkg.add("IJulia")'
+# Configure PyCall to use the system python (3.14)
+ENV PYTHON=/usr/local/bin/python3
+RUN julia -e 'using Pkg; Pkg.add("PyCall"); Pkg.build("PyCall"); Pkg.add("IJulia"); Pkg.build("IJulia")'
 
 # Renombrar el Kernel de python
 RUN python -m ipykernel install --name python3 --display-name "Python - ML - Data Science" --user
@@ -154,6 +162,7 @@ RUN apt install -y vim
 WORKDIR /notebooks
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyter-ai
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-git
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade scikit-learn
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade tensorflow
@@ -184,7 +193,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-beam[
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-core
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-postgres
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyxtension
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyspark
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade "pyspark==4.0.0"
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade delta-spark
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade delta-sharing
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade mlflow
@@ -235,8 +244,8 @@ RUN mkdir -p /root/.dbt
 ENV AIRFLOW__CORE__LOAD_EXAMPLES=False 
 RUN airflow db init
 RUN airflow users create --role Admin --username admin --email mldatascience@jorgecardona.com --firstname admin --lastname airflow --password 12345678
-#RUN rm /usr/local/lib/python3.12/site-packages/airflow/example_dags/example_branch_operator_decorator.py
-#RUN rm /usr/local/lib/python3.12/site-packages/airflow/example_dags/example_branch_operator.py
+#RUN rm /usr/local/lib/python3.14/site-packages/airflow/example_dags/example_branch_operator_decorator.py
+#RUN rm /usr/local/lib/python3.14/site-packages/airflow/example_dags/example_branch_operator.py
 RUN mkdir -p /root/airflow/dags
 COPY /airflow_files/dbt_airflow.py /root/airflow/dags
 COPY /kafka_files/*.properties /usr/local/kafka/config
@@ -255,6 +264,11 @@ COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings
 COPY NotebookConfig/plugin.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/cell-toolbar-extension/plugin.jupyterlab-settings
 COPY NotebookConfig/kernels/sos/kernel.json /usr/local/share/jupyter/kernels/sos/kernel.json
 
+# Instala la extension Jupyter AI
+RUN mkdir -p /root/.ipython/profile_default && \
+    echo "c = get_config(); c.InteractiveShellApp.extensions.append('jupyter_ai_magics')" \
+    > /root/.ipython/profile_default/ipython_config.py
+
 # Elimina kernels de C++ que estan con otras versiones, solo se deja el de C++20
 RUN jupyter kernelspec remove -f cpp03 || true && \
     jupyter kernelspec remove -f cpp11 || true && \
@@ -271,5 +285,5 @@ RUN apt update
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # copiar una imagen paar subirla al dockerhub
-#docker tag python:3.12.3 jorgecardona/python:3.12.3
-#docker push jorgecardona/python:3.12.3
+#docker tag python:3.14.2 jorgecardona/python:3.14.2
+#docker push jorgecardona/python:3.14.2
