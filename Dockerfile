@@ -1,10 +1,11 @@
-# docker build --tag jorgecardona/datascience-mlops:latest .
+# docker build --tag jorgecardona/datascience-mlops-new:latest .
 # docker build --tag jorgecardona/datascience-mlops:3.13.8 .
+# docker build --cache-from jorgecardona/datascience-mlops-new:latest --tag jorgecardona/datascience-mlops-new:latest .
 # docker run -d --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest
-
+# docker run -d --name mlops-new -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops-new:latest
 # Base image python:3.11.10, python:3.12.7
 # Base image python:3.11.13, python:3.12.10
-FROM python:3.12.7
+FROM python:3.14.7
 
 # etiqueta creador de la imagen
 LABEL maintainer="Jorge Cardona"
@@ -13,248 +14,106 @@ LABEL maintainer="Jorge Cardona"
 ############ INSTALACION DE LENGUAJES EN LA IMAGEN ############
 ###############################################################
 
-# INSTALA Java
-# Definir la versión del JDK como argumento
+# ==========================================
+# 1. JAVA (JDK 25 - Fix de variables y limpieza)
+# ==========================================
 ARG JDK_VERSION=25
 ARG JDK_BUILD=latest
+ENV JAVA_HOME=/usr/lib/jvm/jdk-${JDK_VERSION}-oracle-x64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Usa los argumentos
-RUN curl -O https://download.oracle.com/java/${JDK_VERSION}/${JDK_BUILD}/jdk-${JDK_VERSION}_linux-x64_bin.deb && \
-    apt install -y ./jdk-${JDK_VERSION}_linux-x64_bin.deb && \
-    rm jdk-${JDK_VERSION}_linux-x64_bin.deb && \
-    echo "export JAVA_HOME=/usr/lib/jvm/jdk-${JDK_VERSION}-oracle-x64" >> /etc/profile.d/jdk.sh && \
-    echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> /etc/profile.d/jdk.sh
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && curl -fL https://download.oracle.com/java/${JDK_VERSION}/${JDK_BUILD}/jdk-${JDK_VERSION}_linux-x64_bin.deb -o jdk.deb \
+    && apt-get install -y ./jdk.deb \
+    && rm jdk.deb \
+    && rm -rf /var/lib/apt/lists/*
 
-# Download and install Scala
-ARG VERSION_SCALA=2.13.16
+# ==========================================
+# 2. SCALA (URL corregida desde GitHub Releases)
+# ==========================================
+ARG VERSION_SCALA=2.13.18
 ARG VERSION_SCALA_KERNEL=scala-${VERSION_SCALA}
-RUN curl -O https://downloads.lightbend.com/scala/${VERSION_SCALA}/${VERSION_SCALA_KERNEL}.tgz && \
-    tar -xzf ${VERSION_SCALA_KERNEL}.tgz && \
-    mv ${VERSION_SCALA_KERNEL} /usr/local/share/scala && \
-    ln -s /usr/local/share/scala/bin/scala /usr/local/bin/scala && \
-    ln -s /usr/local/share/scala/bin/scalac /usr/local/bin/scalac && \
-    rm ${VERSION_SCALA_KERNEL}.tgz
 
-# INSTALA lenguaje R
-RUN apt-get update && apt-get install -y r-base
+RUN curl -fL https://github.com/scala/scala/releases/download/v${VERSION_SCALA}/${VERSION_SCALA_KERNEL}.tgz -o scala.tgz \
+    && tar -xzf scala.tgz \
+    && mv ${VERSION_SCALA_KERNEL} /usr/local/share/scala \
+    && ln -s /usr/local/share/scala/bin/scala /usr/local/bin/scala \
+    && ln -s /usr/local/share/scala/bin/scalac /usr/local/bin/scalac \
+    && rm scala.tgz
 
-# INSTALA NODEJS y NPM
-RUN apt-get install nodejs npm -y
+# ==========================================
+# 3. LENGUAJE R (Versión exacta fijada)
+# ==========================================
+ARG R_VERSION=4.5.0-3
 
-# Instalar Go
-RUN apt-get update && apt-get install -y golang
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    r-base-core=${R_VERSION} \
+    && rm -rf /var/lib/apt/lists/*
 
-# INSTALA Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
-    /root/.cargo/bin/rustup component add rust-src
+# ==========================================
+# 4. GO (Versión exacta fijada)
+# ==========================================
+ARG GO_VERSION=1.27.1
+ENV PATH=/usr/local/go/bin:$PATH
 
-# INSTALA Julia
-RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-1.10.4-linux-x86_64.tar.gz && \
-    tar -xvzf julia-1.10.4-linux-x86_64.tar.gz && \
-    mv julia-1.10.4 /opt/julia && \
-    ln -s /opt/julia/bin/julia /usr/local/bin/julia && \
-    rm julia-1.10.4-linux-x86_64.tar.gz
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && curl -fsSL https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz -o go.tar.gz \
+    && tar -xzf go.tar.gz -C /usr/local \
+    && rm go.tar.gz \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Jenkins	
-RUN apt-get update && \
-    apt-get install -y wget && \
-    wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian/jenkins.io-2023.key && \
-    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/" | tee /etc/apt/sources.list.d/jenkins.list > /dev/null && \
-    apt-get update && \
-    apt-get install -y jenkins && \
-    sed -i 's/HTTP_PORT=8080/HTTP_PORT=8083/g' /etc/default/jenkins
+# ==========================================
+# 5. RUST (Versión exacta fijada)
+# ==========================================
+ARG RUST_VERSION=1.98.1
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates build-essential \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain ${RUST_VERSION} --no-modify-path \
+    && rustup component add rust-src \
+    && rm -rf /var/lib/apt/lists/*
+
+# ==========================================
+# 6. JULIA (Versión exacta fijada)
+# ==========================================
+ARG JULIA_VERSION_MAJOR=1.13
+ARG JULIA_VERSION_FULL=1.13.0
+
+RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certificates \
+    && wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_VERSION_MAJOR}/julia-${JULIA_VERSION_FULL}-linux-x86_64.tar.gz -O julia.tar.gz \
+    && tar -xzf julia.tar.gz \
+    && mv julia-${JULIA_VERSION_FULL} /opt/julia \
+    && ln -s /opt/julia/bin/julia /usr/local/bin/julia \
+    && rm julia.tar.gz \
+    && rm -rf /var/lib/apt/lists/*
+
+# ==========================================
+# 7. NODE.JS Y NPM (Versión exacta fijada)
+# ==========================================
+ARG NODE_VERSION=v20.19.2
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && curl -fsSL https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.gz -o node.tar.gz \
+    && tar -xzf node.tar.gz -C /usr/local --strip-components=1 \
+    && rm node.tar.gz \
+    && rm -rf /var/lib/apt/lists/*
 	
-# Install Kafka
-ARG VERSION_KAFKA_KERNEL=3.9.1
-ARG VERSION_KAFKA=kafka_2.13-3.9.1
-ARG KAFKA_HOME=/usr/local/kafka
-
-RUN wget https://archive.apache.org/dist/kafka/${VERSION_KAFKA_KERNEL}/${VERSION_KAFKA}.tgz && \
-    tar xvf ${VERSION_KAFKA}.tgz && \
-    mv ${VERSION_KAFKA} ${KAFKA_HOME} && \
-    ln -s ${KAFKA_HOME} /kafka && \
-	mkdir -p ${KAFKA_HOME}/data/logs && \
-	mkdir -p ${KAFKA_HOME}/data/zookeeper && \
-    rm ${VERSION_KAFKA}.tgz
-
 ###############################################################
 ############ INSTALACION DE KERNELS EN JUPYTER LAB ############
 ###############################################################
 
-# Instala JupyterLab
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyterlab
+# 1. Instalar JupyterLab base e ipykernel
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade ipykernel
 
-# Instala el kernel de R
-RUN echo "install.packages(c('IRkernel'), repos='http://cran.rstudio.com/', dependencies=TRUE)"  > /tmp/packages.R && Rscript /tmp/packages.R
-RUN echo 'IRkernel::installspec()' > /tmp/temp.R && Rscript /tmp/temp.R
+# 2. Kernel de R (Configuración global)
+RUN Rscript -e "install.packages('IRkernel', repos='http://cran.rstudio.com/')" \
+    && Rscript -e "IRkernel::installspec(user = FALSE)"
 
-# Instala el kernel de C++
-RUN pip install --no-cache-dir -i https://pypi.org/simple jupyter-cpp-kernel
-
-# Instala el kernel de go
-RUN go install github.com/gopherdata/gophernotes@v0.7.5 && \
-    mkdir -p ~/.local/share/jupyter/kernels/gophernotes && \
-    cd ~/.local/share/jupyter/kernels/gophernotes && \
-    cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.5/kernel/*  "." && \
-    chmod +w ./kernel.json && \
-    sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
-	
-ARG VERSION_JAVA_KERNEL=1.3.0
-# Instala el kernel de Java
-RUN wget https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-${VERSION_JAVA_KERNEL}.zip && \
-    unzip ijava-${VERSION_JAVA_KERNEL}.zip && \
-    python3 install.py --sys-prefix && \
-    rm ijava-${VERSION_JAVA_KERNEL}.zip
-	
-# Instala el kernel de Kotlin
-RUN pip install --no-cache-dir -i https://pypi.org/simple kotlin-jupyter-kernel	
-
-# Instala el kernel de Scala
-# https://almond.sh/docs/quick-start-install
-# 1. Descargar el lanzador `cs` para Linux x86_64
-# Descargar Coursier (cs) y prepararlo
-RUN curl -fLo coursier.gz https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz \
-    && gunzip coursier.gz \
-    && chmod +x coursier
-
-# Instalar Almond con coursier
-RUN ./coursier launch --fork almond -- --install
-
-# Limpiar
-RUN rm -f coursier
-
-# Instala el kernel de Nodejs-JavaScript
-RUN npm install -g ijavascript 
-RUN ijsinstall # jernel javaScript
-
-# Instalar Kernel Rust
-RUN /root/.cargo/bin/cargo install --locked evcxr_jupyter && \
-    /root/.cargo/bin/evcxr_jupyter --install
-
-# Instalar Kernel Julia
-RUN julia -e 'using Pkg; Pkg.add("IJulia")'
-
-# Renombrar el Kernel de python
-RUN python -m ipykernel install --name python3 --display-name "Python - ML - Data Science" --user
-
-###############################################################
-################ UTILIDADES PARA EL CONTENEDOR ################
-###############################################################
-
-# Instalar Graphviz para visualización de gráficos y generación de diagramas
-RUN apt install graphviz -y
-RUN apt install -y sudo
-RUN apt install -y vim
-
-###############################################################
-############# INSTALACION DE PAQUETES PARA PYTHON #############
-###############################################################
-
-# Set the working directory
-WORKDIR /notebooks
-
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-git
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade scikit-learn
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade tensorflow
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade keras
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade opencv-python
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade spacy
-
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade mysql-connector-python
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade psycopg2
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pymongo
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade confluent-kafka
-
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pytest
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade locust
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade itables
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade faker
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade panel
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade seaborn
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade bokeh
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade diagrams
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dask
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dask-labextension
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade duckdb
-
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pandas
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade polars
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-beam[interactive]
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-core
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade dbt-postgres
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyxtension
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pyspark
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade delta-spark
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade delta-sharing
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade mlflow
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade papermill
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade lxml
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade tables
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade openpyxl
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-spreadsheet
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pandas-dataset-handler
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade notebook-orchestration-and-execution-manager
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyter-collaboration-ui
-# RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade apache-airflow
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade "apache-airflow==2.11.0"
-
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab_code_formatter
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-indent-guides
-#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-lsp
-#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade python-language-server
-
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade black
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade isort
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade ruff
-#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade autopep8
-#RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade yapf
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade sos-notebook
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-sos
-
-# Instala SoS y la extensión para JupyterLab
-RUN python -m sos_notebook.install
-
-#RUN pip install pycodestyle
-###############################################################
-################## CONFIGURACIONES FINALES ####################
-###############################################################
-
-# Establece la variable de entorno HOME
-ENV HOME=/root
-ENV DBT_PROFILES_DIR=/root/.dbt
-
-# Establece las variables de entorno necesarias para PySpark y Delta
-# ENV PYSPARK_SUBMIT_ARGS="--packages io.delta:delta-core_2.12:2.4.0 --conf spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension --conf spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog pyspark-shell"
-
-# Crea el directorio para dbt
-RUN mkdir -p /root/.dbt
-
-# Start Airflow when the container launches
-# avoid loading all DAG examples
-ENV AIRFLOW__CORE__LOAD_EXAMPLES=False 
-RUN airflow db init
-RUN airflow users create --role Admin --username admin --email mldatascience@jorgecardona.com --firstname admin --lastname airflow --password 12345678
-#RUN rm /usr/local/lib/python3.12/site-packages/airflow/example_dags/example_branch_operator_decorator.py
-#RUN rm /usr/local/lib/python3.12/site-packages/airflow/example_dags/example_branch_operator.py
-RUN mkdir -p /root/airflow/dags
-COPY /airflow_files/dbt_airflow.py /root/airflow/dags
-COPY /kafka_files/*.properties /usr/local/kafka/config
-COPY /jars/*.jar /usr/local/spark/jars/
-COPY /jars_scala_2.13/*.jar /usr/local/spark/jars/
-
-# copia los .jar para delta lake
-# tar -czf /notebooks/cache.tar.gz -C /root .ivy2
-RUN mkdir -p /root/.ivy2.5.2
-COPY delta_spark/ivy2.5.2/ /root/.ivy2.5.2/
-
-# copia la configuracion del notebook personalizada
-COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
-COPY NotebookConfig/panel.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/panel.jupyterlab-settings
-COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/completer-extension/manager.jupyterlab-settings
-COPY NotebookConfig/plugin.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/cell-toolbar-extension/plugin.jupyterlab-settings
-COPY NotebookConfig/kernels/sos/kernel.json /usr/local/share/jupyter/kernels/sos/kernel.json
-
+# 3. Kernel de C++
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyter-cpp-kernel
 # Elimina kernels de C++ que estan con otras versiones, solo se deja el de C++20
 RUN jupyter kernelspec remove -f cpp03 || true && \
     jupyter kernelspec remove -f cpp11 || true && \
@@ -263,13 +122,203 @@ RUN jupyter kernelspec remove -f cpp03 || true && \
     jupyter kernelspec remove -f cpp23 || true && \
     jupyter kernelspec remove -f cpp98 || true
 
-# Start JupyterLab when the container launches
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--LabApp.token=''"]
+# 4. Kernel de Go (Gophernotes global)
+RUN go install github.com/gopherdata/gophernotes@v0.7.5 \
+    && mkdir -p /usr/local/share/jupyter/kernels/gophernotes \
+    && cd /usr/local/share/jupyter/kernels/gophernotes \
+    && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.5/kernel/* "." \
+    && chmod +w ./kernel.json \
+    && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
 
-# Limpiar paquetes innecesarios
-RUN apt update 
+# 5. Kernel de Java (IJava)
+ARG VERSION_JAVA_KERNEL=1.3.0
+RUN curl -fLo ijava.zip https://github.com/SpencerPark/IJava/releases/download/v${VERSION_JAVA_KERNEL}/ijava-${VERSION_JAVA_KERNEL}.zip \
+    && unzip ijava.zip -d /tmp/ijava \
+    && python3 /tmp/ijava/install.py --sys-prefix \
+    && rm -rf ijava.zip /tmp/ijava
+
+# 6. Kernel de Kotlin
+RUN pip install --no-cache-dir kotlin-jupyter-kernel
+
+# 7. KERNEL DE SCALA (Almond Fix)
+ARG ALMOND_SCALA_VERSION=2.13.18
+ARG ALMOND_VERSION=0.14.5
+
+# a. Descargar Coursier
+RUN curl -fLo cs.gz https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz \
+    && gzip -d cs.gz \
+    && mv cs /usr/local/bin/cs \
+    && chmod +x /usr/local/bin/cs
+
+# b. Generar el instalador de Almond e instalar el kernel globalmente
+RUN cs bootstrap \
+    --scala ${ALMOND_SCALA_VERSION} \
+    almond:${ALMOND_VERSION} \
+    --output /tmp/almond \
+    && /tmp/almond --install --global \
+    && rm -f /tmp/almond /usr/local/bin/cs
+
+# 8. Kernel de Rust (Evcxr)
+RUN cargo install --locked evcxr_jupyter \
+    && evcxr_jupyter --install
+
+# 9. Kernel de Julia (IJulia global)
+ENV JULIA_DEPOT_PATH=/usr/local/share/julia
+RUN julia -e 'using Pkg; Pkg.add("IJulia")'
+
+# 10. Kernel de JS / TS con Deno (Nativo y moderno)
+RUN curl -fsSL https://deno.land/install.sh | sh
+ENV DENO_INSTALL="/root/.deno"
+ENV PATH="$DENO_INSTALL/bin:$PATH"
+
+RUN deno jupyter --install
+RUN npm install -g ijavascript 
+RUN ijsinstall # kernel javaScript
+
+# 11. Instala SoS y la extensión para JupyterLab
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade sos-notebook
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade jupyterlab-sos
+RUN python -m sos_notebook.install
+
+# 12. Instala el kernel de Bash para Jupyter
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade bash_kernel
+RUN python -m bash_kernel.install
+
+# 13. Kernel de Ruby (IRuby)
+ARG IRUBY_VERSION=0.8.3
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ruby \
+        ruby-dev \
+        libczmq-dev \
+        build-essential \
+    && gem install iruby -v "${IRUBY_VERSION}" --no-document \
+    && iruby register --force \
+    && rm -rf /var/lib/apt/lists/*
+
+# 14. KERNEL DE MATLAB / OCTAVE
+ARG OCTAVE_VERSION="9.4.0*"
+ARG OCTAVE_KERNEL_VERSION="1.1.1"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        octave=${OCTAVE_VERSION} \
+        octave-control \
+        octave-image \
+        octave-io \
+        octave-signal \
+        gnuplot \
+        ghostscript \
+        fonts-freefont-otf \
+        fontconfig \
+        curl \
+    && fc-cache -f \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir octave_kernel=="${OCTAVE_KERNEL_VERSION}"
+
+RUN KERNEL_DIR="$(jupyter kernelspec list | grep -E '^\s*octave\s+' | awk '{print $2}')" && \
+    if [ -n "$KERNEL_DIR" ]; then \
+        curl -fsSL https://upload.wikimedia.org/wikipedia/commons/2/21/Matlab_Logo.png -o "${KERNEL_DIR}/logo-64x64.png"; \
+    fi
+    
+# 15. KERNEL DE ELIXIR (Con logo e interfaz oficial)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        elixir \
+        curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# a. Crear el runner wrapper
+RUN mkdir -p /usr/local/share/elixir_kernel \
+    && cat <<'EOF' > /usr/local/share/elixir_kernel/kernel.py
+import subprocess
+import sys
+from ipykernel.kernelbase import Kernel
+
+class ElixirNativeKernel(Kernel):
+    implementation = 'Elixir'
+    implementation_version = '1.0'
+    language = 'elixir'
+    language_info = {
+        'name': 'elixir',
+        'mimetype': 'text/x-elixir',
+        'file_extension': '.exs'
+    }
+    banner = "Elixir Runner Kernel"
+
+    def do_execute(self, code, silent, store_history=True, user_expressions=None, allow_stdin=False):
+        if not code.strip():
+            return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [], 'user_expressions': {}}
+
+        try:
+            process = subprocess.run(
+                ['elixir', '-e', code],
+                capture_output=True,
+                text=True,
+                check=False
+            )
+
+            if not silent:
+                if process.stdout:
+                    self.send_response(self.iopub_socket, 'stream', {'name': 'stdout', 'text': process.stdout})
+                if process.stderr:
+                    self.send_response(self.iopub_socket, 'stream', {'name': 'stderr', 'text': process.stderr})
+
+            status = 'ok' if process.returncode == 0 else 'error'
+            return {'status': status, 'execution_count': self.execution_count, 'payload': [], 'user_expressions': {}}
+
+        except Exception as e:
+            if not silent:
+                self.send_response(self.iopub_socket, 'stream', {'name': 'stderr', 'text': str(e)})
+            return {'status': 'error', 'execution_count': self.execution_count, 'ename': type(e).__name__, 'evalue': str(e), 'traceback': []}
+
+if __name__ == '__main__':
+    from ipykernel.kernelapp import IPKernelApp
+    IPKernelApp.launch_instance(kernel_class=ElixirNativeKernel)
+EOF
+
+# b. Registrar el kernel en JupyterLab
+RUN mkdir -p /usr/local/share/jupyter/kernels/elixir \
+    && cat <<'EOF' > /usr/local/share/jupyter/kernels/elixir/kernel.json
+{
+  "argv": [
+    "python3",
+    "/usr/local/share/elixir_kernel/kernel.py",
+    "-f",
+    "{connection_file}"
+  ],
+  "display_name": "Elixir",
+  "language": "elixir"
+}
+EOF
+
+# c. Descargar los logos oficiales originales de IElixir
+RUN curl -fsSL https://raw.githubusercontent.com/pprzetacznik/IElixir/master/resources/logo-64x64.png -o /usr/local/share/jupyter/kernels/elixir/logo-64x64.png \
+    && curl -fsSL https://raw.githubusercontent.com/pprzetacznik/IElixir/master/resources/logo-32x32.png -o /usr/local/share/jupyter/kernels/elixir/logo-32x32.png
+
+# 15. Personalización del Kernel predeterminado de Python
+RUN python -m ipykernel install --sys-prefix --name python3 --display-name "Python - ML - Data Science"
+RUN sed -i 's/"display_name": ".*"/"display_name": "SoS - Multi-language Notebook"/' /usr/local/share/jupyter/kernels/sos/kernel.json
+RUN sed -i 's/"display_name": ".*"/"display_name": "Ruby"/' /root/.local/share/jupyter/kernels/ruby3/kernel.json
+RUN OCTAVE_PATH=$(jupyter kernelspec list --json | grep -o '"/[^"]*octave"' | head -n 1 | tr -d '"') && sed -i 's/"display_name": ".*"/"display_name": "MATLAB \/ Octave"/' "${OCTAVE_PATH}/kernel.json"
+
+# 16. Deshabilitar la extensión de consola de JupyterLab para mejorar el rendimiento
+RUN jupyter labextension disable @jupyterlab/console-extension
+
+###############################################################
+############# DEFINICION DE DIRECTORIO DE TRABAJO #############
+###############################################################
+
+# Set the working directory
+WORKDIR /notebooks
+
+###############################################################
+############ LIMPIEZA FINAL Y ARRANQUE #######################
+###############################################################
+
+# Limpiar paquetes temporales innecesarios para reducir peso de la imagen
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# copiar una imagen paar subirla al dockerhub
-#docker tag python:3.12.3 jorgecardona/python:3.12.3
-#docker push jorgecardona/python:3.12.3
+# Arrancar JupyterLab al iniciar el contenedor
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--LabApp.token=''"]
