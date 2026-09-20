@@ -14,11 +14,10 @@ DBT_DOCS_LOG = "/tmp/dbt_docs.log"
 
 
 # ============================================================
-# DAG 1 — DBT_FULL_PROCCESS (MISMO DAG, SOLO FIX EN docs serve)
+# DAG 1 — DBT_FULL_PROCCESS
 # ============================================================
 @dag(
-    schedule_interval="0 5 * * *",
-    concurrency=10,
+    schedule="0 5 * * *",
     max_active_runs=3,
     start_date=datetime(2021, 1, 1),
     catchup=False,
@@ -90,20 +89,25 @@ def dbt_run_full_dbt_configuration():
         bash_command=start_documentation_server(),
     )
 
-    dbt_config_task >> change_directory_task >> show_version_task >> \
-    test_connection_task >> run_dbt_task >> \
-    generate_documentation_task >> start_documentation_server_task
+    (
+        dbt_config_task
+        >> change_directory_task
+        >> show_version_task
+        >> test_connection_task
+        >> run_dbt_task
+        >> generate_documentation_task
+        >> start_documentation_server_task
+    )
 
 
 dag_dbt_run = dbt_run_full_dbt_configuration()
 
 
 # ==========================================
-# DAG 2 — DBT_START (MISMO, SOLO FIX)
+# DAG 2 — DBT_START
 # ==========================================
 @dag(
-    schedule_interval="0 5 * * *",
-    concurrency=10,
+    schedule="0 5 * * *",
     max_active_runs=3,
     start_date=datetime(2021, 1, 1),
     catchup=False,
@@ -126,7 +130,6 @@ def dbt_run_documentation_server_start():
     def generate_documentation():
         return f"cd {DBT_DIRECTORY} && dbt docs generate"
 
-    # 🔧 MISMO FIX
     def start_documentation_server():
         return f"""
         cd {DBT_DIRECTORY} &&
@@ -164,20 +167,24 @@ def dbt_run_documentation_server_start():
         bash_command=start_documentation_server(),
     )
 
-    change_directory_task >> show_version_task >> \
-    test_connection_task >> run_dbt_task >> \
-    generate_documentation_task >> start_documentation_server_task
+    (
+        change_directory_task
+        >> show_version_task
+        >> test_connection_task
+        >> run_dbt_task
+        >> generate_documentation_task
+        >> start_documentation_server_task
+    )
 
 
 dag_dbt_run_start = dbt_run_documentation_server_start()
 
 
 # ==========================================
-# DAG 3 — DBT_STOP (IGUAL, SOLO VARIABLES)
+# DAG 3 — DBT_STOP
 # ==========================================
 @dag(
-    schedule_interval="0 5 * * *",
-    concurrency=10,
+    schedule="0 5 * * *",
     max_active_runs=3,
     start_date=datetime(2021, 1, 1),
     catchup=False,

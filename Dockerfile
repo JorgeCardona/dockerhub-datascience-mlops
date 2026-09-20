@@ -81,7 +81,8 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     tables \
     openpyxl \
     pyarrow \
-    faker
+    faker\
+    pyxtension
 
 # --- VISUALIZACIÓN DE DATOS Y DIAGRAMAS ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -162,6 +163,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     htop \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+###############################################################
+################### CONFIGURACIÓN AIRFLOW ####################
+###############################################################
+
+# Directorio base de Airflow
+ENV AIRFLOW_HOME=/root/airflow
+
+# Configuración general
+ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
+ENV AIRFLOW__API__PORT=8082
+ENV AIRFLOW__API_SERVER__PORT=8082
+ENV AIRFLOW__CORE__LOAD_EXAMPLES=False 
+
+# Crear directorio base
+RUN mkdir -p /root/airflow/dags
+COPY /airflow_files/dbt_airflow.py /root/airflow/dags
+
+# Crear archivo de contraseñas del Simple Auth Manager
+RUN echo '{"admin": "12345678"}' > /root/airflow/simple_auth_manager_passwords.json && \
+    cp /root/airflow/simple_auth_manager_passwords.json \
+       /root/airflow/simple_auth_manager_passwords.json.generated
 
 ###############################################################
 ################### CONFIGURACION DE INICIO ###################
