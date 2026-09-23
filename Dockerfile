@@ -24,18 +24,39 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     transformers \
     datasets \
     accelerate
+    # tensorflow
 
 # --- IA GENERATIVA, AGENTES Y LANGCHAIN ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
-    langchain \
-    langchain-community \
-    langgraph \
-    openai \
-    langchain-openai \
-    google-genai \
+    "langchain"                `# [REMPLAZADO POR]: pydantic-ai, DSPy, llama-index` \
+    "pydantic-ai"              `# [COMPITE CON]: langchain (para lógica/prompts tipados en Python)` \
+    "DSPy"                     `# [COMPITE CON]: langchain (para optimización automática de prompts)` \
+    "llama-index"              `# [COMPITE CON]: langchain (especializado en RAG y documentos)`
+
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    "langgraph"                `# [REMPLAZADO POR]: crewai` 
+    # "crewai"                   `# [COMPITE CON]: langgraph (para agentes multi-paso por roles)`
+
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    "langchain-openai"         `# [WRAPPER]: Conector de OpenAI exclusivo para LangChain` \
+    "langchain-google-genai"   `# [WRAPPER]: Conector de Gemini exclusivo para LangChain` \
+    "langchain-community"      `# [WRAPPER]: Integraciones de terceros exclusivas para LangChain`
+
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    "openai"                   `# [SDK DIRECTO]: OpenAI nativo (sin wrappers)` \
+    "google-genai"             `# [SDK DIRECTO]: Gemini nativo (sin wrappers)` 
+
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     google-api-python-client \
-    langchain-google-genai
-    
+    google-auth-oauthlib \
+    google-auth-httplib2
+
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    "langsmith"                `# [REMPLAZADO POR]: langfuse, opik, arize-phoenix` \
+    "langfuse"                 `# [COMPITE CON]: langsmith (alternativa Open Source MIT para tracing)` \
+    "opik"                     `# [COMPITE CON]: langsmith (alternativa Open Source para evaluación)` \
+    "arize-phoenix"            `# [COMPITE CON]: langsmith (alternativa Open Source para alucinaciones/RAG)`
+
 # --- WEB SCRAPING Y EXTRACCIÓN DE DATOS ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     beautifulsoup4 \
@@ -75,14 +96,17 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     confluent-kafka
 
 # --- MANIPULACIÓN DE DATOS, ARCHIVOS Y LECTORES ---
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     pandas \
     polars \
     tables \
     openpyxl \
+    pypdf \
     pyarrow \
-    faker\
-    pyxtension
+    faker \
+    pyxtension \
+    docling \
+    Pillow
 
 # --- VISUALIZACIÓN DE DATOS Y DIAGRAMAS ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -92,7 +116,8 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     bokeh \
     panel \
     itables \
-    diagrams
+    diagrams \
+    streamlit
 
 # --- BATCH, PROCESAMIENTO DISTRIBUIDO Y BIG DATA ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -104,7 +129,9 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     dask \
     dask-labextension \
     apache-beam[interactive] \
-    duckdb
+    duckdb \
+    chromadb
+    # airbyte
 
 # --- ORQUESTACIÓN, MLOps Y PRUEBAS ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -179,7 +206,7 @@ ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
 
 # Crear directorio base
 RUN mkdir -p /root/airflow/dags
-COPY /airflow_files/dbt_airflow.py /root/airflow/dags
+#COPY /airflow_files/dbt_airflow.py /root/airflow/dags
 
 # Crear archivo de contraseñas del Simple Auth Manager
 RUN echo '{"admin": "12345678"}' > /root/airflow/simple_auth_manager_passwords.json && \
