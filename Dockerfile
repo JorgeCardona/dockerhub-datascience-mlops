@@ -181,6 +181,20 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     dynaconf \
     pyyaml \
     tomli
+
+###############################################################
+########## OBSERVABILIDAD, TELEMETRÍA Y MONITORIZACIÓN ########
+###############################################################
+
+# --- OBSERVABILIDAD Y TELEMETRÍA ---
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    opentelemetry-api \
+    opentelemetry-sdk \
+    opentelemetry-instrumentation \
+    opentelemetry-distro \
+    opentelemetry-exporter-otlp \
+    && opentelemetry-bootstrap -a install
+
 ###############################################################
 ################ UTILIDADES PARA EL CONTENEDOR ################
 ###############################################################
@@ -194,7 +208,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 ###############################################################
-################### CONFIGURACIÓN AIRFLOW ####################
+################### CONFIGURACIÓN AIRFLOW #####################
 ###############################################################
 
 # Directorio base de Airflow
