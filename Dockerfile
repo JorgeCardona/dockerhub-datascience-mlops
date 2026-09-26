@@ -182,18 +182,25 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     pyyaml \
     tomli
 
-###############################################################
-########## OBSERVABILIDAD, TELEMETRÍA Y MONITORIZACIÓN ########
-###############################################################
 
-# --- OBSERVABILIDAD Y TELEMETRÍA ---
+#########################################################################
+#               OBSERVABILIDAD, TELEMETRÍA Y MONITORIZACIÓN             #
+#########################################################################
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     opentelemetry-api \
     opentelemetry-sdk \
     opentelemetry-instrumentation \
     opentelemetry-distro \
     opentelemetry-exporter-otlp \
+    opentelemetry-instrumentation-genai-langchain \
     && opentelemetry-bootstrap -a install
+
+# --- CONFIGURACIÓN DE TELEMETRÍA ---
+ENV OTEL_SERVICE_NAME="mlops-langgraph-service"
+ENV OTEL_TRACES_EXPORTER="otlp"
+ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4317"
+ENV OTEL_EXPORTER_OTLP_INSECURE="true"
+ENV OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="SPAN_ONLY"
 
 ###############################################################
 ################ UTILIDADES PARA EL CONTENEDOR ################
