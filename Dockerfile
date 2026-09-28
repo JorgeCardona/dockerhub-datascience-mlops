@@ -1,3 +1,12 @@
+# 1. Crea el entorno de compilación multi-sistema y lo configura como el constructor predeterminado
+docker buildx create --name multi-system-builder --use
+
+# 2. Descarga, inicializa y enciende el motor BuildKit interno dentro del constructor que acabas de crear
+docker buildx inspect --bootstrap
+
+# 3. Compila la imagen para Intel/AMD (amd64) y Mac/Server ARM (arm64) al mismo tiempo, y sube el manifiesto combinado a tu Docker Hub
+docker buildx build --platform linux/amd64,linux/arm64 --tag jorgecardona/datascience-mlops:3.14.7 --push .
+
 # docker build --tag jorgecardona/datascience-mlops:3.14.7 .
 # docker run -d --name mlops-new -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:3.14.7
 # (Invoke-RestMethod -Uri "https://hub.docker.com/v2/repositories/jorgecardona/datascience-mlops/").pull_count
