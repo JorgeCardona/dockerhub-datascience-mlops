@@ -15,7 +15,21 @@ LABEL maintainer="Jorge Cardona"
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip setuptools wheel
 
 # --- MACHINE LEARNING, DEEP LEARNING Y NLP ---
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+# Instalar PyTorch y sus paquetes satélite optimizados solo para CPU
+RUN pip install --no-cache-dir --upgrade \
+    torch torchvision torchaudio \
+    --index-url https://pytorch.org
+
+# Instalar el resto de las librerías desde PyPI estándar
+RUN pip install --no-cache-dir --upgrade \
+    scikit-learn \
+    keras \
+    opencv-python \
+    spacy \
+    datasets \
+    accelerate
+
+RUN pip install --no-cache-dir -i https://pypi.org --upgrade \
     scikit-learn \
     torch \
     torchvision \
@@ -23,7 +37,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     keras \
     opencv-python \
     spacy \
-    transformers \
+    transformers[torch] \
     datasets \
     accelerate
     # tensorflow
@@ -60,7 +74,10 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     "arize-phoenix"            `# [COMPITE CON]: langsmith (alternativa Open Source para alucinaciones/RAG)`
 
 # --- WEB SCRAPING Y EXTRACCIÓN DE DATOS ---
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROME_PATH=/usr/bin/chromium
+
+RUN pip install --no-cache-dir -i https://pypi.org --upgrade \
     beautifulsoup4 \
     scrapy \
     httpx \
@@ -71,8 +88,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     newspaper3k \
     lxml \
     html5lib \
-    feedparser \
-    && playwright install --with-deps chromium
+    feedparser
 
 # --- CIBERSEGURIDAD, HACKING ÉTICO Y ANÁLISIS RED ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -211,6 +227,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     vim \
     htop \
+    chromium \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
