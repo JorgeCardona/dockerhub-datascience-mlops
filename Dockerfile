@@ -1,10 +1,10 @@
-# 1. Crea el entorno de compilación multi-sistema y lo configura como el constructor predeterminado
-docker buildx create --name multi-system-builder --use
+# 1. Asegura que el contexto por defecto de Docker esté activo
+docker context use default
 
-# 2. Descarga, inicializa y enciende el motor BuildKit interno dentro del constructor que acabas de crear
-docker buildx inspect --bootstrap
+# 2. Selecciona el builder predeterminado de Docker Desktop
+docker buildx use default
 
-# 3. Compila la imagen para Intel/AMD (amd64) y Mac/Server ARM (arm64) al mismo tiempo, y sube el manifiesto combinado a tu Docker Hub
+# 3. Compila la imagen para Intel/AMD (amd64) y Mac/Server ARM (arm64) al mismo tiempo, y sube el manifiesto combinado a Docker Hub
 docker buildx build --platform linux/amd64,linux/arm64 --tag jorgecardona/datascience-mlops:3.14.7 --push .
 
 # docker build --tag jorgecardona/datascience-mlops:3.14.7 .
