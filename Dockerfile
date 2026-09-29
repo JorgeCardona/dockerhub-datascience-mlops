@@ -1,11 +1,11 @@
 # 1. Asegura que el contexto por defecto de Docker esté activo
-docker context use default
+# docker context use default
 
 # 2. Selecciona el builder predeterminado de Docker Desktop
-docker buildx use default
+# docker buildx use default
 
 # 3. Compila la imagen para Intel/AMD (amd64) y Mac/Server ARM (arm64) al mismo tiempo, y sube el manifiesto combinado a Docker Hub
-docker buildx build --platform linux/amd64,linux/arm64 --tag jorgecardona/datascience-mlops:3.14.7 --push .
+# docker buildx build --platform linux/amd64,linux/arm64 --tag jorgecardona/datascience-mlops:3.14.7 --push .
 
 # docker build --tag jorgecardona/datascience-mlops:3.14.7 .
 # docker run -d --name mlops-new -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:3.14.7
@@ -78,7 +78,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     "langsmith"                `# [REMPLAZADO POR]: langfuse, opik, arize-phoenix` \
-    "langfuse"                 `# [COMPITE CON]: langsmith (alternativa Open Source MIT para tracing)` \
+    "langfuse>=2.0.0,<3.0.0"   `# [COMPITE CON]: langsmith (alternativa Open Source MIT para tracing)` \
     "opik"                     `# [COMPITE CON]: langsmith (alternativa Open Source para evaluación)` \
     "arize-phoenix"            `# [COMPITE CON]: langsmith (alternativa Open Source para alucinaciones/RAG)`
 
