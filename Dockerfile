@@ -27,18 +27,14 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade pip setuptoo
 # Instalar PyTorch y sus paquetes satélite optimizados solo para CPU
 RUN pip install --no-cache-dir --upgrade \
     torch torchvision torchaudio \
-    --index-url https://pytorch.org
+    --index-url https://download.pytorch.org/whl/cpu
+
+# Instalar TensorFlow de forma independiente (soporte para Python 3.14 via pre-release o tf-nightly)
+RUN pip install --no-cache-dir --pre --upgrade \
+    tensorflow==2.22.0rc0
 
 # Instalar el resto de las librerías desde PyPI estándar
 RUN pip install --no-cache-dir --upgrade \
-    scikit-learn \
-    keras \
-    opencv-python \
-    spacy \
-    datasets \
-    accelerate
-
-RUN pip install --no-cache-dir -i https://pypi.org --upgrade \
     scikit-learn \
     torch \
     torchvision \
@@ -46,10 +42,9 @@ RUN pip install --no-cache-dir -i https://pypi.org --upgrade \
     keras \
     opencv-python \
     spacy \
-    transformers[torch] \
+    transformers[torch,tf] \
     datasets \
     accelerate
-    # tensorflow
 
 # --- IA GENERATIVA, AGENTES Y LANGCHAIN ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -86,7 +81,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 ENV PLAYWRIGHT_CHROME_PATH=/usr/bin/chromium
 
-RUN pip install --no-cache-dir -i https://pypi.org --upgrade \
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     beautifulsoup4 \
     scrapy \
     httpx \
@@ -195,7 +190,12 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     uvicorn[standard] \
     gunicorn \
     httpx \
-    pydantic
+    pydantic \
+    typeguard `# [WRAPPER]: Validador dinámico de tipos en tiempo de ejecución (Runtime Type Checking)` \
+    fastmcp \
+    mcp \
+    grpcio \
+    grpcio-tools
 
 # --- GESTIÓN DE CONFIGURACIÓN Y VARIABLES DE ENTORNO ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
