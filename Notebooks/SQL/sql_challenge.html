@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Mastery Workbook - 50 Exercises</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#0b0f19',
+                            card: '#0f172a',
+                            border: '#1e293b',
+                            hoverBorder: '#334155',
+                            blue: '#2563eb'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f8fafc;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- HEADER -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 pb-6 border-b border-slate-800/80">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
+                    <i data-lucide="database" class="w-6 h-6 text-blue-500"></i>
+                    SQL Mastery Workbook
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">
+                        50 Exercises
+                    </span>
+                </h1>
+                <p class="text-xs text-slate-400 mt-1">Advanced practical business problem-solving platform for SQL (Schema: <code class="text-blue-300">users, orders, order_items, products, event_logs</code>)</p>
+            </div>
+
+            <!-- Global Progress & Score Trackers -->
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Global Progress -->
+                <div class="bg-[#0f172a] border border-[#1e293b] px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Global Progress</span>
+                        <span class="text-xs font-extrabold text-emerald-400" id="progress-text">0 / 50 (0%)</span>
+                    </div>
+                    <div class="w-24 bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="bg-emerald-500 h-full transition-all duration-300 w-0"></div>
+                    </div>
+                </div>
+
+                <!-- Global Score -->
+                <div class="bg-[#0f172a] border border-[#1e293b] px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Global Score</span>
+                        <span class="text-xs font-extrabold text-amber-400" id="score-text">0 / 170 pts (0%)</span>
+                    </div>
+                    <div class="w-24 bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div id="score-bar" class="bg-amber-500 h-full transition-all duration-300 w-0"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVBAR & SEARCH -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-6">
+            
+            <!-- Category Tabs -->
+            <div class="flex items-center gap-1.5 bg-[#0f172a] p-1.5 rounded-xl border border-[#1e293b] overflow-x-auto custom-scrollbar">
+                <button onclick="setFilter('All')" id="btn-All" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all bg-blue-600 text-white shadow-sm shrink-0">
+                    All (50)
+                </button>
+                <button onclick="setFilter('Junior')" id="btn-Junior" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 shrink-0">
+                    Junior (5)
+                </button>
+                <button onclick="setFilter('Mid-Level')" id="btn-Mid-Level" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 shrink-0">
+                    Mid-Level (10)
+                </button>
+                <button onclick="setFilter('Senior')" id="btn-Senior" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 shrink-0">
+                    Senior (15)
+                </button>
+                <button onclick="setFilter('Lead')" id="btn-Lead" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 shrink-0">
+                    Lead (20)
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative min-w-[280px]">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <input type="text" id="search-bar" placeholder="Search by keyword or problem..." oninput="handleSearch()"
+                    class="w-full pl-10 pr-4 py-2 bg-[#0f172a] border border-[#1e293b] rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+            </div>
+        </div>
+
+        <!-- EXERCISES CARDS CONTAINER -->
+        <div id="exercise-list" class="space-y-3.5">
+            <!-- Dynamic exercise cards rendered here -->
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div id="empty-state" class="hidden text-center py-16 bg-[#0f172a]/50 rounded-2xl border border-[#1e293b]">
+            <i data-lucide="search-x" class="w-10 h-10 text-slate-600 mx-auto mb-3"></i>
+            <h3 class="text-sm font-semibold text-slate-300">No exercises found</h3>
+            <p class="text-xs text-slate-500 mt-1">Try selecting another category or changing your search term.</p>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const exercises = [
+            // ==========================================
+            // JUNIOR (5 Exercises) - 1 pt each
+            // ==========================================
+            { 
+                id: 1, 
+                level: 'Junior', 
+                points: 1,
+                title: 'Customer Segmentation by Local Market', 
+                question: "The Marketing team in Spain will launch a localized email campaign. Extract the full name, email address, and exact registration date of all registered users whose country code is 'ES'. Sort the results alphabetically by full name.", 
+                hint: "Segmentación de Clientes por Mercado Local: El equipo de Marketing en España iniciará una campaña localizada por correo electrónico. Extrae el nombre completo, correo electrónico y la fecha exacta de registro de todos los usuarios registrados cuyo código de país sea 'ES'. Ordena los resultados alfabéticamente por nombre completo. Pista técnica: Filtra la tabla 'users' utilizando 'WHERE country = 'ES'' y ordena el resultado final con la cláusula 'ORDER BY full_name ASC'." 
+            },
+            { 
+                id: 2, 
+                level: 'Junior', 
+                points: 1,
+                title: 'Premium Electronics Showcase', 
+                question: "The commercial department wants to feature high-end products on the website. Retrieve the product name and unit price for all items belonging to the 'electronics' category with an inventory price strictly greater than $50.00 USD.", 
+                hint: "Catálogo Premium de Electrónica: El departamento comercial busca destacar productos de gama alta en el sitio web. Obtén el nombre del producto y su precio unitario para todos los artículos pertenecientes a la categoría 'electronics' cuyo valor en inventario sea estrictamente mayor a $50.00 USD. Pista técnica: Aplica condiciones combinadas sobre la tabla 'products' usando 'WHERE category = 'electronics' AND price > 50.00'." 
+            },
+            { 
+                id: 3, 
+                level: 'Junior', 
+                points: 1,
+                title: 'Audit of Recent Successful Orders', 
+                question: "The operations team needs to validate the recent dispatch workflow. Generate a list of the 10 purchase orders with 'completed' status created within the last 30 days. Display the order ID, purchase date, and payment method, sorted starting from the most recent.", 
+                hint: "Auditoría de Pedidos Exitosos Recientes: El equipo de operaciones necesita validar el flujo de despacho reciente. Genera un listado de las 10 órdenes de compra con estado 'completed' que hayan sido creadas dentro de los últimos 30 días. Muestra el ID de orden, la fecha de compra y el método de pago, ordenadas comenzando por la más reciente. Pista técnica: Consulta la tabla 'orders' filtrando por 'status = 'completed'' y 'order_date >= date('now', '-30 days')'. Usa 'ORDER BY order_date DESC LIMIT 10'." 
+            },
+            { 
+                id: 4, 
+                level: 'Junior', 
+                points: 1,
+                title: 'Financial Breakdown per Line Item', 
+                question: "Accounting requires verifying the exact net billed amount charged for each order line item. Extract order_id, product_id, quantity purchased, unit price, and a calculated column named 'net_amount' reflecting the charged amount after subtracting the direct registered discount.", 
+                hint: "Desglose Financiero por Renglón de Venta: Contabilidad requiere verificar la facturación neta exacta cobrada en cada elemento de pedido. Extrae el order_id, product_id, la cantidad comprada, el precio unitario y una columna calculada llamada 'net_amount' que refleje el importe cobrado tras sustraer el descuento directo registrado. Pista técnica: Realiza el cálculo aritmético directo en el SELECT sobre 'order_items': '(quantity * unit_price) - discount AS net_amount'." 
+            },
+            { 
+                id: 5, 
+                level: 'Junior', 
+                points: 1,
+                title: 'Geographic Distribution of User Base', 
+                question: "To plan regional server expansion, Infrastructure needs to know user density. Display the country code and total count of registered customers for each country, showing those with the highest concentration of users first.", 
+                hint: "Distribución Geográfica de la Base de Usuarios: Para planificar la expansión de servidores regionales, Infraestructura necesita conocer la densidad de usuarios. Muestra el código de país y la cantidad total de clientes registrados por cada uno, desplegando primero aquellos países con la mayor concentración de usuarios. Pista técnica: Agrupa los registros de 'users' por país empleando 'GROUP BY country' junto a la función de agregación 'COUNT(*) AS total_users' ordenada descendentemente." 
+            },
+
+            // ==========================================
+            // MID-LEVEL (10 Exercises) - 2 pts each
+            // ==========================================
+            { 
+                id: 6, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Customer Lifetime Purchase Value', 
+                question: "Business Intelligence requires calculating the cumulative lifetime value (LTV) of each user. Display the user ID, full name, and total cumulative amount spent considering exclusively orders with 'completed' status.", 
+                hint: "Valor Vitalicio de Compra por Cliente: El área de Business Intelligence requiere calcular el valor de vida útil (LTV) acumulado de cada usuario. Muestra el ID del usuario, su nombre completo y la suma total acumulada que ha desembolsado considerando exclusivamente sus órdenes con estado 'completed'. Pista técnica: Realiza un 'JOIN' entre 'users', 'orders' y 'order_items'. Agrupa por el ID de usuario y utiliza 'SUM((quantity * unit_price) - discount)' asegurando filtrar por 'orders.status = 'completed''." 
+            },
+            { 
+                id: 7, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Top 5 Buyers Showcase', 
+                question: "Commercial management will reward the platform's best historical customers. Return the 5 users with the highest total historical spending. It is essential that the report includes users who have never made a purchase, showing $0.00 as their total.", 
+                hint: "Escaparate del Top 5 de Compradores: Gerencia comercial premiará a los mejores clientes históricos de la plataforma. Devuelve los 5 usuarios con el mayor gasto histórico total. Es requisito indispensable que el reporte incluya a aquellos usuarios que jamás han realizado una compra, mostrando $0.00 en su acumulado. Pista técnica: Utiliza 'LEFT JOIN' comenzando desde la tabla 'users' hacia 'orders' y 'order_items' para conservar clientes sin ventas. Usa 'COALESCE(SUM(...), 0)' para evitar valores nulos y aplica 'LIMIT 5'." 
+            },
+            { 
+                id: 8, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Frequent Customer Loyalty', 
+                question: "Customer Service will send a special coupon book to repeat buyers. Identify only users who have completed more than 3 confirmed orders in total on the platform. Display the user ID and the total count of completed orders.", 
+                hint: "Fidelidad de Clientes Frecuentes: Atención al Cliente enviará una cuponera especial a compradores recurrentes. Identifica únicamente a los usuarios que hayan realizado más de 3 pedidos confirmados en total en la plataforma. Muestra el ID del usuario y la cantidad total de pedidos finalizados. Pista técnica: Agrupa las transacciones en la tabla 'orders' por 'user_id' e impón la condición sobre el conteo agrupado utilizando la cláusula 'HAVING COUNT(order_id) > 3'." 
+            },
+            { 
+                id: 9, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Payment Channel Performance', 
+                question: "The Finance team wants to evaluate the profitability of integrated payment gateways. Calculate the Average Order Value (AOV) for each available payment method. Display the gateway and its average billed value in dollars.", 
+                hint: "Rendimiento de Canales de Pago: El equipo de Finanzas desea evaluar la rentabilidad de las pasarelas de pago integradas. Calcula el ticket promedio por orden de compra (Average Order Value) para cada método de pago disponible. Muestra la pasarela y su valor promedio cobrado en dólares. Pista técnica: Combina 'orders' con 'order_items' para calcular el total de cada orden y agrupa por 'payment_method' aplicando la función 'AVG()' sobre los subtotales de las órdenes." 
+            },
+            { 
+                id: 10, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Consolidation of Granted Discounts', 
+                question: "Auditing requires quantifying the total cost assumed by store promotions. Sum the absolute value of all discounts applied across order line items, explicitly ensuring that line items without assigned discounts do not break or invalidate the mathematical sum.", 
+                hint: "Consolidación de Descuentos Otorgados: Auditoría requiere cuantificar el costo total asumido por promociones comerciales en la tienda. Suma el valor absoluto de todos los descuentos aplicados en los renglones de venta, garantizando expresamente que los registros sin descuento asignado no arruinen ni invaliden la sumatoria matemática. Pista técnica: Aplica la función 'COALESCE(discount, 0.0)' dentro de la agregación 'SUM()' en la tabla 'order_items' para convertir valores nulos en cero antes de procesar el cálculo." 
+            },
+            { 
+                id: 11, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Inventory Classification by Price Tier', 
+                question: "Product Management requires categorizing catalog offerings for website filters. Display product name, current category, and a new 'price_tier' label configured as: 'Budget' if under $20 USD, 'Standard' if between $20 and $100 USD, and 'Premium' if exceeding $100 USD.", 
+                hint: "Clasificación de Inventario por Escalón de Precio: Gestión de Producto requiere categorizar la oferta de catálogo para filtros web. Muestra el nombre del producto, su categoría actual y una nueva etiqueta 'price_tier' configurada así: 'Económico' si es menor a $20 USD, 'Estándar' si está entre $20 y $100 USD, y 'Premium' si supera los $100 USD. Pista técnica: Evalúa cada renglón en la tabla 'products' mediante una estructura lógica condicional 'CASE WHEN price < 20 THEN ... WHEN price BETWEEN 20 AND 100 THEN ... ELSE ... END'." 
+            },
+            { 
+                id: 12, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Average Unit Volume per Transaction', 
+                question: "Logistics aims to optimize warehouse packaging by evaluating average shipped package size. Calculate the average number of total physical items contained within a standard purchase order.", 
+                hint: "Volumen Medio de Unidades por Transacción: Logística busca optimizar el empaque en bodega evaluando el tamaño medio de los paquetes enviados. Calcula el número promedio de artículos físicos totales contenidos dentro de una orden de compra estándar. Pista técnica: Primero agrupa la tabla 'order_items' por 'order_id' para sumar la cantidad de artículos 'SUM(quantity)'. Luego envuelve esta consulta en una subconsulta para extraer el 'AVG()' global." 
+            },
+            { 
+                id: 13, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Navigation Prevalence by Device Type', 
+                question: "The UX team needs to know which devices dominate user interaction. Process system logs and display each browsing platform along with its total event volume, ordered from highest to lowest frequency.", 
+                hint: "Prevalencia de Navegación por Tipo de Dispositivo: El equipo de UX requiere conocer qué dispositivos dominan la interacción de los usuarios. Procesa las trazas del sistema y despliega cada plataforma de navegación junto al volumen total de eventos registrados, ordenado de mayor a menor frecuencia. Pista técnica: Extrae el valor guardado dentro del texto JSON con 'json_extract(metadata, '$.device')' sobre la tabla 'event_logs', agrupando y contando los registros resultantes." 
+            },
+            { 
+                id: 14, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Detection of Inactive Non-Converting Accounts', 
+                question: "The Growth department aims to reactivate registered accounts that never completed a transaction. Generate a list with ID, full name, and email address of all registered users who have never placed an order on the platform.", 
+                hint: "Detección de Cuentas Inactivas Sin Conversión: El área de Growth busca reactivar cuentas registradas que nunca concretaron una transacción. Genera un listado con el ID, nombre completo y correo electrónico de todos los usuarios registrados que jamás hayan iniciado un pedido en la plataforma. Pista técnica: Aplica un 'LEFT JOIN' desde 'users' hacia 'orders' y añade la condición en el filtro 'WHERE orders.order_id IS NULL'." 
+            },
+            { 
+                id: 15, 
+                level: 'Mid-Level', 
+                points: 2,
+                title: 'Average Promotional Margin by Category', 
+                question: "The Pricing department wants to review which product lines experience higher discounts. Calculate the average monetary discount granted on sales grouped by product category.", 
+                hint: "Margen Promedio de Promociones por Categoría: El departamento de Pricing quiere revisar qué líneas de producto sufren mayores rebajas. Calcula el descuento promedio monetario concedido en las ventas agrupando por la categoría del producto. Pista técnica: Une 'order_items' con 'products' usando 'product_id'. Agrupa por 'products.category' y calcula 'AVG(COALESCE(discount, 0))'." 
+            },
+
+            // ==========================================
+            // SENIOR (15 Exercises) - 3 pts each
+            // ==========================================
+            { 
+                id: 16, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Products Priced Above Sector Average', 
+                question: "Sales aims to identify items priced above their direct niche average. Retrieve name, category, and price for all products whose catalog value is strictly higher than the average price of products in their same category.", 
+                hint: "Productos de Precio Superior al Promedio Sectorial: Comercial busca identificar artículos que se posicionan por encima del precio medio de su nicho directo. Obtén el nombre, categoría y precio de todos los productos cuyo valor en catálogo sea estrictamente superior al precio promedio de los productos de su misma categoría. Pista técnica: Emplea una subconsulta correlacionada en el 'WHERE': 'WHERE price > (SELECT AVG(p2.price) FROM products p2 WHERE p2.category = products.category)'." 
+            },
+            { 
+                id: 17, 
+                level: 'Senior', 
+                points: 3,
+                title: 'VIP Buyers Above Global Average', 
+                question: "Commercial Strategy will establish an exclusive rewards club. Find the full name and total cumulative spending of users whose overall spending exceeds the storewide average spent per customer.", 
+                hint: "Compradores VIP por Encima de la Media Global: Estrategia Comercial creará un club de beneficios exclusivo. Encuentra el nombre completo y el consumo total acumulado de aquellos usuarios cuyo gasto global supere el promedio gastado por cliente en toda la tienda. Pista técnica: Usa una Expresión de Tabla Común ('WITH user_spending AS (...)') para consolidar el total por usuario y luego filtra en la consulta principal comparando 'WHERE total_spent > (SELECT AVG(total_spent) FROM user_spending)'." 
+            },
+            { 
+                id: 18, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Demographic Sales Analysis by Age Bracket', 
+                question: "Marketing wants to evaluate purchasing behavior by age segment. Extract age from the user profile and group total amount spent on completed orders into three brackets: 'Youth' (<30 years), 'Adults' (30 to 50 years), and 'Seniors' (>50 years).", 
+                hint: "Análisis Demográfico de Ventas por Tramo de Edad: Marketing desea evaluar el comportamiento comercial por segmento de edad. Extrae la edad del perfil de usuario y agrupa el importe total gastado en órdenes completadas en tres bloques: 'Jóvenes' (<30 años), 'Adultos' (30 a 50 años) y 'Senior' (>50 años). Pista técnica: Aplica 'CAST(json_extract(profile_data, '$.age') AS INT)' para obtener la edad. Estructura un 'CASE WHEN' para definir los tramos y realiza la agregación 'SUM()' sobre las ventas." 
+            },
+            { 
+                id: 19, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Mobile vs Desktop Traffic Share', 
+                question: "The Product team requires metrics on mobile share of usage. Analyze browsing logs and calculate the exact percentage of events originating from mobile devices ('mobile') compared to desktop browsers ('desktop').", 
+                hint: "Proporción de Tráfico por Entorno Móvil vs Escritorio: El equipo de Producto exige métricas sobre la cuota de uso móvil. Analiza el historial de navegación y calcula el porcentaje exacto de eventos originados en dispositivos móviles ('mobile') en comparación con navegadores de escritorio ('desktop'). Pista técnica: Extrae el dispositivo desde 'metadata' JSON en 'event_logs'. Utiliza agregación condicional: 'COUNT(CASE WHEN device = 'mobile' THEN 1 END) * 100.0 / COUNT(*)'." 
+            },
+            { 
+                id: 20, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Efficient Pagination for High-Value Products', 
+                question: "Engineering is building the backend for the web application and needs catalog pagination. Display the 5 products for the third page of results (assuming 5 items per page) when sorting the full catalog in descending order by price.", 
+                hint: "Paginación Eficiente de Productos de Alto Valor: Sistemas está construyendo el backend de la aplicación web y requiere paginar el catálogo. Muestra los 5 productos de la tercera página de resultados (asumiendo páginas de 5 elementos cada una) cuando el catálogo completo se ordena de forma descendente según su precio. Pista técnica: Aplica las cláusulas de ordenamiento y desplazamiento 'ORDER BY price DESC LIMIT 5 OFFSET 10'." 
+            },
+            { 
+                id: 21, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Identity Consolidation for Contact Audit', 
+                question: "Compliance needs a unified list of unique emails for GDPR privacy auditing. Combine emails stored in the main user table with those recorded independently in system logs, ensuring zero duplicates.", 
+                hint: "Consolidación de Identidades para Auditoría de Contacto: Compliance requiere construir una lista unificada de emails únicos para auditoría de privacidad GDPR. Combina los correos almacenados en la tabla principal de usuarios con aquellos correos registrados de forma independiente en las trazas del sistema, garantizando cero duplicados. Pista técnica: Consolida los registros utilizando el operador de conjuntos 'UNION' (sin la palabra clave 'ALL' para forzar la eliminación automática de duplicados)." 
+            },
+            { 
+                id: 22, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Runner-Up Price in Electronics Tier', 
+                question: "Product Development wants to analyze the margin gap between the flagship product and its secondary competitor. Identify the second most expensive product belonging to the 'electronics' category.", 
+                hint: "Subcampeón de Precios en Gama Electrónica: Desarrollo de Producto desea evaluar la brecha de margen entre el artículo insignia y su competidor secundario. Identifica el segundo producto más costoso perteneciente a la categoría 'electronics'. Pista técnica: Filtra por la categoría solicitada, ordena de forma descendente por precio y selecciona el registro exacto usando 'ORDER BY price DESC LIMIT 1 OFFSET 1'." 
+            },
+            { 
+                id: 23, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Order Churn and Cancellation Rate by Country', 
+                question: "Quality Assurance seeks to measure regionalized logistical or payment failures. Calculate the exact percentage of cancelled orders ('status = 'cancelled'') out of total processed orders for each country.", 
+                hint: "Tasa de Abandono y Cancelación de Pedidos por País: Control de Calidad busca medir fallas logísticas o de pago regionalizadas. Calcula el porcentaje exacto de órdenes canceladas ('status = 'cancelled'') sobre el total absoluto de pedidos procesados para cada país. Pista técnica: Realiza un 'JOIN' entre 'users' y 'orders'. Agrupa por 'country' y calcula 'COUNT(CASE WHEN status = 'cancelled' THEN 1 END) * 100.0 / COUNT(*)'." 
+            },
+            { 
+                id: 24, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Exclusive Category Affinity', 
+                question: "Cross-Selling aims to discover users focused solely on technology while avoiding books. Find users who bought at least one product in 'electronics' category but NEVER purchased an item from 'books' category.", 
+                hint: "Afinidad Exclusiva de Categorías de Producto: Cross-Selling busca descubrir usuarios enfocados solo en tecnología pero alejados de la lectura. Encuentra a los usuarios que hayan comprado al menos un producto de la categoría 'electronics' pero que NUNCA hayan adquirido un artículo de la categoría 'books'. Pista técnica: Construye una subconsulta para usuarios con compras en 'electronics' y resta o descarta a los de 'books' usando la cláusula 'EXCEPT' o una condición 'NOT EXISTS'." 
+            },
+            { 
+                id: 25, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Average Platform Session Duration Metric', 
+                question: "The Product team wants to quantify average active time spent on the web platform. Extract session duration in seconds stored in audit logs and calculate average session duration in minutes.", 
+                hint: "Métrica de Permanencia Promedio en Plataforma: El equipo de Producto busca cuantificar el tiempo medio de permanencia activa en la web. Extrae la duración en segundos de las sesiones guardada en las trazas de auditoría y calcula el tiempo promedio de sesión expresado en minutos. Pista técnica: Procesa el atributo JSON mediante 'CAST(json_extract(metadata, '$.session_time_sec') AS REAL)'. Aplica 'AVG()' y divide entre 60 para convertir a minutos." 
+            },
+            { 
+                id: 26, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Dominant Gateway by Regional Market', 
+                question: "Treasury aims to renegotiate transaction fees with local payment processors. Determine the most used payment method (highest number of transactions) within each country.", 
+                hint: "Pasarela Dominante por Mercado Regional: Tesorería busca renegociar las tarifas con pasarelas de pago locales. Determina el método de pago más utilizado (con mayor número de transacciones) dentro de cada país. Pista técnica: Crea una CTE agrupadora por país y método de pago con su respectivo 'COUNT()'. Luego aplica la función analítica 'ROW_NUMBER() OVER (PARTITION BY country ORDER BY total DESC)' y filtra las filas con puesto 1." 
+            },
+            { 
+                id: 27, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Business Lines with Outstanding Profitability', 
+                question: "Finance Leadership is restructuring strategic inventory. Identify product categories that generated consolidated net revenue exceeding $5,000 USD considering completed transactions only.", 
+                hint: "Líneas de Negocio con Rentabilidad Sobresaliente: Dirección de Finanzas reestructurará el inventario estratégico. Identifica aquellas categorías de producto que hayan generado una facturación neta consolidada superior a $5,000 USD considerando solo transacciones completadas. Pista técnica: Une 'products' con 'order_items' y 'orders'. Agrupa por 'products.category' e impón la condición con la cláusula 'HAVING SUM((quantity * unit_price) - discount) > 5000'." 
+            },
+            { 
+                id: 28, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Conversion Lag Since Account Creation', 
+                question: "Growth aims to understand customer activation speed. Calculate the average number of days elapsed between customer account registration and their first successful order placement.", 
+                hint: "Tiempo de Conversión Desde la Creación de Cuenta: Growth busca entender la velocidad de activación del cliente. Calcula el número promedio de días que transcurren desde que un cliente se registra en la tienda hasta que efectúa exitosamente su primer pedido. Pista técnica: Calcula en una subconsulta la primera fecha de pedido por cliente 'MIN(order_date)'. Luego resta 'julianday(min_date) - julianday(signup_date)' y extrae el 'AVG()' global." 
+            },
+            { 
+                id: 29, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Monthly Net Revenue Trend', 
+                question: "Financial Planning requires tracking month-over-month sales dynamics. Generate a monthly report showing period (YYYY-MM), total net monthly billing, and monetary difference compared to the immediately preceding month.", 
+                hint: "Evolución Mensual de Facturación Neta: Planeación Financiera exige medir el comportamiento intermensual de ventas. Genera un reporte mensual que muestre el período (YYYY-MM), la facturación neta total del mes y la diferencia monetaria con respecto al mes inmediatamente anterior. Pista técnica: Consolida las ventas mensuales por 'strftime('%Y-%m', order_date)' dentro de una CTE. En la consulta principal calcula la variación restando la función analítica 'LAG(total_ventas) OVER (ORDER BY mes)'." 
+            },
+            { 
+                id: 30, 
+                level: 'Senior', 
+                points: 3,
+                title: 'Recovery of Customers with Initial Friction', 
+                question: "Customer Success wants to study conversion resilience. Find users whose very first historical order was cancelled but who subsequently completed at least one successful order.", 
+                hint: "Recuperación de Clientes con Fricción Inicial: Éxito del Cliente desea estudiar la resiliencia en la conversión. Encuentra a aquellos usuarios cuya primerísima orden en la historia haya sido cancelada pero que posteriormente hayan realizado al menos una compra completada exitosamente. Pista técnica: Utiliza 'ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY order_date ASC)' para identificar la primera orden de cada usuario y valida sus estados posteriores." 
+            },
+
+            // ==========================================
+            // LEAD (20 Exercises) - 5 pts each
+            // ==========================================
+            { 
+                id: 31, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Historical Purchase Sequence per Customer', 
+                question: "Sales wants to analyze customer maturity over time. Assign a sequential ordinal number (1 for first lifetime purchase, 2 for second, etc.) to each order per user, chronologically ordered.", 
+                hint: "Secuencia Histórica de Compras por Cliente: Comercial desea analizar la madurez del cliente en el tiempo. Asigna un ordinal secuencial (1 para la primera compra de su historia, 2 para la segunda, etc.) a cada pedido de cada usuario, ordenado cronológicamente. Pista técnica: Emplea la función analítica 'ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY order_date ASC) AS order_sequence'." 
+            },
+            { 
+                id: 32, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Day Interval Between Consecutive Orders', 
+                question: "Supply Chain needs to predict household replenishment cycles. Display order ID, user, current order date, and exact number of days elapsed since that user's previous order.", 
+                hint: "Intervalo Físico de Días Entre Pedidos Consecutivos: Cadena de Suministro desea predecir el ciclo de reabastecimiento de los hogares. Muestra el ID del pedido, el usuario, la fecha actual del pedido y la cantidad exacta de días transcurridos desde el pedido inmediatamente anterior de ese mismo usuario. Pista técnica: Usa la función de desfase 'LAG(order_date) OVER (PARTITION BY user_id ORDER BY order_date ASC)' y calcula la diferencia mediante 'julianday(order_date) - julianday(previous_date)'." 
+            },
+            { 
+                id: 33, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Cumulative Historical Spend Evolution', 
+                question: "Customer Service needs real-time history during calls. Display each order with date, billed amount, and running total of historical customer spending up to that transaction.", 
+                hint: "Evolución del Acumulado Histórico de Gasto: Atención al Cliente necesita ver el historial en tiempo real al atender llamadas. Muestra cada orden con su fecha, el importe desembolsado y la cifra acumulada histórica de gasto que el cliente lleva acumulada hasta esa transacción específica. Pista técnica: Calcula la sumatoria acumulativa con la ventana 'SUM(order_total) OVER (PARTITION BY user_id ORDER BY order_date ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)'." 
+            },
+            { 
+                id: 34, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Customer Commercial Value Quartiles', 
+                question: "Marketing will allocate tiered retention budgets. Divide all customers into 4 equal groups (quartiles 1 to 4) based on total platform spending, where 1 represents the highest financial contribution group.", 
+                hint: "Segmentación de Valor Comercial por Cuartiles: Mercadeo asignará presupuestos de retención diferenciados. Clasifica a la totalidad de clientes en 4 grupos homogéneos (cuartiles del 1 al 4) en función de su volumen total gastado en la plataforma, donde 1 representa al grupo de mayor aporte financiero. Pista técnica: Calcula primero el total gastado por usuario en una CTE y luego aplica la función analítica 'NTILE(4) OVER (ORDER BY total_spent DESC) AS quartile'." 
+            },
+            { 
+                id: 35, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Conversion Continuity in Daily Funnel', 
+                question: "Platform Optimization wants to audit checkout friction. Determine how many unique users completed the uninterrupted sequence ('page_view' -> 'add_to_cart' -> 'checkout_init') within the same browsing day.", 
+                hint: "Continuidad de Conversión en Embudo Diario: Optimización de Plataforma desea auditar la fricción de checkout. Determina cuántos usuarios únicos completaron la secuencia sin interrupciones ('page_view' -> 'add_to_cart' -> 'checkout_init') dentro del mismo día de navegación. Pista técnica: Analiza 'event_logs' agrupando por 'user_id' y fecha de evento. Verifica la presencia consecutiva de los tres eventos con 'LEAD()' o evaluando condicionales agregados en una CTE." 
+            },
+            { 
+                id: 36, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Continuous Dense Rank of Products by Category', 
+                question: "Sales wants to publish official rankings without rank gaps. Rank top-selling products within category by total units sold, ensuring tied top products leave rank 2 for the next item.", 
+                hint: "Escalafón Continuo de Productos por Categoría: Ventas desea publicar rankings oficiales sin vacíos jerárquicos. Clasifica los productos más vendidos dentro de su categoría según las unidades totales comercializadas, garantizando que si dos artículos empatan en el primer puesto, el siguiente ocupe la posición 2. Pista técnica: Aplica la función analítica de rango 'DENSE_RANK() OVER (PARTITION BY category ORDER BY total_units_sold DESC)'." 
+            },
+            { 
+                id: 37, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Flagship Item per Individual Order', 
+                question: "Logistics requires categorizing orders by primary component. Identify the product name and unit price of the highest valued single item within each purchase order.", 
+                hint: "Artículo Insignia por Orden Individual: Logística requiere categorizar los pedidos por su componente principal. Identifica el nombre y precio unitario del producto con el valor individual más elevado contenido dentro de cada orden de compra. Pista técnica: Utiliza 'ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY unit_price DESC)' dentro de una CTE y en la consulta principal filtra las filas con 'WHERE row_num = 1'." 
+            },
+            { 
+                id: 38, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Short-Term Moving Average Spend', 
+                question: "Financial Risk Prevention seeks to detect sudden spending anomalies. Calculate the moving average spend per customer considering current order and previous 2 orders.", 
+                hint: "Media Móvil de Consumo a Corto Plazo: Prevención de Riesgo Monetario busca detectar anomalías súbitas de gasto. Calcula la media móvil del importe transaccionado por cliente considerando la orden actual y las 2 órdenes inmediatamente precedentes. Pista técnica: Define el marco de la ventana analítica: 'AVG(order_amount) OVER (PARTITION BY user_id ORDER BY order_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)'." 
+            },
+            { 
+                id: 39, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Loyalty Financial Threshold Milestone', 
+                question: "Customer Loyalty will grant automated lifetime membership upon milestones. Identify exact date and order_id where each customer first exceeded $500 USD cumulative spend.", 
+                hint: "Hito de Umbral Financiero de Fidelización: Fidelización otorgará una membresía vitalicia automática al alcanzar ciertos hitos. Identifica la fecha exacta y el order_id con el que cada cliente superó por primera vez los $500 USD en consumo acumulado. Pista técnica: Calcula la suma acumulativa acumulada por cliente con 'SUM() OVER'. Encapsula en una CTE y filtra las filas donde el acumulado sea mayor o igual a 500, seleccionando la primera de cada usuario con 'ROW_NUMBER()'." 
+            },
+            { 
+                id: 40, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Spend Variance to Subsequent Purchase', 
+                question: "Business Intelligence analyzes order ticket deceleration patterns. Display for each order the monetary variance compared to the user's subsequent purchase amount.", 
+                hint: "Proyección y Disparidad con la Compra Subsecuente: Inteligencia Comercial analiza patrones de desaceleración de ticket. Muestra para cada orden la diferencia monetaria con respecto al valor que tendría la compra posterior realizada por ese mismo usuario. Pista técnica: Usa la función de anticipación 'LEAD(order_amount) OVER (PARTITION BY user_id ORDER BY order_date ASC)' y réstale el valor de la orden actual." 
+            },
+            { 
+                id: 41, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Retention Matrix by Registration Cohort', 
+                question: "Operations Leadership requires a retention matrix. Group users into cohorts by registration year and month, evaluating spend generated over 30, 60, and 90-day post-signup windows.", 
+                hint: "Matriz de Retención por Cohortes de Registro: Dirección Operativa exige una matriz de retención. Agrupa a los usuarios en cohortes por su año y mes de registro y evalúa el volumen de consumo generado por cada cohorte en los periodos de 30, 60 y 90 días posteriores a su ingreso. Pista técnica: Estructura una CTE para asociar a cada cliente su cohorte 'strftime('%Y-%m', signup_date)'. Cruza con sus compras y calcula la diferencia de días entre la orden y el registro para agrupar en tramos." 
+            },
+            { 
+                id: 42, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Relative Transaction Share of Total Spend', 
+                question: "Finance wants to quantify weight of each order relative to lifetime spending. Display percentage share of each order's monetary value over buyer's lifetime spend.", 
+                hint: "Aporte Relativo por Transacción al Consumo Total: Finanzas desea cuantificar el peso específico de cada pedido individual en el historial de un comprador. Muestra qué porcentaje representa el valor monetario de cada orden sobre el gasto histórico global acumulado por dicho cliente. Pista técnica: Calcula en el SELECT: '(order_amount * 100.0) / SUM(order_amount) OVER (PARTITION BY user_id)'." 
+            },
+            { 
+                id: 43, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Purchasing Velocity Acceleration Detection', 
+                question: "Growth identifies customers whose purchase frequency accelerates. Detect users whose day interval between last two purchases is at least 50% lower than previous interval.", 
+                hint: "Identificación de Aceleración en la Cadena de Compra: Growth identifica clientes cuya frecuencia se acelera espontáneamente. Detecta usuarios cuyo intervalo de días entre sus últimas dos compras sea al menos un 50% menor que el intervalo entre sus compras anteriores. Pista técnica: Encadena dos llamados a 'LAG()' con distintos desplazamientos: 'LAG(order_date, 1)' y 'LAG(order_date, 2)' para comparar las deltas de días transcurridos." 
+            },
+            { 
+                id: 44, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Suspicious High-Frequency Pattern Detection', 
+                question: "Cybersecurity needs to block stolen card fraud patterns. Find users who created 3 or more processed orders within a time span under 10 minutes.", 
+                hint: "Detección de Patrones de Alta Frecuencia Sospechosa: Ciberseguridad necesita bloquear patrones de ataques con tarjetas robadas. Encuentra aquellos usuarios que hayan generado 3 o más órdenes procesadas dentro de un lapso de tiempo inferior a 10 minutos. Pista técnica: Compara las fechas y horas usando 'LAG(order_date, 2) OVER (PARTITION BY user_id ORDER BY order_date)' midiendo la diferencia de minutos con las funciones de fecha." 
+            },
+            { 
+                id: 45, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Product Preference by Demographic Bracket', 
+                question: "Product Development wants to personalize home experience by age. Determine #1 top product by units sold across age brackets (<30, 30-50, >50).", 
+                hint: "Preferencia Relevante de Producto por Grupo Etario: Desarrollo de Producto desea personalizar el home web según la edad del visitante. Determina cuál es el producto número uno en unidades vendidas dentro de cada uno de los rangos de edad (<30, 30-50, >50). Pista técnica: Agrupa por rango de edad y producto en una CTE sumando unidades. Asigna 'ROW_NUMBER() OVER (PARTITION BY age_group ORDER BY total_units DESC)' y extrae el puesto 1 de cada segmento." 
+            },
+            { 
+                id: 46, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Variance Against Regional Benchmark', 
+                question: "Financial Strategy compares orders against regional trends. Display monetary variance of each order against average customer ticket in that country during that month.", 
+                hint: "Desviación Frente al Rendimiento Medio del Mercado: Estrategia Financiera compara compras contra la tendencia regional instantánea. Muestra para cada orden la desviación monetaria exacta frente al ticket promedio gastado en el mismo país durante ese mismo mes. Pista técnica: Obtén el promedio del mercado de la ventana: 'AVG(order_amount) OVER (PARTITION BY country, strftime('%Y-%m', order_date))' y réstalo del monto de la orden evaluada." 
+            },
+            { 
+                id: 47, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Pareto 80/20 Revenue Distribution Analysis', 
+                question: "Inventory Management applies Pareto rule. Determine cumulative revenue percentage contributed by products descendingly and identify items making up top 80%.", 
+                hint: "Análisis Pareto 80/20 sobre la Facturación Neta: Gestión de Inventarios aplicará la regla de Pareto. Determina el porcentaje acumulado de ingresos aportado por cada producto de forma descendente e identifica exactamente cuáles artículos conforman el 80% del negocio. Pista técnica: Calcula los ingresos por producto y aplica la suma acumulativa relativa: 'SUM(revenue) OVER (ORDER BY revenue DESC) * 100.0 / SUM(revenue) OVER ()'." 
+            },
+            { 
+                id: 48, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Session Boundary Touchpoints', 
+                question: "UX Analytics tracks session entry and exit events. For each session in 'event_logs', extract first executed event and final event before exit.", 
+                hint: "Puntos Extremos de Interacción en Sesiones Web: Análisis de Experiencia del Usuario rastrea el punto de partida y de salida. Para cada sesión en 'event_logs', extrae de forma limpia el primer evento ejecutado y el último evento realizado previo al abandono. Pista técnica: Utiliza las funciones analíticas 'FIRST_VALUE(event_type) OVER (PARTITION BY session_id ORDER BY timestamp)' y 'LAST_VALUE(...) OVER (... ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)'." 
+            },
+            { 
+                id: 49, 
+                level: 'Lead', 
+                points: 5,
+                title: 'RFM Customer Scoring and Segmentation', 
+                question: "Marketing will build RFM (Recency, Frequency, Monetary) model. Assign 1 to 5 score for each customer across key dimensions, 5 being best performance.", 
+                hint: "Puntuación y Segmentación RFM de Clientes: Mercadeo creará el modelo RFM (Recency, Frequency, Monetary). Asigna a cada cliente una puntuación del 1 al 5 para cada una de las tres variables clave, donde 5 sea el mejor desempeño. Pista técnica: Calcula la recencia, frecuencia y gasto por cliente en una CTE. Luego aplica la función 'NTILE(5) OVER' sobre cada una de las tres variables con su correspondiente ordenamiento." 
+            },
+            { 
+                id: 50, 
+                level: 'Lead', 
+                points: 5,
+                title: 'Critical Order State Transition Recovery', 
+                question: "Process Audit investigates workflow failures. Detect all orders transitioning directly from 'pending' to 'cancelled' skipping mandatory 'processing' stage.", 
+                hint: "Reconstrucción de Transiciones Críticas de Estado: Auditoría de Procesos investiga fallas en el flujo de pedidos. Detecta todas las órdenes que pasaron directamente del estado 'pending' al estado 'cancelled' omitiendo la etapa obligatoria de 'processing'. Pista técnica: Usa la función de ventana 'LAG(status) OVER (PARTITION BY order_id ORDER BY status_change_date)' para inspeccionar el estado previo de la orden." 
+            }
+        ];
+
+        // Persistent State Handling
+        let currentFilter = 'All';
+        let searchQuery = '';
+        let completedExercises = JSON.parse(localStorage.getItem('sql_wb_completed_50_v3')) || [];
+        let openedHints = JSON.parse(localStorage.getItem('sql_wb_hints_opened_50_v3')) || [];
+        let visibleHints = {};
+        let visibleCode = {};
+        let userNotes = JSON.parse(localStorage.getItem('sql_wb_notes_50_v3')) || {};
+
+        // Calculate Maximum Total Score dynamically
+        const totalPossibleScore = exercises.reduce((acc, curr) => acc + curr.points, 0); // 5*1 + 10*2 + 15*3 + 20*5 = 170
+
+        // Render UI Engine
+        function renderExercises() {
+            const container = document.getElementById('exercise-list');
+            const emptyState = document.getElementById('empty-state');
+            container.innerHTML = '';
+
+            const filtered = exercises.filter(ex => {
+                const matchesFilter = currentFilter === 'All' || ex.level === currentFilter;
+                const matchesSearch = ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      ex.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      ex.hint.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(ex => {
+                const isCompleted = completedExercises.includes(ex.id);
+                const isHintOpened = openedHints.includes(ex.id);
+                const showHint = !!visibleHints[ex.id];
+                const showCode = !!visibleCode[ex.id];
+                const savedQuery = userNotes[ex.id] || '';
+
+                // Score calculation for this item
+                const fullPoints = ex.points;
+                const earnedPoints = isCompleted ? (isHintOpened ? fullPoints / 2 : fullPoints) : 0;
+
+                const card = document.createElement('div');
+                card.className = `bg-[#0f172a] border rounded-2xl p-4 sm:p-5 transition-all duration-200 hover:border-[#334155] ${
+                    isCompleted ? 'border-emerald-500/30 bg-[#0d1f2d]' : 'border-[#1e293b]'
+                }`;
+
+                // Level Badge styling
+                let badgeClass = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+                if (ex.level === 'Junior') badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                if (ex.level === 'Mid-Level') badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+                if (ex.level === 'Senior') badgeClass = "bg-orange-500/10 text-orange-400 border-orange-500/20";
+                if (ex.level === 'Lead') badgeClass = "bg-purple-500/10 text-purple-400 border-purple-500/20";
+
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                        
+                        <!-- Left: Checkbox + Exercise Header + Business Scenario -->
+                        <div class="flex items-start gap-3.5 flex-1">
+                            <button onclick="toggleCompletion(${ex.id})" class="mt-0.5 shrink-0 active:scale-95 transition-transform" title="Mark as completed">
+                                ${isCompleted 
+                                    ? `<div class="w-5 h-5 rounded-md bg-emerald-500 text-slate-950 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-3.5 h-3.5 stroke-[3]"></i></div>`
+                                    : `<div class="w-5 h-5 rounded-md border border-slate-700 bg-slate-900 hover:border-slate-500 transition-colors"></div>`
+                                }
+                            </button>
+
+                            <div class="space-y-1.5 flex-1">
+                                <div class="flex items-center gap-2.5 flex-wrap">
+                                    <span class="text-xs font-mono font-semibold text-slate-500">#${ex.id.toString().padStart(2, '0')}</span>
+                                    <h3 class="text-sm font-bold text-slate-100 ${isCompleted ? 'line-through text-slate-400' : ''}">
+                                        ${ex.title}
+                                    </h3>
+                                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${badgeClass}">
+                                        ${ex.level} (${fullPoints} pts)
+                                    </span>
+                                    ${isCompleted ? `
+                                        <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                            +${earnedPoints} pts ${isHintOpened ? '(Hint used -50%)' : '(Full points)'}
+                                        </span>
+                                    ` : ''}
+                                </div>
+
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    ${ex.question}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Right Actions: View Hint & </> -->
+                        <div class="flex items-center gap-2 shrink-0 self-end sm:self-start">
+                            <button onclick="toggleHint(${ex.id})" 
+                                class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-800 bg-[#0b0f19] hover:bg-slate-800/60 text-slate-300 text-xs font-medium transition-all ${showHint ? 'border-amber-500/40 text-amber-300' : ''}">
+                                <i data-lucide="eye" class="w-3.5 h-3.5 ${showHint ? 'text-amber-400' : 'text-slate-400'}"></i>
+                                <span>${showHint ? 'Hide Hint' : (isHintOpened ? 'View Hint' : 'View Hint (-50% pts)')}</span>
+                            </button>
+
+                            <button onclick="toggleCode(${ex.id})" 
+                                class="p-1.5 rounded-xl border border-slate-800 bg-[#0b0f19] hover:bg-slate-800/60 text-slate-300 text-xs font-mono font-semibold transition-all ${showCode ? 'border-blue-500/40 text-blue-400' : ''}" title="Open SQL Scratchpad">
+                                <i data-lucide="code-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TECHNICAL HINT DRAWER -->
+                    <div class="${showHint ? 'block' : 'hidden'} mt-3.5 pt-3 border-t border-slate-800/80">
+                        <div class="flex items-start gap-2.5 bg-amber-500/10 border border-amber-500/20 text-amber-200/90 p-3 rounded-xl text-xs">
+                            <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                            <div>
+                                <span class="font-bold text-amber-300">Pista / Hint (Español):</span> ${ex.hint}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SQL SCRATCHPAD DRAWER -->
+                    <div class="${showCode ? 'block' : 'hidden'} mt-3.5 pt-3 border-t border-slate-800">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[11px] font-mono text-slate-400 flex items-center gap-1.5">
+                                <i data-lucide="terminal" class="w-3.5 h-3.5 text-blue-400"></i> Practice SQL Scratchpad:
+                            </span>
+                            <span class="text-[10px] text-slate-500">Saved in real-time</span>
+                        </div>
+                        <textarea oninput="saveNote(${ex.id}, this.value)" placeholder="Write your SQL query here to solve the business problem..."
+                            class="w-full h-28 bg-[#0b0f19] border border-slate-800 rounded-xl p-3 text-xs font-mono text-blue-300 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-y custom-scrollbar">${savedQuery}</textarea>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            lucide.createIcons();
+            updateProgressAndScore();
+        }
+
+        // Event Handlers
+        function toggleHint(id) {
+            visibleHints[id] = !visibleHints[id];
+            
+            // Mark hint as permanently opened for scoring penalty
+            if (visibleHints[id] && !openedHints.includes(id)) {
+                openedHints.push(id);
+                localStorage.setItem('sql_wb_hints_opened_50_v3', JSON.stringify(openedHints));
+            }
+
+            renderExercises();
+        }
+
+        function toggleCode(id) {
+            visibleCode[id] = !visibleCode[id];
+            renderExercises();
+        }
+
+        function toggleCompletion(id) {
+            if (completedExercises.includes(id)) {
+                completedExercises = completedExercises.filter(i => i !== id);
+            } else {
+                completedExercises.push(id);
+            }
+            localStorage.setItem('sql_wb_completed_50_v3', JSON.stringify(completedExercises));
+            renderExercises();
+        }
+
+        function saveNote(id, val) {
+            userNotes[id] = val;
+            localStorage.setItem('sql_wb_notes_50_v3', JSON.stringify(userNotes));
+        }
+
+        function updateProgressAndScore() {
+            // 1. Progress Metrics
+            const totalCount = exercises.length;
+            const completedCount = completedExercises.length;
+            const progressPercentage = Math.round((completedCount / totalCount) * 100);
+
+            document.getElementById('progress-text').innerText = `${completedCount} / ${totalCount} (${progressPercentage}%)`;
+            document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+
+            // 2. Global Score Metrics
+            let earnedScore = 0;
+            exercises.forEach(ex => {
+                if (completedExercises.includes(ex.id)) {
+                    const isHintOpened = openedHints.includes(ex.id);
+                    earnedScore += isHintOpened ? ex.points / 2 : ex.points;
+                }
+            });
+
+            const scorePercentage = Math.round((earnedScore / totalPossibleScore) * 100);
+
+            document.getElementById('score-text').innerText = `${earnedScore} / ${totalPossibleScore} pts (${scorePercentage}%)`;
+            document.getElementById('score-bar').style.width = `${scorePercentage}%`;
+        }
+
+        function setFilter(level) {
+            currentFilter = level;
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 shrink-0";
+            });
+
+            const activeBtn = document.getElementById(`btn-${level}`);
+            if (activeBtn) {
+                activeBtn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all bg-blue-600 text-white shadow-sm shrink-0";
+            }
+
+            renderExercises();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-bar').value;
+            renderExercises();
+        }
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderExercises();
+        });
+    </script>
+</body>
+</html>
