@@ -126,9 +126,12 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     pypdf \
     pyarrow \
     faker \
+    sdv \
+    ctgan \
+    be-great \
     pyxtension \
     docling \
-    Pillow
+    Pillow 
 
 # --- VISUALIZACIÓN DE DATOS Y DIAGRAMAS ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
