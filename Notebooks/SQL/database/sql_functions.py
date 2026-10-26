@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import os
+import pprint
 
 # 1. Función reutilizable para ejecutar SQL y retornar un DataFrame
 def ejecutar_sql(query: str, db_path: str = "ecommerce_estudio.db") -> pd.DataFrame:
@@ -53,3 +54,96 @@ def obtener_lista_tablas(db_path: str = "ecommerce_estudio.db") -> list[str]:
     
     conn.close()
     return tablas
+
+def obtener_columnas_tabla(nombre_tabla: str, db_path: str = "ecommerce_estudio.db") -> pd.DataFrame:
+    """
+    Consulta la estructura de una tabla específica utilizando PRAGMA table_info
+    y devuelve un DataFrame con el ID, nombre, tipo de dato, nulidad y clave primaria.
+    """
+    query = f"PRAGMA table_info({nombre_tabla});"
+    return ejecutar_sql(query, db_path)
+
+def mostrar_esquema_tablas(db_path: str = "ecommerce_estudio.db", como_diccionario: bool = False):
+    """
+    Muestra el esquema de la base de datos.
+    - Si como_diccionario=False: Imprime un listado limpio por consola en formato de texto.
+    - Si como_diccionario=True: Imprime y devuelve el esquema estructurado como un diccionario de Python.
+    """
+    tablas = obtener_lista_tablas(db_path)
+    
+    if como_diccionario:
+        esquema_dict = {}
+        for tabla in tablas:
+            df_cols = obtener_columnas_tabla(tabla, db_path)
+            columnas_info = {}
+            for _, row in df_cols.iterrows():
+                tipo = row['type']
+                if row['pk'] > 0:
+                    tipo += " (PK)"
+                if row['notnull'] == 1:
+                    tipo += " [NOT NULL]"
+                columnas_info[row['name']] = tipo
+            esquema_dict[tabla] = columnas_info
+        
+        pprint.pprint(esquema_dict)
+        return esquema_dict
+    else:
+        for tabla in tablas:
+            print(f"\n📂 Tabla: {tabla.upper()}")
+            print("-" * 40)
+            df_cols = obtener_columnas_tabla(tabla, db_path)
+            for _, row in df_cols.iterrows():
+                pk_str = " (PK)" if row['pk'] > 0 else ""
+                nn_str = " [NOT NULL]" if row['notnull'] == 1 else ""
+                print(f"  • {row['name']} : {row['type']}{pk_str}{nn_str}")
+
+
+import json
+
+
+def obtener_esquema_como_dataframe(
+    db_path: str = "ecommerce_estudio.db", como_json: bool = False
+) -> pd.DataFrame:
+  """Devuelve un DataFrame de Pandas con todo el esquema de la base de datos.
+
+  Configura Pandas para evitar cualquier tipo de truncamiento.
+  - Si como_json=False: Columnas -> tabla, columna, tipo
+  - Si como_json=True: Columnas -> tabla, columnas (en formato JSON)
+  """
+  # Configurar pandas para que no se trunque la salida
+  pd.set_option("display.max_rows", None)
+  pd.set_option("display.max_columns", None)
+  pd.set_option("display.max_colwidth", None)
+  pd.set_option("display.width", 1000)
+
+  tablas = obtener_lista_tablas(db_path)
+  registros = []
+
+  for tabla in tablas:
+    df_cols = obtener_columnas_tabla(tabla, db_path)
+
+    if como_json:
+      columnas_info = {}
+      for _, row in df_cols.iterrows():
+        tipo = row["type"]
+        if row["pk"] > 0:
+          tipo += " (PK)"
+        if row["notnull"] == 1:
+          tipo += " [NOT NULL]"
+        columnas_info[row["name"]] = tipo
+
+      registros.append({
+          "tabla": tabla,
+          "columnas": json.dumps(columnas_info, ensure_ascii=False),
+      })
+    else:
+      for _, row in df_cols.iterrows():
+        tipo = row["type"]
+        if row["pk"] > 0:
+          tipo += " (PK)"
+        if row["notnull"] == 1:
+          tipo += " [NOT NULL]"
+
+        registros.append({"tabla": tabla, "columna": row["name"], "tipo": tipo})
+
+  return pd.DataFrame(registros)
