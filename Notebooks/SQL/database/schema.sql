@@ -835,3 +835,47 @@ SELECT
     current_price AS unit_price
 FROM ShuffledProducts
 WHERE item_rank <= target_items;
+
+-- ==============================================================================
+-- PASO 1: GENERAR LOS 5,000 LOGS BASE EN LA TABLA
+-- ==============================================================================
+
+INSERT INTO activity_logs (user_id, action, metadata, created_at)
+WITH RECURSIVE 
+Config AS (
+    SELECT 5000 AS total_logs
+),
+EventTypes AS (
+    SELECT 1 AS id, 'LOGIN' AS action, '{"ip":"192.168.1.10","device":"mobile"}' AS meta UNION ALL
+    SELECT 2, 'LOGOUT', '{"session_duration_sec":1240}' UNION ALL
+    SELECT 3, 'VIEW_PRODUCT', '{"product_id":15,"source":"search"}' UNION ALL
+    SELECT 4, 'ADD_TO_CART', '{"product_id":15,"quantity":2}' UNION ALL
+    SELECT 5, 'REMOVE_FROM_CART', '{"product_id":15}' UNION ALL
+    SELECT 6, 'CHECKOUT_START', '{"cart_total":150.50}' UNION ALL
+    SELECT 7, 'PURCHASE_COMPLETE', '{"order_id":102,"payment_status":"SUCCESS"}' UNION ALL
+    SELECT 8, 'PASSWORD_RESET', '{"method":"email"}' UNION ALL
+    SELECT 9, 'PROFILE_UPDATE', '{"updated_fields":["country"]}'
+),
+LogIDs AS (
+    SELECT 1 AS l_id, total_logs FROM Config
+    UNION ALL
+    SELECT l_id + 1, total_logs FROM LogIDs WHERE l_id < total_logs
+)
+SELECT 
+    (SELECT user_id FROM users ORDER BY RANDOM() LIMIT 1) AS user_id,
+    e.action,
+    e.meta AS metadata,
+    DATETIME('2025-01-01 08:00:00', '+' || (ABS(RANDOM()) % 500) || ' days', '+' || (ABS(RANDOM()) % 86400) || ' seconds') AS created_at
+FROM LogIDs l
+JOIN EventTypes e ON e.id = (ABS(RANDOM()) % 9) + 1;
+
+
+-- ==============================================================================
+-- PASO 2: CLONAR EXACTAMENTE 5 REGISTROS YA GUARDADOS EN LA TABLA
+-- ==============================================================================
+
+INSERT INTO activity_logs (user_id, action, metadata, created_at)
+SELECT user_id, action, metadata, created_at
+FROM activity_logs
+ORDER BY RANDOM()
+LIMIT 5;
