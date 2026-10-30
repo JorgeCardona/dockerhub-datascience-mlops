@@ -4,7 +4,7 @@ import os
 import pprint
 
 # 1. Función reutilizable para ejecutar SQL y retornar un DataFrame
-def ejecutar_sql(query: str, db_path: str = "ecommerce_estudio.db") -> pd.DataFrame:
+def ejecutar_sql(query: str, db_path: str = "ecommerce.db") -> pd.DataFrame:
     """
     Ejecuta una consulta SQL en la base de datos SQLite especificada
     y devuelve los resultados formateados como un DataFrame de Pandas.
@@ -17,7 +17,7 @@ def ejecutar_sql(query: str, db_path: str = "ecommerce_estudio.db") -> pd.DataFr
         conn.close()
 
 # 2. Función para inicializar la base de datos con los datos de prueba
-def preparar_base_de_datos(sql_file_path: str = "schema.sql", db_path: str = "ecommerce_estudio.db"):
+def preparar_base_de_datos(sql_file_path: str = "schema.sql", db_path: str = "ecommerce.db"):
     """
     Lee un archivo .sql externo y lo ejecuta en la base de datos SQLite.
     """
@@ -39,7 +39,7 @@ def preparar_base_de_datos(sql_file_path: str = "schema.sql", db_path: str = "ec
     conn.close()
     print("Base de datos Generada, Correctamente a partir del archivo .sql")
 
-def obtener_lista_tablas(db_path: str = "ecommerce_estudio.db") -> list[str]:
+def obtener_lista_tablas(db_path: str = "ecommerce.db") -> list[str]:
     """
     Consulta sqlite_master y devuelve una lista con los nombres de todas las tablas.
     """
@@ -55,7 +55,7 @@ def obtener_lista_tablas(db_path: str = "ecommerce_estudio.db") -> list[str]:
     conn.close()
     return tablas
 
-def obtener_columnas_tabla(nombre_tabla: str, db_path: str = "ecommerce_estudio.db") -> pd.DataFrame:
+def obtener_columnas_tabla(nombre_tabla: str, db_path: str = "ecommerce.db") -> pd.DataFrame:
     """
     Consulta la estructura de una tabla específica utilizando PRAGMA table_info
     y devuelve un DataFrame con el ID, nombre, tipo de dato, nulidad y clave primaria.
@@ -63,7 +63,7 @@ def obtener_columnas_tabla(nombre_tabla: str, db_path: str = "ecommerce_estudio.
     query = f"PRAGMA table_info({nombre_tabla});"
     return ejecutar_sql(query, db_path)
 
-def mostrar_esquema_tablas(db_path: str = "ecommerce_estudio.db", como_diccionario: bool = False):
+def mostrar_esquema_tablas(db_path: str = "ecommerce.db", como_diccionario: bool = False):
     """
     Muestra el esquema de la base de datos.
     - Si como_diccionario=False: Imprime un listado limpio por consola en formato de texto.
@@ -102,7 +102,7 @@ import json
 
 
 def obtener_esquema_como_dataframe(
-    db_path: str = "ecommerce_estudio.db", como_json: bool = False
+    db_path: str = "ecommerce.db", como_json: bool = False
 ) -> pd.DataFrame:
   """Devuelve un DataFrame de Pandas con todo el esquema de la base de datos.
 
