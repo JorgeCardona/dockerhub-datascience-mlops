@@ -1,0 +1,331 @@
+"product_id","sku","name","category_id","price","stock","created_at"
+1,ELE-001,Wireless Noise-Canceling Headphones,1,199.99,45,2025-01-10 10:00:00.000
+2,ELE-002,Ultra HD Smart TV 55 Inch,1,499.99,15,2025-01-12 11:30:00.000
+3,ELE-003,Bluetooth Portable Speaker,1,39.99,120,2025-01-15 09:15:00.000
+4,ELE-004,"4K Action Camera",1,129.50,30,2025-01-18 14:20:00.000
+5,ELE-005,Smartwatch Series 5,1,249.00,60,2025-01-20 16:45:00.000
+6,ELE-006,Gaming Monitor 27-inch 144Hz,1,289.99,25,2025-01-22 08:00:00.000
+7,ELE-007,Wireless Charging Pad,1,19.99,200,2025-01-25 13:10:00.000
+8,ELE-008,Mechanical Gaming Keyboard,1,79.99,85,2025-01-28 15:30:00.000
+9,ELE-009,Ergonomic Wireless Mouse,1,29.99,110,2025-02-01 10:00:00.000
+10,ELE-010,"1080p Web Camera with Mic",1,49.95,90,2025-02-03 12:00:00.000
+11,ELE-011,Tablet 10-inch 64GB,1,179.99,40,2025-02-05 17:25:00.000
+12,ELE-012,E-Reader Waterproof,1,119.99,50,2025-02-08 11:15:00.000
+13,ELE-013,External SSD 1TB,1,99.99,75,2025-02-10 09:40:00.000
+14,ELE-014,USB-C Hub Multiport Adapter,1,34.99,150,2025-02-12 14:00:00.000
+15,ELE-015,VR Headset All-in-One,1,399.00,18,2025-02-15 16:10:00.000
+16,ELE-016,Wi-Fi 6 Mesh Router System,1,159.99,35,2025-02-18 10:50:00.000
+17,ELE-017,Drone with 4K Camera,1,299.99,22,2025-02-20 13:30:00.000
+18,ELE-018,Soundbar with Subwoofer,1,149.95,28,2025-02-22 15:00:00.000
+19,ELE-019,Smart Home Security Camera,1,59.99,95,2025-02-25 11:20:00.000
+20,ELE-020,Noise Isolating Earbuds,1,24.99,180,2025-02-28 08:45:00.000
+21,SOFT-001,Antivirus Security Suite 1-Year,2,39.99,999,2025-01-10 10:00:00.000
+22,SOFT-002,Office Productivity Suite License,2,149.99,999,2025-01-12 11:30:00.000
+23,SOFT-003,Video Editing Software Pro,2,299.00,999,2025-01-15 09:15:00.000
+24,SOFT-004,Photo Editing Software Suite,2,99.99,999,2025-01-18 14:20:00.000
+25,SOFT-005,Graphic Design Vector Editor,2,199.99,999,2025-01-20 16:45:00.000
+26,SOFT-006,Accounting & Invoicing Pro,2,119.50,999,2025-01-22 08:00:00.000
+27,SOFT-007,VPN Subscription 2-Year,2,79.99,999,2025-01-25 13:10:00.000
+28,SOFT-008,"3D Modeling & Animation Tool",2,499.00,999,2025-01-28 15:30:00.000
+29,SOFT-009,Password Manager Premium,2,29.99,999,2025-02-01 10:00:00.000
+30,SOFT-010,Audio Workstation DAW Software,2,199.00,999,2025-02-03 12:00:00.000
+31,SOFT-011,Cloud Storage 1TB Annual Plan,2,59.99,999,2025-02-05 17:25:00.000
+32,SOFT-012,Project Management Desktop App,2,89.99,999,2025-02-08 11:15:00.000
+33,SOFT-013,Database Management Studio,2,249.99,999,2025-02-10 09:40:00.000
+34,SOFT-014,IDE Code Editor Enterprise,2,129.00,999,2025-02-12 14:00:00.000
+35,SOFT-015,Language Learning Software,2,69.99,999,2025-02-15 16:10:00.000
+36,SOFT-016,PDF Editor & Converter Pro,2,49.99,999,2025-02-18 10:50:00.000
+37,SOFT-017,System Cleaner & Optimizer,2,19.99,999,2025-02-20 13:30:00.000
+38,SOFT-018,Screen Recorder & Streamer,2,39.95,999,2025-02-22 15:00:00.000
+39,SOFT-019,CAD Architectural Design Software,2,899.00,999,2025-02-25 11:20:00.000
+40,SOFT-020,Data Recovery Wizard,2,69.95,999,2025-02-28 08:45:00.000
+41,FUR-001,Ergonomic Mesh Office Chair,3,189.99,30,2025-01-10 10:00:00.000
+42,FUR-002,Adjustable Standing Desk,3,299.99,20,2025-01-12 11:30:00.000
+43,FUR-003,"3-Seater Fabric Sofa",3,549.00,10,2025-01-15 09:15:00.000
+44,FUR-004,Wooden Coffee Table,3,89.99,45,2025-01-18 14:20:00.000
+45,FUR-005,Bookshelf 5-Tier Industrial,3,119.99,25,2025-01-20 16:45:00.000
+46,FUR-006,Queen Size Bed Frame,3,249.50,15,2025-01-22 08:00:00.000
+47,FUR-007,Nightstand with Drawers,3,59.99,60,2025-01-25 13:10:00.000
+48,FUR-008,Dining Table Set for 4,3,349.99,12,2025-01-28 15:30:00.000
+49,FUR-009,Leather Reclining Armchair,3,279.00,18,2025-02-01 10:00:00.000
+50,FUR-010,TV Stand Console Unit,3,139.99,35,2025-02-03 12:00:00.000
+51,FUR-011,Bar Stool Adjustable Set of 2,3,99.99,40,2025-02-05 17:25:00.000
+52,FUR-012,Storage Ottoman Bench,3,49.99,50,2025-02-08 11:15:00.000
+53,FUR-013,Wardrobe Armoire Closet,3,399.99,8,2025-02-10 09:40:00.000
+54,FUR-014,Computer Desk with Shelves,3,109.99,30,2025-02-12 14:00:00.000
+55,FUR-015,Accent Lounge Chair,3,159.00,22,2025-02-15 16:10:00.000
+56,FUR-016,Filing Cabinet 3-Drawer,3,79.99,35,2025-02-18 10:50:00.000
+57,FUR-017,Entryway Shoe Rack Bench,3,45.99,65,2025-02-20 13:30:00.000
+58,FUR-018,Futon Convertible Sofa Bed,3,219.99,14,2025-02-22 15:00:00.000
+59,FUR-019,Vanity Table with Mirror,3,169.95,18,2025-02-25 11:20:00.000
+60,FUR-020,Patio Outdoor Dining Chair,3,69.99,50,2025-02-28 08:45:00.000
+61,ACC-001,Polarized Sunglasses,4,29.99,100,2025-01-10 10:00:00.000
+62,ACC-002,Genuine Leather Wallet,4,34.50,120,2025-01-12 11:30:00.000
+63,ACC-003,Stainless Steel Wristwatch,4,89.99,60,2025-01-15 09:15:00.000
+64,ACC-004,Travel Backpack 30L,4,49.99,80,2025-01-18 14:20:00.000
+65,ACC-005,Canvas Messenger Bag,4,39.99,70,2025-01-20 16:45:00.000
+66,ACC-006,Leather Dress Belt,4,24.99,150,2025-01-22 08:00:00.000
+67,ACC-007,Winter Beanie & Scarf Set,4,19.99,200,2025-01-25 13:10:00.000
+68,ACC-008,RFID Blocking Card Holder,4,14.99,250,2025-01-28 15:30:00.000
+69,ACC-009,Fashion Tote Bag,4,44.99,90,2025-02-01 10:00:00.000
+70,ACC-010,Baseball Cap Cotton,4,15.99,180,2025-02-03 12:00:00.000
+71,ACC-011,Silk Necktie Set,4,22.99,110,2025-02-05 17:25:00.000
+72,ACC-012,Compact Travel Umbrella,4,16.50,140,2025-02-08 11:15:00.000
+73,ACC-013,Keychain Leather Strap,4,9.99,300,2025-02-10 09:40:00.000
+74,ACC-014,Laptop Sleeve 15-inch,4,21.99,130,2025-02-12 14:00:00.000
+75,ACC-015,Travel Duffle Bag,4,59.99,45,2025-02-15 16:10:00.000
+76,ACC-016,Touchscreen Winter Gloves,4,18.99,160,2025-02-18 10:50:00.000
+77,ACC-017,Jewelry Organizer Case,4,27.99,85,2025-02-20 13:30:00.000
+78,ACC-018,Classic Aviator Sunglasses,4,32.00,95,2025-02-22 15:00:00.000
+79,ACC-019,Crossbody Phone Purse,4,25.99,115,2025-02-25 11:20:00.000
+80,ACC-020,Cufflinks Silver Plated,4,19.50,90,2025-02-28 08:45:00.000
+81,SPO-001,Yoga Mat Non-Slip 6mm,5,24.99,150,2025-01-10 10:00:00.000
+82,SPO-002,Dumbbell Set 20 lbs Adjustable,5,49.99,60,2025-01-12 11:30:00.000
+83,SPO-003,Resistance Bands Set of 5,5,15.99,200,2025-01-15 09:15:00.000
+84,SPO-004,Soccer Ball Match Size 5,5,22.50,110,2025-01-18 14:20:00.000
+85,SPO-005,Basketball Official Size,5,29.99,90,2025-01-20 16:45:00.000
+86,SPO-006,Tennis Racket Graphite,5,79.99,40,2025-01-22 08:00:00.000
+87,SPO-007,Running Shoes Lightweight,5,69.99,75,2025-01-25 13:10:00.000
+88,SPO-008,Fitness Activity Tracker,5,39.99,130,2025-01-28 15:30:00.000
+89,SPO-009,Jump Rope High Speed,5,9.99,250,2025-02-01 10:00:00.000
+90,SPO-010,Foam Roller Muscle Recovery,5,19.99,100,2025-02-03 12:00:00.000
+91,SPO-011,Cycling Helmet Breathable,5,34.99,65,2025-02-05 17:25:00.000
+92,SPO-012,Insulated Sports Water Bottle,5,18.50,180,2025-02-08 11:15:00.000
+93,SPO-013,Swimming Goggles Anti-Fog,5,14.99,140,2025-02-10 09:40:00.000
+94,SPO-014,Pull-Up Bar Doorway,5,29.95,55,2025-02-12 14:00:00.000
+95,SPO-015,Kettlebell 15 lbs,5,32.99,70,2025-02-15 16:10:00.000
+96,SPO-016,Boxing Gloves 12oz,5,39.99,50,2025-02-18 10:50:00.000
+97,SPO-017,Golf Balls Pack of 12,5,24.99,120,2025-02-20 13:30:00.000
+98,SPO-018,Badminton Set with Net,5,44.99,35,2025-02-22 15:00:00.000
+99,SPO-019,Exercise Ball 65cm,5,16.99,115,2025-02-25 11:20:00.000
+100,SPO-020,Gym Gloves Wrist Support,5,12.99,160,2025-02-28 08:45:00.000
+101,TOY-001,Building Blocks Set 500 Pcs,6,34.99,90,2025-01-10 10:00:00.000
+102,TOY-002,Remote Control Racing Car,6,29.99,75,2025-01-12 11:30:00.000
+103,TOY-003,Strategy Board Game Strategy,6,39.99,50,2025-01-15 09:15:00.000
+104,TOY-004,Jigsaw Puzzle 1000 Pieces,6,16.99,120,2025-01-18 14:20:00.000
+105,TOY-005,Teddy Bear Plush Toy 18 Inch,6,19.99,110,2025-01-20 16:45:00.000
+106,TOY-006,Wooden Chess Set Classic,6,24.99,65,2025-01-22 08:00:00.000
+107,TOY-007,Educational STEM Robot Kit,6,49.99,40,2025-01-25 13:10:00.000
+108,TOY-008,Card Game Family Edition,6,12.99,200,2025-01-28 15:30:00.000
+109,TOY-009,Dollhouse with Furniture,6,89.99,25,2025-02-01 10:00:00.000
+110,TOY-010,Play-Doh Clay Set 10-Pack,6,11.99,180,2025-02-03 12:00:00.000
+111,TOY-011,Die-Cast Toy Cars Pack of 5,6,9.99,150,2025-02-05 17:25:00.000
+112,TOY-012,Interactive Electronic Pet,6,22.99,85,2025-02-08 11:15:00.000
+113,TOY-013,Action Figure Superhero 12 inch,6,14.99,130,2025-02-10 09:40:00.000
+114,TOY-014,Kids Musical Keyboard Toy,6,27.50,60,2025-02-12 14:00:00.000
+115,TOY-015,Walkie Talkies for Kids Pair,6,25.99,95,2025-02-15 16:10:00.000
+116,TOY-016,Magnetic Tiles 60 Pcs Set,6,39.95,70,2025-02-18 10:50:00.000
+117,TOY-017,Drone Mini Indoor Toy,6,31.99,55,2025-02-20 13:30:00.000
+118,TOY-018,Water Blaster Soaker Gun,6,15.99,140,2025-02-22 15:00:00.000
+119,TOY-019,Kite Large Easy Fly,6,13.50,110,2025-02-25 11:20:00.000
+120,TOY-020,Rubik's Speed Cube 3x3,6,8.99,220,2025-02-28 08:45:00.000
+121,BKS-001,Hardcover Journal Notebook A5,7,12.99,200,2025-01-10 10:00:00.000
+122,BKS-002,Gel Pen Set 12 Colors,7,8.99,300,2025-01-12 11:30:00.000
+123,BKS-003,Sci-Fi Hardcover Novel Best-Seller,7,24.95,80,2025-01-15 09:15:00.000
+124,BKS-004,Self-Help Paperback Book,7,14.99,120,2025-01-18 14:20:00.000
+125,BKS-005,Fountain Pen Fine Nib,7,19.99,90,2025-01-20 16:45:00.000
+126,BKS-006,Weekly Planner Undated,7,11.50,150,2025-01-22 08:00:00.000
+127,BKS-007,Sticky Notes Pastel 12 Pads,7,6.99,400,2025-01-25 13:10:00.000
+128,BKS-008,Highlighters Chisel Tip 6 Pack,7,5.99,350,2025-01-28 15:30:00.000
+129,BKS-009,Cookbook Easy Recipes,7,21.99,70,2025-02-01 10:00:00.000
+130,BKS-010,World Atlas Hardcover,7,29.99,40,2025-02-03 12:00:00.000
+131,BKS-011,Colored Pencils 48 Pack,7,13.99,160,2025-02-05 17:25:00.000
+132,BKS-012,Desk Organizer Mesh Steel,7,15.99,110,2025-02-08 11:15:00.000
+133,BKS-013,Heavy Duty Stapler with Staples,7,10.99,130,2025-02-10 09:40:00.000
+134,BKS-014,Pencil Case Zipper Pouch,7,7.99,220,2025-02-12 14:00:00.000
+135,BKS-015,History Biography Paperback,7,16.50,85,2025-02-15 16:10:00.000
+136,BKS-016,Watercolor Paint Set 24 Colors,7,18.99,95,2025-02-18 10:50:00.000
+137,BKS-017,Correction Tape 6 Pack,7,4.99,280,2025-02-20 13:30:00.000
+138,BKS-018,Clipboard Storage Box,7,9.99,140,2025-02-22 15:00:00.000
+139,BKS-019,Calligraphy Set for Beginners,7,17.99,75,2025-02-25 11:20:00.000
+140,BKS-020,Adult Coloring Book Stress Relief,7,9.50,190,2025-02-28 08:45:00.000
+141,HAK-001,Stainless Steel Cookware Set 10-Piece,8,129.99,30,2025-01-10 10:00:00.000
+142,HAK-002,Programmable Coffee Maker 12-Cup,8,49.99,65,2025-01-12 11:30:00.000
+143,HAK-003,Digital Air Fryer 5-Quart,8,79.99,50,2025-01-15 09:15:00.000
+144,HAK-004,High-Speed Countertop Blender,8,59.95,40,2025-01-18 14:20:00.000
+145,HAK-005,Electric Kitchen Scale,8,14.99,150,2025-01-20 16:45:00.000
+146,HAK-006,Chef Knife 8-inch German Steel,8,34.99,85,2025-01-22 08:00:00.000
+147,HAK-007,Non-Stick Frying Pan 10-inch,8,24.99,110,2025-01-25 13:10:00.000
+148,HAK-008,Electric Kettle 1.7L,8,29.99,90,2025-01-28 15:30:00.000
+149,HAK-009,Food Storage Containers 20-Piece,8,26.99,130,2025-02-01 10:00:00.000
+150,HAK-010,Memory Foam Bath Mat,8,16.99,140,2025-02-03 12:00:00.000
+151,HAK-011,Microfiber Sheets Queen Set,8,22.99,100,2025-02-05 17:25:00.000
+152,HAK-012,Handheld Garment Steamer,8,32.50,70,2025-02-08 11:15:00.000
+153,HAK-013,Robot Vacuum Cleaner,8,189.99,25,2025-02-10 09:40:00.000
+154,HAK-014,Bamboo Cutting Board Set of 3,8,19.99,120,2025-02-12 14:00:00.000
+155,HAK-015,Silicone Cooking Utensils Set,8,21.99,105,2025-02-15 16:10:00.000
+156,HAK-016,Cast Iron Dutch Oven 5-Quart,8,54.99,35,2025-02-18 10:50:00.000
+157,HAK-017,Bed Pillow Cooling Gel Pair,8,39.99,80,2025-02-20 13:30:00.000
+158,HAK-018,Dish Drying Rack Stainless,8,27.99,95,2025-02-22 15:00:00.000
+159,HAK-019,Manual Can Opener Smooth Edge,8,9.99,200,2025-02-25 11:20:00.000
+160,HAK-020,French Press Coffee Maker 34oz,8,19.95,115,2025-02-28 08:45:00.000
+161,BPC-001,Ionic Hair Dryer 1875W,9,39.99,75,2025-01-10 10:00:00.000
+162,BPC-002,Electric Hair Straightener,9,29.99,85,2025-01-12 11:30:00.000
+163,BPC-003,Hydrating Face Moisturizer 50ml,9,18.50,140,2025-01-15 09:15:00.000
+164,BPC-004,Gentle Facial Cleanser 200ml,9,12.99,180,2025-01-18 14:20:00.000
+165,BPC-005,Electric Toothbrush Rechargeable,9,49.99,60,2025-01-20 16:45:00.000
+166,BPC-006,Beard Trimmer & Grooming Kit,9,34.99,90,2025-01-22 08:00:00.000
+167,BPC-007,Vitamin C Serum for Face,9,15.99,160,2025-01-25 13:10:00.000
+168,BPC-008,Makeup Brush Set 12 Pcs,9,16.99,130,2025-01-28 15:30:00.000
+169,BPC-009,Sunscreen SPF 50 Broad Spectrum,9,14.50,190,2025-02-01 10:00:00.000
+170,BPC-010,EAU De Parfum Spray 100ml,9,65.00,45,2025-02-03 12:00:00.000
+171,BPC-011,Exfoliating Body Scrub 300g,9,11.99,125,2025-02-05 17:25:00.000
+172,BPC-012,Argan Oil Hair Mask,9,13.99,110,2025-02-08 11:15:00.000
+173,BPC-013,Manicure & Pedicure Set,9,9.99,210,2025-02-10 09:40:00.000
+174,BPC-014,LED Makeup Mirror Lighted,9,24.99,80,2025-02-12 14:00:00.000
+175,BPC-015,Lip Balm Pack of 4,9,7.99,300,2025-02-15 16:10:00.000
+176,BPC-016,Hair Curling Wand,9,27.99,65,2025-02-18 10:50:00.000
+177,BPC-017,Deep Cleansing Clay Mask,9,14.99,105,2025-02-20 13:30:00.000
+178,BPC-018,Men's Aftershave Lotion,9,16.00,95,2025-02-22 15:00:00.000
+179,BPC-019,Water Flosser Cordless,9,38.99,70,2025-02-25 11:20:00.000
+180,BPC-020,Organic Body Wash 500ml,9,10.99,150,2025-02-28 08:45:00.000
+181,AUTO-001,OBD2 Scanner Diagnostic Tool,10,35.99,80,2025-01-10 10:00:00.000
+182,AUTO-002,Portable Car Tire Inflator 12V,10,29.99,100,2025-01-12 11:30:00.000
+183,AUTO-003,Car Dash Cam 1080p Front,10,49.99,65,2025-01-15 09:15:00.000
+184,AUTO-004,Car Phone Mount Air Vent,10,11.99,250,2025-01-18 14:20:00.000
+185,AUTO-005,Microfiber Car Cleaning Towels,10,14.99,200,2025-01-20 16:45:00.000
+186,AUTO-006,Car Battery Jump Starter Pack,10,69.99,45,2025-01-22 08:00:00.000
+187,AUTO-007,All-Weather Car Floor Mats,10,39.99,60,2025-01-25 13:10:00.000
+188,AUTO-008,Car Vacuum Cleaner Handheld,10,25.99,110,2025-01-28 15:30:00.000
+189,AUTO-009,Windshield Wiper Blades Pair,10,19.99,140,2025-02-01 10:00:00.000
+190,AUTO-010,LED Headlight Bulbs Conversion Kit,10,42.50,75,2025-02-03 12:00:00.000
+191,AUTO-011,Trunk Cargo Organizer Storage,10,22.99,90,2025-02-05 17:25:00.000
+192,AUTO-012,Leather Steering Wheel Cover,10,15.99,130,2025-02-08 11:15:00.000
+193,AUTO-013,Car Wash Soap & Wax 64oz,10,12.50,120,2025-02-10 09:40:00.000
+194,AUTO-014,Bluetooth FM Transmitter for Car,10,16.99,170,2025-02-12 14:00:00.000
+195,AUTO-015,Tire Pressure Gauge Digital,10,9.99,220,2025-02-15 16:10:00.000
+196,AUTO-016,Car Cover Waterproof Outdoor,10,45.99,35,2025-02-18 10:50:00.000
+197,AUTO-017,Seat Cushion Memory Foam,10,27.99,85,2025-02-20 13:30:00.000
+198,AUTO-018,Emergency Roadside Assistance Kit,10,34.99,50,2025-02-22 15:00:00.000
+199,AUTO-019,Car Scratch Remover Polish,10,13.99,160,2025-02-25 11:20:00.000
+200,AUTO-020,Windshield Sun Shade Foldable,10,12.99,180,2025-02-28 08:45:00.000
+201,PET-001,Orthopedic Dog Bed Large,11,49.99,45,2025-01-10 10:00:00.000
+202,PET-002,Interactive Cat Tree Tower,11,59.99,35,2025-01-12 11:30:00.000
+203,PET-003,me Dry Dog Food Grain-Free 15lbs,11,38.99,70,2025-01-15 09:15:00.000
+204,PET-004,Automatic Pet Water Fountain 2.5L,11,25.99,90,2025-01-18 14:20:00.000
+205,PET-005,Retractable Dog Leash 16ft,11,15.99,130,2025-01-20 16:45:00.000
+206,PET-006,Dog Chew Toys Pack of 5,11,12.99,180,2025-01-22 08:00:00.000
+207,PET-007,Cat Litter Box Hooded,11,29.99,50,2025-01-25 13:10:00.000
+208,PET-008,Pet Grooming Brush Deshedding,11,14.99,140,2025-01-28 15:30:00.000
+209,PET-009,Dog Harness No-Pull Medium,11,19.99,100,2025-02-01 10:00:00.000
+210,PET-010,Cat Feather Wand Toy Set,11,8.99,210,2025-02-03 12:00:00.000
+211,PET-011,Stainless Steel Pet Bowls Pair,11,11.50,160,2025-02-05 17:25:00.000
+212,PET-012,Pet Carrier Airline Approved,11,32.99,60,2025-02-08 11:15:00.000
+213,PET-013,Dog Training Pads 100-Count,11,24.99,110,2025-02-10 09:40:00.000
+214,PET-014,Cat Scratcher Lounge Board,11,16.99,95,2025-02-12 14:00:00.000
+215,PET-015,Dog Nail Clipper with Guard,11,9.99,170,2025-02-15 16:10:00.000
+216,PET-016,Pet Odor Stain Remover Spray,11,13.99,125,2025-02-18 10:50:00.000
+217,PET-017,Dog Dental Chews Treats 30-Pack,11,17.50,135,2025-02-20 13:30:00.000
+218,PET-018,Cat Soft Bed Donut Cuddler,11,22.99,75,2025-02-22 15:00:00.000
+219,PET-019,Pet Heating Pad Adjustable,11,27.99,40,2025-02-25 11:20:00.000
+220,PET-020,Dog Raincoat Waterproof,11,14.50,85,2025-02-28 08:45:00.000
+221,HLT-001,Multivitamin Daily Supplements 120 Tablets,12,19.99,150,2025-01-10 10:00:00.000
+222,HLT-002,Whey Protein Powder Chocolate 2lbs,12,34.99,80,2025-01-12 11:30:00.000
+223,HLT-003,Digital Upper Arm Blood Pressure Monitor,12,39.99,65,2025-01-15 09:15:00.000
+224,HLT-004,Pulse Oximeter Fingertip Oxygen Sensor,12,17.99,110,2025-01-18 14:20:00.000
+225,HLT-005,Infrared Forehead Thermometer,12,24.99,90,2025-01-20 16:45:00.000
+226,HLT-006,Omega 3 Fish Oil 1000mg Softgels,12,16.50,130,2025-01-22 08:00:00.000
+227,HLT-007,Probiotics 50 Billion CFU,12,22.99,100,2025-01-25 13:10:00.000
+228,HLT-008,Massage Gun Muscle Deep Tissue,12,69.99,45,2025-01-28 15:30:00.000
+229,HLT-009,Electric Heating Pad for Back Pain,12,26.99,85,2025-02-01 10:00:00.000
+230,HLT-010,First Aid Kit 100 Pieces,12,15.99,140,2025-02-03 12:00:00.000
+231,HLT-011,Posture Corrector Adjustable Brace,12,18.99,120,2025-02-05 17:25:00.000
+232,HLT-012,Essential Oil Diffuser Ultrasonic 300ml,12,21.99,95,2025-02-08 11:15:00.000
+233,HLT-013,Aromatherapy Lavender Essential Oil,12,9.99,200,2025-02-10 09:40:00.000
+234,HLT-014,Melatonin Sleep Aid 5mg 100 Gummies,12,12.99,160,2025-02-12 14:00:00.000
+235,HLT-015,Vitamin D3 5000 IU Softgels,12,11.50,175,2025-02-15 16:10:00.000
+236,HLT-016,Smart Body Fat Scale Bluetooth,12,29.99,70,2025-02-18 10:50:00.000
+237,HLT-017,Compression Knee Sleeve Pair,12,14.99,130,2025-02-20 13:30:00.000
+238,HLT-018,Collagen Peptides Powder Unflavored,12,27.99,75,2025-02-22 15:00:00.000
+239,HLT-019,Neck & Back Massager with Heat,12,44.99,50,2025-02-25 11:20:00.000
+240,HLT-020,Weekly Pill Organizer 7 Day,12,6.99,250,2025-02-28 08:45:00.000
+241,CLO-001,Men's Classic Crewneck T-Shirt Pack of 3,13,22.99,150,2025-01-10 10:00:00.000
+242,CLO-002,Women's High Waisted Leggings,13,19.99,180,2025-01-12 11:30:00.000
+243,CLO-003,Unisex Fleece Pullover Hoodie,13,34.99,95,2025-01-15 09:15:00.000
+244,CLO-004,Men's Slim Fit Denim Jeans,13,44.50,80,2025-01-18 14:20:00.000
+245,CLO-005,Women's Casual Denim Jacket,13,49.99,65,2025-01-20 16:45:00.000
+246,CLO-006,Cotton Ankle Socks Pack of 6,13,12.99,300,2025-01-22 08:00:00.000
+247,CLO-007,Men's Button Down Oxford Shirt,13,29.99,90,2025-01-25 13:10:00.000
+248,CLO-008,Women's V-Neck Summer Dress,13,32.99,70,2025-01-28 15:30:00.000
+249,CLO-009,Waterproof Winter Coat Hooded,13,89.99,40,2025-02-01 10:00:00.000
+250,CLO-010,Men's Athletic Sweatpants,13,27.99,110,2025-02-03 12:00:00.000
+251,CLO-011,Thermal Underwear Set Top & Bottom,13,24.99,85,2025-02-05 17:25:00.000
+252,CLO-012,Women's Knit Cardigan Sweater,13,36.50,75,2025-02-08 11:15:00.000
+253,CLO-013,Men's Polo Shirt Short Sleeve,13,21.99,130,2025-02-10 09:40:00.000
+254,CLO-014,Sports Bra High Impact,13,18.99,140,2025-02-12 14:00:00.000
+255,CLO-015,Leather Dress Shoes Classic,13,69.99,50,2025-02-15 16:10:00.000
+256,CLO-016,Casual Slip-On Canvas Shoes,13,29.99,100,2025-02-18 10:50:00.000
+257,CLO-017,Mens Swimming Trunks Quick Dry,13,17.99,120,2025-02-20 13:30:00.000
+258,CLO-018,Women's Trench Coat Double Breasted,13,74.99,35,2025-02-22 15:00:00.000
+259,CLO-019,Pajama Set Soft Viscose,13,26.99,90,2025-02-25 11:20:00.000
+260,CLO-020,Rain Jacket Windbreaker Light,13,39.95,60,2025-02-28 08:45:00.000
+261,OUT-001,Camping Tent 4-Person Waterproof,14,99.99,30,2025-01-10 10:00:00.000
+262,OUT-002,Sleeping Bag 3-Season,14,39.99,60,2025-01-12 11:30:00.000
+263,OUT-003,Portable Camping Stove Propane,14,27.50,75,2025-01-15 09:15:00.000
+264,OUT-004,LED Camping Lantern Rechargeable,14,18.99,120,2025-01-18 14:20:00.000
+265,OUT-005,Folding Camp Chair Lightweight,14,24.99,90,2025-01-20 16:45:00.000
+266,OUT-006,Stainless Steel BBQ Grill Tool Set,14,32.99,65,2025-01-22 08:00:00.000
+267,OUT-007,Garden Hose Expandable 50ft,14,29.99,85,2025-01-25 13:10:00.000
+268,OUT-008,Gardening Tool Set 7-Piece,14,22.99,100,2025-01-28 15:30:00.000
+269,OUT-009,Solar Pathway Lights Outdoor 8-Pack,14,25.99,110,2025-02-01 10:00:00.000
+270,OUT-010,Double Camping Hammock with Straps,14,21.99,130,2025-02-03 12:00:00.000
+271,OUT-011,Trekking Hiking Poles Pair,14,28.50,80,2025-02-05 17:25:00.000
+272,OUT-012,Outdoor Patio Umbrella 9ft,14,59.99,40,2025-02-08 11:15:00.000
+273,OUT-013,Heavy Duty Fire Pit 30 Inch,14,119.99,20,2025-02-10 09:40:00.000
+274,OUT-014,Electric Pressure Washer 2000 PSI,14,149.00,25,2025-02-12 14:00:00.000
+275,OUT-015,Pruning Shears Garden Pruner,14,12.99,160,2025-02-15 16:10:00.000
+276,OUT-016,Cooler Box 30-Quart Portable,14,44.99,50,2025-02-18 10:50:00.000
+277,OUT-017,Bug Zapper Outdoor Electric,14,31.99,70,2025-02-20 13:30:00.000
+278,OUT-018,Plant Waterer Self-Globe Set of 4,14,14.50,140,2025-02-22 15:00:00.000
+279,OUT-019,Picnic Blanket Waterproof Large,14,19.99,105,2025-02-25 11:20:00.000
+280,OUT-020,Outdoor String Lights 50ft,14,35.99,95,2025-02-28 08:45:00.000
+281,MUS-001,Acoustic Guitar 41-Inch Cutaway,15,149.99,25,2025-01-10 10:00:00.000
+282,MUS-002,Digital Piano 61 Key Keyboard,15,119.99,35,2025-01-12 11:30:00.000
+283,MUS-003,Electric Guitar Starter Kit,15,189.99,20,2025-01-15 09:15:00.000
+284,MUS-004,Soprano Ukulele Mahogany,15,42.50,60,2025-01-18 14:20:00.000
+285,MUS-005,Guitar Clip-On Digital Tuner,15,9.99,250,2025-01-20 16:45:00.000
+286,MUS-006,Adjustable Guitar Stand,15,16.99,120,2025-01-22 08:00:00.000
+287,MUS-007,Dynamic Vocal Microphone XLR,15,39.99,75,2025-01-25 13:10:00.000
+288,MUS-008,USB Studio Condenser Microphone,15,59.99,50,2025-01-28 15:30:00.000
+289,MUS-009,Over-Ear Studio Monitor Headphones,15,79.99,45,2025-02-01 10:00:00.000
+290,MUS-010,Acoustic Guitar Strings Light Gauge,15,6.99,300,2025-02-03 12:00:00.000
+291,MUS-011,Folding Music Stand with Bag,15,18.99,110,2025-02-05 17:25:00.000
+292,MUS-012,Electronic Drum Pad Practice Set,15,69.99,30,2025-02-08 11:15:00.000
+293,MUS-013,Violin Full Size 4/4 Starter Outfit,15,129.00,18,2025-02-10 09:40:00.000
+294,MUS-014,Harmonica Key of C 10-Hole,15,12.99,160,2025-02-12 14:00:00.000
+295,MUS-015,Guitar Capo Quick Change,15,7.99,220,2025-02-15 16:10:00.000
+296,MUS-016,Guitar Strap Woven Vintage,15,11.99,140,2025-02-18 10:50:00.000
+297,MUS-017,Guitar Picks Variety Pack of 24,15,5.99,400,2025-02-20 13:30:00.000
+298,MUS-018,Keyboard Bench X-Style Adjustable,15,29.99,55,2025-02-22 15:00:00.000
+299,MUS-019,Piano Sustain Pedal Universal,15,15.50,90,2025-02-25 11:20:00.000
+300,MUS-020,Compact 2-Channel Audio Interface,15,99.99,40,2025-02-28 08:45:00.000
+301,SKU-IND-001,Industrial 150A CNC Plasma Cutter,21,3450.00,5,2026-05-10 09:00:00.000
+302,SKU-IND-002,Heavy Duty Hydraulic Press 50-Ton,21,2800.00,4,2026-05-10 10:15:00.000
+303,SKU-IND-003,Automated Rotary Metal Lathe Machine,21,4200.00,3,2026-05-10 11:30:00.000
+304,SKU-IND-004,"3D Industrial Metal Printer Pro",21,8500.00,2,2026-05-10 12:45:00.000
+305,SKU-IND-005,High Precision Fiber Laser Welder,21,5100.00,6,2026-05-10 14:00:00.000
+306,SKU-IND-006,Pneumatic Conveyor Belt System 10m,21,1950.00,8,2026-05-10 15:15:00.000
+307,SKU-IND-007,Industrial Dust Collector Extractor 3KW,21,1250.00,10,2026-05-10 16:30:00.000
+308,SKU-IND-008,Automated Pallet Wrapping Machine,21,3100.00,5,2026-05-10 17:45:00.000
+309,SKU-IND-009,Heavy Industrial Screw Air Compressor,21,2600.00,7,2026-05-10 19:00:00.000
+310,SKU-IND-010,Motorized Material Handling Stacker 1.5T,21,2200.00,6,2026-05-10 20:15:00.000
+311,SKU-LAB-001,Desktop Scanning Electron Microscope,22,12800.00,2,2026-05-12 11:30:00.000
+312,SKU-LAB-002,High-Speed Refrigerated Centrifuge,22,3100.00,6,2026-05-12 12:45:00.000
+313,SKU-LAB-003,Analytical Precision Balance Scale 0.0001g,22,1450.00,12,2026-05-12 14:00:00.000
+314,SKU-LAB-004,Ultrapure Water Purification System,22,2900.00,4,2026-05-12 15:15:00.000
+315,SKU-LAB-005,UV-Vis Double Beam Spectrophotometer,22,4300.00,3,2026-05-12 16:30:00.000
+316,SKU-LAB-006,Microplate Reader & Washer Combo,22,5200.00,5,2026-05-12 17:45:00.000
+317,SKU-LAB-007,Orbital Shaker Incubator Constant Temp,22,1850.00,7,2026-05-12 19:00:00.000
+318,SKU-LAB-008,Rotary Evaporator Distillation Unit 5L,22,2400.00,5,2026-05-12 20:15:00.000
+319,SKU-LAB-009,Digital Ultrasonic Cleaner Sonicator 30L,22,980.00,15,2026-05-12 21:30:00.000
+320,SKU-LAB-010,Biological Safety Cabinet Class II A2,22,3800.00,4,2026-05-12 22:45:00.000
+321,SKU-MED-001,"24L Tabletop Steam Sterilizer Autoclave",23,890.00,12,2026-05-15 14:20:00.000
+322,SKU-MED-002,Multi-Parameter Patient Monitor 12-Inch,23,1650.00,8,2026-05-15 15:30:00.000
+323,SKU-MED-003,Portable Color Doppler Ultrasound Scanner,23,6400.00,3,2026-05-15 16:45:00.000
+324,SKU-MED-004,Automatic External Defibrillator AED,23,1200.00,10,2026-05-15 18:00:00.000
+325,SKU-MED-005,Hospital Hydraulic Operating Table,23,4100.00,4,2026-05-15 19:15:00.000
+326,SKU-MED-006,LED Shadowless Surgical Operation Light,23,2750.00,6,2026-05-15 20:30:00.000
+327,SKU-MED-007,Infusion Pump Volumetric Smart Touch,23,750.00,20,2026-05-15 21:45:00.000
+328,SKU-MED-008,Medical Grade Oxygen Concentrator 10L,23,920.00,15,2026-05-15 22:00:00.000
+329,SKU-MED-009,Electric Medical ICU Hospital Bed 5-Function,23,1850.00,7,2026-05-15 22:30:00.000
+330,SKU-MED-010,Digital ECG Machine 12-Lead Channel,23,1100.00,9,2026-05-15 23:00:00.000

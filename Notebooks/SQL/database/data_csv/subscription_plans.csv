@@ -1,0 +1,11 @@
+"plan_id","name","description","is_active"
+1,Free,Basic free tier,1
+2,Pro,Advanced tier for professionals,1
+3,Enterprise,Unlimited tier for enterprises,1
+4,Student,Discounted tier for students,1
+5,Non-Profit,Special tier for non-profit organizations,1
+6,Premium,Premium tier with exclusive features,1
+7,VIP,VIP tier with priority support and benefits,1
+8,Startup,Affordable tier for startups,1
+9,Corporate,Corporate tier for large organizations,1
+10,Government,Government tier with compliance features,1

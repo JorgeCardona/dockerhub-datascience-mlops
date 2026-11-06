@@ -1,0 +1,11 @@
+"status_id","code","display_name","description"
+1,ACTIVE,Active,Subscription is currently active and valid
+2,PAUSED,Paused,Subscription is temporarily paused by user
+3,CANCELLED,Cancelled,Subscription was cancelled and will not renew
+4,EXPIRED,Expired,Subscription period ended without renewal
+5,PENDING,Pending,Subscription is pending activation or payment
+6,SUSPENDED,Suspended,Subscription is suspended due to policy violations or payment issues
+7,TRIAL,Trial,Subscription is in a trial period with limited access
+8,UPGRADED,Upgraded,Subscription has been upgraded to a higher tier
+9,DOWNGRADED,Downgraded,Subscription has been downgraded to a lower tier
+10,RENEWED,Renewed,Subscription has been successfully renewed for another term

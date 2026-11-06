@@ -228,7 +228,14 @@ INSERT INTO billing_cycles (billing_cycle_id, code, display_name, duration_month
 INSERT INTO subscription_plans (plan_id, name, description) VALUES
 (1, 'Free', 'Basic free tier'),
 (2, 'Pro', 'Advanced tier for professionals'),
-(3, 'Enterprise', 'Unlimited tier for enterprises');
+(3, 'Enterprise', 'Unlimited tier for enterprises'),
+(4, 'Student', 'Discounted tier for students'),
+(5, 'Non-Profit', 'Special tier for non-profit organizations'),
+(6, 'Premium', 'Premium tier with exclusive features'),
+(7, 'VIP', 'VIP tier with priority support and benefits'),
+(8, 'Startup', 'Affordable tier for startups'),
+(9, 'Corporate', 'Corporate tier for large organizations'),
+(10, 'Government', 'Government tier with compliance features');
 
 INSERT INTO plan_prices (plan_id, billing_cycle_id, price) VALUES
 (1, 7, 0.00),
@@ -248,7 +255,12 @@ INSERT INTO subscription_statuses (status_id, code, display_name, description) V
 (2, 'PAUSED', 'Paused', 'Subscription is temporarily paused by user'),
 (3, 'CANCELLED', 'Cancelled', 'Subscription was cancelled and will not renew'),
 (4, 'EXPIRED', 'Expired', 'Subscription period ended without renewal'),
-(5, 'PENDING', 'Pending', 'Subscription is pending activation or payment');
+(5, 'PENDING', 'Pending', 'Subscription is pending activation or payment'),
+(6, 'SUSPENDED', 'Suspended', 'Subscription is suspended due to policy violations or payment issues'),
+(7, 'TRIAL', 'Trial', 'Subscription is in a trial period with limited access'),
+(8, 'UPGRADED', 'Upgraded', 'Subscription has been upgraded to a higher tier'),
+(9, 'DOWNGRADED', 'Downgraded', 'Subscription has been downgraded to a lower tier'),
+(10, 'RENEWED', 'Renewed', 'Subscription has been successfully renewed for another term');
 
 -- ==============================================================================
 -- 2. USERS (100 Registros)

@@ -1,0 +1,101 @@
+"user_id","first_name","last_name","email","country","client_type_id","referrer_id","profile_data","created_at"
+1,Carlos,Mendoza,carlos@email.com,ES,1,,"{""age"": 34, ""tags"": [""vip"", ""tech""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2025-01-15 00:00:00.000
+2,Ana,Gómez,ana@email.com,MX,1,1,"{""age"": 28, ""tags"": [""casual""], ""preferences"": {""theme"": ""light"", ""newsletter"": false}}",2025-02-01 00:00:00.000
+3,Luis,Fernández,luis@email.com,AR,1,1,"{""age"": 42, ""tags"": [""tech"", ""b2b""], ""preferences"": {""theme"": ""dark""}}",2025-02-10 00:00:00.000
+4,Sofia,Silva,sofia@email.com,CL,1,2,"{""age"": 22, ""tags"": [], ""preferences"": {""theme"": ""light"", ""newsletter"": true}}",2025-03-05 00:00:00.000
+5,Mateo,Rossi,mateo@email.com,ES,1,4,"{""age"": 50, ""tags"": [""vip""], ""preferences"": {""newsletter"": true}}",2025-03-20 00:00:00.000
+6,Elena,Rostova,elena@email.com,MX,1,,"{""age"": 31, ""tags"": [""b2b""], ""preferences"": {""theme"": ""dark""}}",2025-04-12 00:00:00.000
+7,David,Kim,david@email.com,US,1,3,"{""age"": 29, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2025-05-01 00:00:00.000
+8,Lucía,Morales,lucia@email.com,CO,1,,"{""age"": 37, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2025-06-15 00:00:00.000
+9,Alejandro,Torres,ale@email.com,ES,1,1,"{""age"": 45, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2025-06-18 00:00:00.000
+10,Valeria,Ríos,valeria@email.com,PE,1,2,"{""age"": 26, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2025-07-02 00:00:00.000
+11,Gabriel,Castro,gabriel@email.com,MX,1,,"{""age"": 33, ""tags"": [], ""preferences"": {""theme"": ""dark""}}",2025-07-10 00:00:00.000
+12,Camila,Vargas,camila@email.com,CO,1,5,"{""age"": 29, ""tags"": [""casual""], ""preferences"": {""newsletter"": false}}",2025-07-15 00:00:00.000
+13,Javier,López,javier@email.com,AR,1,,"{""age"": 39, ""tags"": [""b2b""], ""preferences"": {""theme"": ""light"", ""newsletter"": true}}",2025-07-22 00:00:00.000
+14,Mariana,Ortiz,mariana@email.com,ES,1,3,"{""age"": 31, ""tags"": [""tech"", ""vip""], ""preferences"": {""theme"": ""dark""}}",2025-08-01 00:00:00.000
+15,Diego,Navarro,diego@email.com,CL,1,,"{""age"": 24, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2025-08-05 00:00:00.000
+16,Isabel,Blanco,isabel@email.com,US,1,7,"{""age"": 52, ""tags"": [""b2b""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2025-08-12 00:00:00.000
+17,Tomas,Herrera,tomas@email.com,MX,1,2,"{""age"": 27, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2025-08-20 00:00:00.000
+18,Paula,Domínguez,paula@email.com,ES,1,,"{""age"": 36, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2025-09-01 00:00:00.000
+19,Martin,Delgado,martin@email.com,AR,1,9,"{""age"": 41, ""tags"": [""vip""], ""preferences"": {""newsletter"": true}}",2025-09-08 00:00:00.000
+20,Natalia,Peña,natalia@email.com,PE,1,,"{""age"": 30, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2025-09-15 00:00:00.000
+21,Andrés,Ruiz,andres@email.com,CO,1,12,"{""age"": 28, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2025-09-22 00:00:00.000
+22,Daniela,Guerrero,daniela@email.com,MX,1,,"{""age"": 35, ""tags"": [""b2b""], ""preferences"": {""theme"": ""light"", ""newsletter"": true}}",2025-10-01 00:00:00.000
+23,Hugo,Medina,hugo@email.com,ES,1,1,"{""age"": 48, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark""}}",2025-10-05 00:00:00.000
+24,Sara,Aguilar,sara@email.com,CL,1,,"{""age"": 23, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2025-10-12 00:00:00.000
+25,Fernando,Vega,fernando@email.com,AR,1,13,"{""age"": 44, ""tags"": [""b2b""], ""preferences"": {""newsletter"": false}}",2025-10-18 00:00:00.000
+26,Claudia,Benítez,claudia@email.com,US,1,,"{""age"": 38, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2025-10-25 00:00:00.000
+27,Ricardo,Parra,ricardo@email.com,MX,1,6,"{""age"": 32, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2025-11-01 00:00:00.000
+28,Patricia,Lara,patricia@email.com,ES,1,,"{""age"": 40, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2025-11-08 00:00:00.000
+29,Manuel,Bravo,manuel@email.com,CO,1,21,"{""age"": 27, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2025-11-15 00:00:00.000
+30,Carmen,Fuentes,carmen@email.com,PE,1,,"{""age"": 29, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2025-11-22 00:00:00.000
+31,Esteban,Molina,esteban@email.com,CL,1,4,"{""age"": 34, ""tags"": [], ""preferences"": {""newsletter"": true}}",2025-12-01 00:00:00.000
+32,Monica,Campos,monica@email.com,AR,1,,"{""age"": 46, ""tags"": [""b2b""], ""preferences"": {""theme"": ""light""}}",2025-12-05 00:00:00.000
+33,Francisco,Reyes,francisco@email.com,MX,1,11,"{""age"": 31, ""tags"": [""tech"", ""vip""], ""preferences"": {""theme"": ""dark""}}",2025-12-10 00:00:00.000
+34,Beatriz,Santamaría,beatriz@email.com,ES,1,,"{""age"": 53, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2025-12-15 00:00:00.000
+35,Gonzalo,Ibáñez,gonzalo@email.com,US,1,16,"{""age"": 26, ""tags"": [""casual""], ""preferences"": {""newsletter"": false}}",2025-12-20 00:00:00.000
+36,Raquel,Cortés,raquel@email.com,CO,1,,"{""age"": 37, ""tags"": [""b2b""], ""preferences"": {""theme"": ""dark""}}",2026-01-05 00:00:00.000
+37,Adrián,Gallego,adrian@email.com,ES,1,28,"{""age"": 30, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-01-12 00:00:00.000
+38,Sonia,Marin,sonia@email.com,MX,1,,"{""age"": 42, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-01-18 00:00:00.000
+39,Marcos,Garrido,marcos@email.com,AR,1,19,"{""age"": 25, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2026-01-25 00:00:00.000
+40,Alicia,Vidal,alicia@email.com,CL,1,,"{""age"": 33, ""tags"": [""casual""], ""preferences"": {""theme"": ""dark""}}",2026-02-01 00:00:00.000
+41,Emilio,Santos,emilio@email.com,PE,1,30,"{""age"": 47, ""tags"": [""b2b""], ""preferences"": {""newsletter"": true}}",2026-02-08 00:00:00.000
+42,Gloria,Calvo,gloria@email.com,ES,1,,"{""age"": 39, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-02-14 00:00:00.000
+43,Guillermo,Cano,guillermo@email.com,US,1,26,"{""age"": 28, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark""}}",2026-02-20 00:00:00.000
+44,Inés,Crespo,ines@email.com,MX,1,,"{""age"": 32, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2026-03-01 00:00:00.000
+45,Jaime,Pastor,jaime@email.com,CO,1,29,"{""age"": 36, ""tags"": [""casual""], ""preferences"": {""newsletter"": false}}",2026-03-08 00:00:00.000
+46,Lorena,Sainz,lorena@email.com,AR,1,,"{""age"": 41, ""tags"": [""tech"", ""b2b""], ""preferences"": {""theme"": ""dark""}}",2026-03-15 00:00:00.000
+47,Xavier,Soler,xavier@email.com,ES,1,37,"{""age"": 29, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2026-03-22 00:00:00.000
+48,Verónica,Esteban,veronica@email.com,CL,1,,"{""age"": 35, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-04-01 00:00:00.000
+49,Samuel,Márquez,samuel@email.com,MX,1,33,"{""age"": 27, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-04-10 00:00:00.000
+50,Nuria,Polo,nuria@email.com,PE,1,,"{""age"": 44, ""tags"": [""casual""], ""preferences"": {""theme"": ""dark""}}",2026-04-18 00:00:00.000
+51,John,Smith,john.smith@email.com,US,2,7,"{""age"": 36, ""tags"": [""vip"", ""tech""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-04-20 00:00:00.000
+52,Emily,Johnson,emily.j@email.com,CA,1,,"{""age"": 29, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2026-04-22 00:00:00.000
+53,Michael,Brown,mbrown@email.com,US,3,51,"{""age"": 45, ""tags"": [""b2b""], ""preferences"": {""newsletter"": true}}",2026-04-25 00:00:00.000
+54,Sophie,Dubois,sophie.d@email.com,FR,1,,"{""age"": 31, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2026-04-28 00:00:00.000
+55,Lukas,Weber,l.weber@email.com,DE,2,54,"{""age"": 40, ""tags"": [""vip""], ""preferences"": {""theme"": ""light"", ""newsletter"": true}}",2026-05-02 00:00:00.000
+56,Oliver,Taylor,oliver.t@email.com,GB,1,16,"{""age"": 27, ""tags"": [], ""preferences"": {""theme"": ""dark""}}",2026-05-05 00:00:00.000
+57,Kenji,Sato,kenji.sato@email.com,JP,4,,"{""age"": 38, ""tags"": [""tech"", ""vip""], ""preferences"": {""theme"": ""dark"", ""newsletter"": false}}",2026-05-08 00:00:00.000
+58,Min-jun,Kim,minjun.kim@email.com,KR,1,57,"{""age"": 25, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-05-12 00:00:00.000
+59,Wei,Zhang,wei.zhang@email.com,CN,3,,"{""age"": 42, ""tags"": [""b2b""], ""preferences"": {""newsletter"": true}}",2026-05-15 00:00:00.000
+60,Aarav,Sharma,aarav.s@email.com,IN,1,58,"{""age"": 30, ""tags"": [""casual""], ""preferences"": {""theme"": ""dark""}}",2026-05-18 00:00:00.000
+61,Liam,Wilson,liam.w@email.com,CA,1,,"{""age"": 33, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2026-05-20 00:00:00.000
+62,Emma,Davis,edavis@email.com,US,2,51,"{""age"": 35, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-05-22 00:00:00.000
+63,Lucas,Bernard,lucas.b@email.com,FR,1,,"{""age"": 28, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2026-05-25 00:00:00.000
+64,Mia,Müller,m.muller@email.com,DE,1,55,"{""age"": 26, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2026-05-29 00:00:00.000
+65,James,Evans,james.e@email.com,GB,3,,"{""age"": 49, ""tags"": [""b2b""], ""preferences"": {""newsletter"": false}}",2026-06-01 00:00:00.000
+66,Yui,Takahashi,yui.t@email.com,JP,1,57,"{""age"": 24, ""tags"": [], ""preferences"": {""theme"": ""light"", ""newsletter"": true}}",2026-06-04 00:00:00.000
+67,Ji-woo,Park,jiwoo.p@email.com,KR,2,,"{""age"": 31, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark""}}",2026-06-08 00:00:00.000
+68,Li,Wang,li.wang@email.com,CN,1,59,"{""age"": 37, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-06-11 00:00:00.000
+69,Priya,Patel,ppatel@email.com,IN,1,,"{""age"": 29, ""tags"": [""casual""], ""preferences"": {""newsletter"": true}}",2026-06-15 00:00:00.000
+70,Noah,Miller,noahm@email.com,US,1,62,"{""age"": 32, ""tags"": [], ""preferences"": {""theme"": ""dark""}}",2026-06-18 00:00:00.000
+71,Olivia,Tremblay,olivia.t@email.com,CA,4,,"{""age"": 44, ""tags"": [""vip""], ""preferences"": {""theme"": ""light""}}",2026-06-22 00:00:00.000
+72,Antoine,Moreau,a.moreau@email.com,FR,1,63,"{""age"": 39, ""tags"": [""b2b""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-06-25 00:00:00.000
+73,Hannah,Schneider,h.schneider@email.com,DE,1,,"{""age"": 27, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-06-28 00:00:00.000
+74,Alexander,Wright,alex.w@email.com,GB,2,56,"{""age"": 34, ""tags"": [""vip"", ""tech""], ""preferences"": {""theme"": ""dark""}}",2026-07-01 00:00:00.000
+75,Ren,Tanaka,ren.t@email.com,JP,1,,"{""age"": 41, ""tags"": [], ""preferences"": {""newsletter"": false}}",2026-07-04 00:00:00.000
+76,Seo-jun,Lee,seojun.l@email.com,KR,3,67,"{""age"": 46, ""tags"": [""b2b""], ""preferences"": {""theme"": ""dark""}}",2026-07-08 00:00:00.000
+77,Hao,Liu,hao.liu@email.com,CN,1,,"{""age"": 30, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2026-07-11 00:00:00.000
+78,Ananya,Rao,ananya.r@email.com,IN,1,60,"{""age"": 26, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-07-15 00:00:00.000
+79,Ethan,Anderson,e.anderson@email.com,US,1,,"{""age"": 37, ""tags"": [], ""preferences"": {""theme"": ""light""}}",2026-07-18 00:00:00.000
+80,Charlotte,Roy,charlotte.r@email.com,CA,2,71,"{""age"": 33, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark""}}",2026-07-22 00:00:00.000
+81,Camille,Girard,c.girard@email.com,FR,1,,"{""age"": 30, ""tags"": [""casual""], ""preferences"": {""newsletter"": true}}",2026-07-25 00:00:00.000
+82,Finn,Fischer,f.fischer@email.com,DE,1,73,"{""age"": 23, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-07-29 00:00:00.000
+83,Charlotte,Green,c.green@email.com,GB,1,,"{""age"": 38, ""tags"": [], ""preferences"": {""theme"": ""dark""}}",2026-08-01 00:00:00.000
+84,Haruto,Watanabe,h.watanabe@email.com,JP,2,75,"{""age"": 29, ""tags"": [""vip""], ""preferences"": {""theme"": ""light"", ""newsletter"": true}}",2026-08-05 00:00:00.000
+85,Do-yun,Choi,doyun.c@email.com,KR,1,,"{""age"": 35, ""tags"": [""casual""], ""preferences"": {""theme"": ""dark""}}",2026-08-08 00:00:00.000
+86,Ming,Chen,ming.chen@email.com,CN,1,77,"{""age"": 28, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-08-12 00:00:00.000
+87,Rohan,Gupta,rohan.g@email.com,IN,3,,"{""age"": 43, ""tags"": [""b2b""], ""preferences"": {""newsletter"": false}}",2026-08-15 00:00:00.000
+88,Benjamin,Thomas,ben.t@email.com,US,1,79,"{""age"": 31, ""tags"": [], ""preferences"": {""theme"": ""dark""}}",2026-08-18 00:00:00.000
+89,Amelia,Gagnon,a.gagnon@email.com,CA,1,,"{""age"": 27, ""tags"": [""casual""], ""preferences"": {""theme"": ""light"", ""newsletter"": true}}",2026-08-22 00:00:00.000
+90,Louis,Roux,louis.roux@email.com,FR,2,81,"{""age"": 36, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark""}}",2026-08-25 00:00:00.000
+91,Jonas,Meyer,j.meyer@email.com,DE,1,,"{""age"": 41, ""tags"": [""b2b""], ""preferences"": {""theme"": ""light""}}",2026-08-29 00:00:00.000
+92,Amelia,Baker,a.baker@email.com,GB,1,83,"{""age"": 25, ""tags"": [""tech""], ""preferences"": {""newsletter"": true}}",2026-09-02 00:00:00.000
+93,Mei,Ito,mei.ito@email.com,JP,1,,"{""age"": 33, ""tags"": [], ""preferences"": {""theme"": ""dark""}}",2026-09-05 00:00:00.000
+94,Ha-jun,Jung,hajun.j@email.com,KR,1,85,"{""age"": 30, ""tags"": [""tech""], ""preferences"": {""theme"": ""light""}}",2026-09-08 00:00:00.000
+95,Yang,Yang,yang.yang@email.com,CN,2,,"{""age"": 39, ""tags"": [""vip""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-09-12 00:00:00.000
+96,Vihaan,Nair,vihaan.n@email.com,IN,1,87,"{""age"": 28, ""tags"": [""casual""], ""preferences"": {""theme"": ""light""}}",2026-09-15 00:00:00.000
+97,Lucas,White,lwhite@email.com,US,1,,"{""age"": 34, ""tags"": [""tech""], ""preferences"": {""theme"": ""dark""}}",2026-09-18 00:00:00.000
+98,Ella,Côté,ella.cote@email.com,CA,1,89,"{""age"": 22, ""tags"": [], ""preferences"": {""newsletter"": false}}",2026-09-22 00:00:00.000
+99,Gabriel,David,g.david@email.com,FR,3,,"{""age"": 48, ""tags"": [""b2b""], ""preferences"": {""theme"": ""light""}}",2026-09-25 00:00:00.000
+100,Mia,Hoffmann,m.hoffmann@email.com,DE,1,91,"{""age"": 29, ""tags"": [""casual""], ""preferences"": {""theme"": ""dark"", ""newsletter"": true}}",2026-09-28 00:00:00.000

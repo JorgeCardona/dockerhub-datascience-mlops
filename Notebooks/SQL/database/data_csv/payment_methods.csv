@@ -1,0 +1,11 @@
+"payment_method_id","code","display_name","is_active"
+1,CREDIT_CARD,Credit Card,1
+2,DEBIT_CARD,Debit Card,1
+3,PAYPAL,PayPal,1
+4,BANK_TRANSFER,Bank Transfer,1
+5,CASH_ON_DELIVERY,Cash on Delivery,1
+6,APPLE_PAY,Apple Pay,1
+7,GOOGLE_PAY,Google Pay,1
+8,BITCOIN,Bitcoin,1
+9,ETHEREUM,Ethereum,1
+10,STRIPE,Stripe,1

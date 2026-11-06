@@ -1,0 +1,8 @@
+"billing_cycle_id","code","display_name","duration_months"
+1,WEEKLY,Weekly,0
+2,MONTHLY,Monthly,1
+3,BIMONTHLY,Bimonthly,2
+4,QUARTERLY,Quarterly,3
+5,SEMESTRAL,Semestral,6
+6,ANNUAL,Annual,12
+7,INDEFINITE,Indefinite / Ongoing,0

@@ -1,0 +1,8 @@
+"status_id","code","description"
+1,PENDING,"Order created, awaiting payment"
+2,PAID,Payment confirmed
+3,SHIPPED,Order dispatched to customer
+4,COMPLETED,Order delivered successfully
+5,CANCELLED,Order cancelled
+6,REFUNDED,Order refunded to customer
+7,FAILED,Payment failed or order could not be processed

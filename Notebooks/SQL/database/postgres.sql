@@ -228,7 +228,14 @@ INSERT INTO billing_cycles (billing_cycle_id, code, display_name, duration_month
 INSERT INTO subscription_plans (plan_id, name, description) VALUES
 (1, 'Free', 'Basic free tier'),
 (2, 'Pro', 'Advanced tier for professionals'),
-(3, 'Enterprise', 'Unlimited tier for enterprises');
+(3, 'Enterprise', 'Unlimited tier for enterprises'),
+(4, 'Student', 'Discounted tier for students'),
+(5, 'Non-Profit', 'Special tier for non-profit organizations'),
+(6, 'Premium', 'Premium tier with exclusive features'),
+(7, 'VIP', 'VIP tier with priority support and benefits'),
+(8, 'Startup', 'Affordable tier for startups'),
+(9, 'Corporate', 'Corporate tier for large organizations'),
+(10, 'Government', 'Government tier with compliance features');
 
 INSERT INTO plan_prices (plan_id, billing_cycle_id, price) VALUES
 (1, 7, 0.00),
@@ -248,7 +255,12 @@ INSERT INTO subscription_statuses (status_id, code, display_name, description) V
 (2, 'PAUSED', 'Paused', 'Subscription is temporarily paused by user'),
 (3, 'CANCELLED', 'Cancelled', 'Subscription was cancelled and will not renew'),
 (4, 'EXPIRED', 'Expired', 'Subscription period ended without renewal'),
-(5, 'PENDING', 'Pending', 'Subscription is pending activation or payment');
+(5, 'PENDING', 'Pending', 'Subscription is pending activation or payment'),
+(6, 'SUSPENDED', 'Suspended', 'Subscription is suspended due to policy violations or payment issues'),
+(7, 'TRIAL', 'Trial', 'Subscription is in a trial period with limited access'),
+(8, 'UPGRADED', 'Upgraded', 'Subscription has been upgraded to a higher tier'),
+(9, 'DOWNGRADED', 'Downgraded', 'Subscription has been downgraded to a lower tier'),
+(10, 'RENEWED', 'Renewed', 'Subscription has been successfully renewed for another term');
 
 -- ==============================================================================
 -- 2. USERS (100 Registros)
@@ -852,11 +864,61 @@ FROM LogIDs l
 JOIN EventTypes e ON e.id = (FLOOR(RANDOM() * 9) + 1)::INT;
 
 -- ==============================================================================
--- PASO 2: CLONAR EXACTAMENTE 5 REGISTROS YA GUARDADOS EN LA TABLA
+-- PASO 2: CLONAR EXACTAMENTE 5 REGISTROS YA GUARDADOS (CORREGIDO CON CTE)
 -- ==============================================================================
 
+WITH random_rows_to_clone AS (
+    SELECT user_id, action, metadata, created_at
+    FROM activity_logs
+    ORDER BY RANDOM()
+    LIMIT 5
+)
 INSERT INTO activity_logs (user_id, action, metadata, created_at)
 SELECT user_id, action, metadata, created_at
-FROM activity_logs
-ORDER BY RANDOM()
-LIMIT 5;
+FROM random_rows_to_clone;
+
+-- ==============================================================================
+-- GENERACIÓN DE 1,000 SUSCRIPCIONES CON DISTRIBUCIÓN REAL Y CONTROLADA
+-- ==============================================================================
+
+INSERT INTO user_subscriptions (user_id, price_id, status_id, start_date, end_date, auto_renew, created_at)
+WITH 
+-- Numeramos a todos los usuarios disponibles en la base de datos
+NumberedUsers AS (
+    SELECT user_id, ROW_NUMBER() OVER (ORDER BY user_id) as u_idx, COUNT(*) OVER() as total_users
+    FROM users
+),
+-- Numeramos los planes de precios
+NumberedPrices AS (
+    SELECT price_id, ROW_NUMBER() OVER (ORDER BY price_id) as p_idx, COUNT(*) OVER() as total_prices
+    FROM plan_prices
+),
+-- Numeramos los estados de suscripción
+NumberedStatuses AS (
+    SELECT status_id, ROW_NUMBER() OVER (ORDER BY status_id) as s_idx, COUNT(*) OVER() as total_statuses
+    FROM subscription_statuses
+),
+-- Generamos exactamente 5,000 filas secuenciales
+TargetCount AS (
+    SELECT generate_series(1, 5000) AS idx
+)
+SELECT 
+    -- Distribuimos los usuarios de forma equitativa rotando por el total existente
+    u.user_id,
+    -- Distribuimos los planes de precios de forma equitativa
+    p.price_id,
+    -- Distribuimos los estados cíclicamente
+    s.status_id,
+    -- Fecha de inicio escalonada/aleatoria dentro de un rango lógico
+    (DATE '2025-01-01' + ((tc.idx % 365)::TEXT || ' days')::INTERVAL)::DATE AS start_date,
+    -- Fecha de fin (1 año después si hay autorenovación)
+    CASE 
+        WHEN (tc.idx % 2) = 1 THEN (DATE '2025-01-01' + ((tc.idx % 365)::TEXT || ' days')::INTERVAL + INTERVAL '1 year')::DATE
+        ELSE NULL
+    END AS end_date,
+    (tc.idx % 2) AS auto_renew,
+    (TIMESTAMP '2025-01-01 08:00:00' + ((tc.idx % 365)::TEXT || ' days')::INTERVAL + ((tc.idx * 13) % 86400 || ' seconds')::INTERVAL) AS created_at
+FROM TargetCount tc
+JOIN NumberedUsers u ON u.u_idx = ((tc.idx - 1) % u.total_users) + 1
+JOIN NumberedPrices p ON p.p_idx = ((tc.idx - 1) % p.total_prices) + 1
+JOIN NumberedStatuses s ON s.s_idx = ((tc.idx - 1) % s.total_statuses) + 1;
