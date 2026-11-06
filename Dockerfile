@@ -265,6 +265,16 @@ RUN echo '{"admin": "12345678"}' > /root/airflow/simple_auth_manager_passwords.j
     cp /root/airflow/simple_auth_manager_passwords.json \
        /root/airflow/simple_auth_manager_passwords.json.generated
 
+# copia la configuracion del notebook personalizada
+COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
+COPY NotebookConfig/panel.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/panel.jupyterlab-settings
+COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/completer-extension/manager.jupyterlab-settings
+COPY NotebookConfig/plugin.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/cell-toolbar-extension/plugin.jupyterlab-settings
+COPY NotebookConfig/kernels/sos/kernel.json /usr/local/share/jupyter/kernels/sos/kernel.json
+
+# JARS de PySpark
+COPY /jars_scala_spark_2026/*.jar /usr/local/spark/jars/
+
 ###############################################################
 ################### CONFIGURACION DE INICIO ###################
 ###############################################################

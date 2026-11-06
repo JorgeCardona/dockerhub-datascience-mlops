@@ -923,3 +923,61 @@ SELECT user_id, action, metadata, created_at
 FROM activity_logs
 ORDER BY RAND()
 LIMIT 5;
+
+-- ==============================================================================
+-- GENERACIÓN DE 1,000 SUSCRIPCIONES EN MYSQL (DISTRIBUCIÓN REAL Y CONTROLADA)
+-- ==============================================================================
+
+INSERT INTO user_subscriptions (user_id, price_id, status_id, start_date, end_date, auto_renew, created_at)
+WITH RECURSIVE 
+-- 1. Numeramos secuencialmente a todos los usuarios
+NumberedUsers AS (
+    SELECT user_id, 
+           ROW_NUMBER() OVER (ORDER BY user_id) AS u_idx, 
+           (SELECT COUNT(*) FROM users) AS total_users
+    FROM users
+),
+-- 2. Numeramos los precios de planes
+NumberedPrices AS (
+    SELECT price_id, 
+           ROW_NUMBER() OVER (ORDER BY price_id) AS p_idx, 
+           (SELECT COUNT(*) FROM plan_prices) AS total_prices
+    FROM plan_prices
+),
+-- 3. Numeramos los estados de suscripción
+NumberedStatuses AS (
+    SELECT status_id, 
+           ROW_NUMBER() OVER (ORDER BY status_id) AS s_idx, 
+           (SELECT COUNT(*) FROM subscription_statuses) AS total_statuses
+    FROM subscription_statuses
+),
+-- 4. Generamos una secuencia exacta de 5,000 filas (TargetCount)
+TargetCount AS (
+    SELECT 1 AS idx
+    UNION ALL
+    SELECT idx + 1 FROM TargetCount WHERE idx < 5000
+)
+SELECT 
+    u.user_id,
+    p.price_id,
+    s.status_id,
+    -- Fecha de inicio escalonada basada en el índice
+    DATE_ADD('2025-01-01', INTERVAL (tc.idx % 365) DAY) AS start_date,
+    -- Fecha de fin (1 año después si auto_renew es 1, de lo contrario NULL)
+    CASE 
+        WHEN (tc.idx % 2) = 1 THEN DATE_ADD(DATE_ADD('2025-01-01', INTERVAL (tc.idx % 365) DAY), INTERVAL 1 YEAR)
+        ELSE NULL
+    END AS end_date,
+    (tc.idx % 2) AS auto_renew,
+    -- Timestamp de creación dinámico
+    DATE_ADD(
+        DATE_ADD('2025-01-01 08:00:00', INTERVAL (tc.idx % 365) DAY),
+        INTERVAL ((tc.idx * 13) % 86400) SECOND
+    ) AS created_at
+FROM TargetCount tc
+-- Distribuimos los usuarios de forma cíclica (Round-Robin) usando módulo
+JOIN NumberedUsers u ON u.u_idx = ((tc.idx - 1) % u.total_users) + 1
+-- Distribuimos los planes de precios de forma equitativa
+JOIN NumberedPrices p ON p.p_idx = ((tc.idx - 1) % p.total_prices) + 1
+-- Distribuimos los estados cíclicamente
+JOIN NumberedStatuses s ON s.s_idx = ((tc.idx - 1) % s.total_statuses) + 1;
