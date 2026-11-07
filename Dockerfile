@@ -108,14 +108,24 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     mitmproxy \
     requests-toolbelt
 
-# --- CONECTORES DE BASES DE DATOS Y STREAMING ---
+# --- CONECTORES DE BASES DE DATOS Y STREAMING Y CONECTORES SQL Y NO-SQL---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     mysql-connector-python \
     psycopg2-binary \
-    pymongo \
+    "psycopg[binary]" \
     redis \
     sqlalchemy \
-    confluent-kafka
+    confluent-kafka \
+    chromadb \
+    duckdb \
+    duckdb-engine \
+    ipython-sql \
+    jupysql \
+    pymysql \
+    pymongo \
+    mongoengine \
+    oracledb \
+    mssql-python
 
 # --- MANIPULACIÓN DE DATOS, ARCHIVOS Y LECTORES ---
     RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -153,9 +163,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     dask \
     dask-labextension \
-    apache-beam[interactive] \
-    duckdb \
-    chromadb
+    apache-beam[interactive]
     # airbyte
 
 # --- ORQUESTACIÓN, MLOps Y PRUEBAS ---
@@ -210,7 +218,6 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     pyyaml \
     tomli
 
-
 #########################################################################
 #               OBSERVABILIDAD, TELEMETRÍA Y MONITORIZACIÓN             #
 #########################################################################
@@ -221,7 +228,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     opentelemetry-distro \
     opentelemetry-exporter-otlp \
     opentelemetry-instrumentation-genai-langchain \
-    && opentelemetry-bootstrap -a install
+    && opentelemetry-bootstrap -a install 
 
 # --- CONFIGURACIÓN DE TELEMETRÍA ---
 ENV OTEL_SERVICE_NAME="mlops-langgraph-service"
@@ -233,6 +240,9 @@ ENV OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="SPAN_ONLY"
 ###############################################################
 ################ UTILIDADES PARA EL CONTENEDOR ################
 ###############################################################
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    prettytable \
+    pip
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     graphviz \
