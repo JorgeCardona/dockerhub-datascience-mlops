@@ -1,0 +1,149 @@
+﻿# docker compose up -d
+name: kafka_4_4_0_spark
+
+services:
+
+  # ==========================================
+  # KAFKA BROKER 1
+  # ==========================================
+  kafka-1:
+    image: apache/kafka:4.4.0
+    container_name: kafka-1
+    restart: unless-stopped
+
+    ports:
+      - "9092:9094"
+
+    environment:
+      CLUSTER_ID: "5L6g3nShT-eMCtK--X86sw"
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka-1:9092,EXTERNAL://host.docker.internal:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT"
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093"
+
+      KAFKA_SASL_ENABLED_MECHANISMS: "PLAIN"
+      KAFKA_LISTENER_NAME_EXTERNAL_PLAIN_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="12345678" user_admin="12345678";'
+
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: "3"
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "2"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+
+    volumes:
+      - "/var/lib/docker/volumes/kafka_4_4_0_kafka1_data/_data:/var/lib/kafka/data"
+      - "/var/lib/docker/volumes/3d6b6b852072eaf61c2ba630cf4fb41b600f47918f2568b78593de6fb19ab99d/_data:/etc/kafka/secrets"
+      - "/var/lib/docker/volumes/f0d134a304ea9a047bb7b933a4ac1d19230ed037df47bd058f34154f093baa18/_data:/mnt/shared/config"
+
+
+  # ==========================================
+  # KAFKA BROKER 2
+  # ==========================================
+  kafka-2:
+    image: apache/kafka:4.4.0
+    container_name: kafka-2
+    restart: unless-stopped
+
+    ports:
+      - "9093:9094"
+
+    environment:
+      CLUSTER_ID: "5L6g3nShT-eMCtK--X86sw"
+      KAFKA_NODE_ID: "2"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka-2:9092,EXTERNAL://host.docker.internal:9093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT"
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093"
+
+      KAFKA_SASL_ENABLED_MECHANISMS: "PLAIN"
+      KAFKA_LISTENER_NAME_EXTERNAL_PLAIN_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="12345678" user_admin="12345678";'
+
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: "3"
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "2"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+
+    volumes:
+      - "/var/lib/docker/volumes/kafka_4_4_0_kafka2_data/_data:/var/lib/kafka/data"
+      - "/var/lib/docker/volumes/19378210e7ea2d63bde9f9dec7cf0ab09ee1efcb764732117b25c76003db219e/_data:/mnt/shared/config"
+      - "/var/lib/docker/volumes/fde2934ce46076168e0c1803c0e138460a759ebd90c52352b8d3b9e008b82d27/_data:/etc/kafka/secrets"
+
+
+  # ==========================================
+  # KAFKA BROKER 3
+  # ==========================================
+  kafka-3:
+    image: apache/kafka:4.4.0
+    container_name: kafka-3
+    restart: unless-stopped
+
+    ports:
+      - "9094:9094"
+
+    environment:
+      CLUSTER_ID: "5L6g3nShT-eMCtK--X86sw"
+      KAFKA_NODE_ID: "3"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka-3:9092,EXTERNAL://host.docker.internal:9094"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT"
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093"
+
+      KAFKA_SASL_ENABLED_MECHANISMS: "PLAIN"
+      KAFKA_LISTENER_NAME_EXTERNAL_PLAIN_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="12345678" user_admin="12345678";'
+
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: "3"
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "2"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+
+    volumes:
+      - "/var/lib/docker/volumes/kafka_4_4_0_kafka3_data/_data:/var/lib/kafka/data"
+      - "/var/lib/docker/volumes/c193beb6290626e763788e834ab0428c6a62f65be9b3835f079a690c3a59fa78/_data:/etc/kafka/secrets"
+      - "/var/lib/docker/volumes/f36d92e1e49b5b24260772ac98a5ab2ac56a0e1d22f000ac0f4f0b6674a1145b/_data:/mnt/shared/config"
+
+
+  # ==========================================
+  # KAFKA UI
+  # ==========================================
+  kafka-ui:
+    image: kafbat/kafka-ui:latest
+    container_name: kafka-ui
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "true"
+      KAFKA_CLUSTERS_0_NAME: "cluster-kafka-local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka-1:9092,kafka-2:9092,kafka-3:9092"
