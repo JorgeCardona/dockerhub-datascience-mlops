@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Super Guía Definitiva de Poetry 2.5.1: Arquitectura, Comandos y Entornos</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --surface: #1e293b;
+      --surface-alt: #162032;
+      --surface-hover: #263349;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #ff694b;
+      --accent-soft: rgba(255, 105, 75, 0.14);
+      --yaml-bg: #3b2f1e;
+      --yaml-text: #fbbf24;
+      --sql-bg: #1e3a5f;
+      --sql-text: #38bdf8;
+      --csv-bg: #1e3a2f;
+      --csv-text: #4ade80;
+      --os-bg: #3b1e3a;
+      --os-text: #f472b6;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .container {
+      max-width: 1520px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    header h1 {
+      font-size: 2.3rem;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    header h1 span {
+      color: var(--accent);
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .concepts-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.45rem;
+      margin-bottom: 1.2rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.85rem;
+    }
+
+    .concepts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .concept-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.3rem;
+    }
+
+    .concept-card h3 {
+      color: var(--accent);
+      font-size: 1.08rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .concept-card p {
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .architecture-box {
+      background: linear-gradient(180deg, #172338 0%, #111927 100%);
+      border: 1px solid #3b82f6;
+      border-radius: 12px;
+      padding: 1.6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .architecture-box h3 {
+      color: #60a5fa;
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .flow-step {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .flow-step-num {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      margin-bottom: 0.45rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .search-box {
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.92rem;
+      min-width: 280px;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      margin-bottom: 2.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #090d16;
+      border-bottom: 2px solid var(--border);
+    }
+
+    th {
+      padding: 1rem 1.1rem;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 1.3rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 0.92rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background-color: var(--surface-hover);
+    }
+
+    .func-name {
+      font-family: "Fira Code", Consolas, monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: monospace;
+      margin-bottom: 0.35rem;
+      white-space: nowrap;
+    }
+
+    .badge-yaml { background: var(--yaml-bg); color: var(--yaml-text); border: 1px solid rgba(251, 191, 36, 0.35); }
+    .badge-sql  { background: var(--sql-bg);  color: var(--sql-text);  border: 1px solid rgba(56, 189, 248, 0.35); }
+    .badge-csv  { background: var(--csv-bg);  color: var(--csv-text);  border: 1px solid rgba(74, 222, 128, 0.35); }
+    .badge-os   { background: var(--os-bg);   color: var(--os-text);   border: 1px solid rgba(244, 114, 182, 0.35); }
+
+    .explain-list {
+      padding-left: 1.1rem;
+      color: #cbd5e1;
+    }
+
+    .explain-list li {
+      margin-bottom: 0.45rem;
+    }
+
+    .example-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: "Fira Code", Consolas, monospace;
+      font-size: 0.8rem;
+      min-width: 470px;
+    }
+
+    .file-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #93c5fd;
+      background: #131c2e;
+      padding: 0.25rem 0.6rem;
+      border-radius: 5px 5px 0 0;
+      border: 1px solid #26354d;
+      border-bottom: none;
+      margin-top: 0.7rem;
+    }
+
+    .file-header:first-child {
+      margin-top: 0;
+    }
+
+    .file-tag {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+
+    .code-snippet {
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      padding: 0.65rem 0.75rem;
+      background: #060910;
+      border: 1px solid #26354d;
+      border-radius: 0 0 5px 5px;
+      line-height: 1.45;
+    }
+
+    .why-note {
+      margin-top: 0.65rem;
+      padding: 0.55rem 0.75rem;
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 3px solid #38bdf8;
+      border-radius: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.82rem;
+      color: #bae6fd;
+    }
+
+    .warning-note {
+      margin-top: 0.65rem;
+      padding: 0.55rem 0.75rem;
+      background: rgba(251, 191, 36, 0.08);
+      border-left: 3px solid #fbbf24;
+      border-radius: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.82rem;
+      color: #fde68a;
+    }
+
+    .hl-yellow { color: #fbbf24; font-weight: bold; }
+    .hl-cyan   { color: #38bdf8; font-weight: bold; }
+    .hl-green  { color: #4ade80; font-weight: bold; }
+    .comment   { color: #64748b; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Super Guía Definitiva de <span>Poetry 2.5.1</span>: Arquitectura, Comandos y Entornos</h1>
+    <p>Guía exhaustiva con los Conceptos Fundamentales, Ciclo de Vida, Configuración Completa de Entornos Virtuales y el Catálogo de Comandos Poetry CLI.</p>
+  </header>
+
+  <!-- SECCIÓN 1: CONCEPTOS FUNDAMENTALES -->
+  <section class="concepts-section">
+    <h2 class="section-title">1. Conceptos Fundamentales de Poetry</h2>
+
+    <div class="concepts-grid">
+      
+      <div class="concept-card">
+        <h3>¿Qué es pyproject.toml? <span>(Configuración)</span></h3>
+        <p>Archivo estándar TOML para declarar metadatos, versión de Python compatible y dependencias del proyecto.</p>
+        <p><strong>Qué genera <code>poetry init</code>:</strong> Crea automáticamente este archivo interactuando contigo para definir nombre, autor, versión y dependencias iniciales.</p>
+      </div>
+
+      <div class="concept-card">
+        <h3>¿Qué es poetry.lock? <span>(Reproducibilidad)</span></h3>
+        <p>Archivo que congela las versiones exactas y hashes criptográficos de todas las dependencias directas e indirectas.</p>
+      </div>
+
+      <div class="concept-card">
+        <h3>¿Qué es el Entorno Virtual? <span>(.venv)</span></h3>
+        <p>Carpeta aislada con su propio binario de Python y librerías independientes del sistema operativo.</p>
+      </div>
+
+      <div class="concept-card">
+        <h3>¿Qué es poetry new? <span>(Estructura)</span></h3>
+        <p>Crea una nueva estructura de paquetes completa con carpetas <code>src/</code>, <code>tests/</code> y configuración inicial lista para publicar en PyPI.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2: CICLO DE VIDA Y GESTIÓN DE ENTORNOS VIRTUALES -->
+  <section class="concepts-section">
+    <h2 class="section-title">2. Ciclo de Vida y Gestión de Entornos Virtuales (.venv) en Poetry</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.95rem;">
+      Poetry administra automáticamente el entorno virtual. Aquí tienes cómo habilitarlo, deshabilitarlo, cambiar su ubicación y establecer nombres personalizados (carpetas tipo <code>.venv</code>).
+    </p>
+
+    <div class="concepts-grid">
+      
+      <!-- Habilitar / Deshabilitar -->
+      <div class="concept-card">
+        <h3>Habilitar / Deshabilitar Creación del .venv</h3>
+        <p>Controla si Poetry debe crear un entorno virtual de manera automática al instalar dependencias:</p>
+        <div style="margin-top: 0.5rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0;">
+          <span style="color:#64748b"># Habilitar (Por defecto):</span><br>
+          poetry config virtualenvs.create true<br><br>
+          <span style="color:#64748b"># Deshabilitar (Usar entorno global del sistema):</span><br>
+          poetry config virtualenvs.create false
+        </div>
+      </div>
+
+      <!-- Ubicación y Nombres Personalizados -->
+      <div class="concept-card">
+        <h3>Ubicación y Nombre Personalizado (.venv)</h3>
+        <p>Por defecto Poetry guarda los entornos en la caché global del sistema operativo (ej. <code>~/Library/Caches/pypoetry/virtualenvs/</code>). Para crear una carpeta local llamada exactamente <code>.venv</code> dentro de tu proyecto:</p>
+        <div style="margin-top: 0.5rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0;">
+          <span style="color:#64748b"># Forzar entorno dentro del directorio del proyecto:</span><br>
+          poetry config virtualenvs.in-project true<br><br>
+          <span style="color:#64748b"># Volver al almacenamiento global fuera del proyecto:</span><br>
+          poetry config virtualenvs.in-project false
+        </div>
+      </div>
+
+      <!-- Selección de Versión -->
+      <div class="concept-card">
+        <h3>Selección de Versión de Python</h3>
+        <p>Define explícitamente qué binario de Python utilizará el entorno virtual antes de instalar o ejecutar dependencias:</p>
+        <div style="margin-top: 0.5rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0;">
+          <span style="color:#64748b"># Asignar intérprete específico:</span><br>
+          poetry env use python3.12<br>
+          poetry env use /usr/bin/python3.11
+        </div>
+      </div>
+
+    </div>
+
+    <div class="architecture-box" style="margin-top: 1.5rem;">
+      <h3>Ejemplo Práctico del Flujo de Creación y Activación</h3>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 1</span>
+          Configurar almacenamiento local: <br><code>poetry config virtualenvs.in-project true</code>
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 2</span>
+          Seleccionar Python: <br><code>poetry env use python3.12</code>
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 3</span>
+          Crear entorno e instalar: <br><code>poetry install</code> <br>(Genera la carpeta <code>.venv/</code>)
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 4 (Opcional)</span>
+          Activar manualmente: <br><code>source .venv/bin/activate</code> <br>(O usar <code>poetry run ...</code>)
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3: CATÁLOGO COMPLETO DE COMANDOS DE POETRY -->
+  <section class="concepts-section">
+    <h2 class="section-title">3. Catálogo Completo y Exhaustivo de Comandos Poetry CLI</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.95rem;">
+      Desglose absoluto de cada comando de Poetry con opciones avanzadas, archivos involucrados y ejemplos prácticos de ejecución.
+    </p>
+
+    <div class="controls">
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterTable('all', this)">Todos</button>
+        <button class="filter-btn" onclick="filterTable('init', this)">Inicialización</button>
+        <button class="filter-btn" onclick="filterTable('deps', this)">Dependencias</button>
+        <button class="filter-btn" onclick="filterTable('env', this)">Entornos Virtuales</button>
+        <button class="filter-btn" onclick="filterTable('config', this)">Configuración y Validación</button>
+      </div>
+      <input type="text" id="searchInput" class="search-box" onkeyup="searchTable()" placeholder="Buscar comando o palabra clave..." />
+    </div>
+
+    <div class="table-wrapper">
+      <table id="poetryTable">
+        <thead>
+          <tr>
+            <th>Comando Poetry</th>
+            <th>Categoría</th>
+            <th>¿Cómo funciona y de dónde sale?</th>
+            <th>Cuándo usarlo</th>
+            <th>Ejemplo Detallado y Opciones Avanzadas</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- 1. init -->
+          <tr data-category="init">
+            <td><span class="func-name">poetry init</span></td>
+            <td><span class="badge badge-yaml">INICIO</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Asistente interactivo que genera el archivo <code>pyproject.toml</code> preguntando por nombre, autor y dependencias iniciales.</li>
+              </ul>
+            </td>
+            <td>Al iniciar un proyecto de Python completamente nuevo desde cero.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry init --no-interaction</div>
+                <div class="why-note"><strong>Efecto:</strong> Crea un pyproject.toml con valores por defecto sin requerir respuestas interactivas.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 2. new -->
+          <tr data-category="init">
+            <td><span class="func-name">poetry new</span></td>
+            <td><span class="badge badge-yaml">INICIO</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Crea la estructura de carpetas estándar para una nueva librería o paquete de Python, incluyendo tests y pyproject.toml.</li>
+              </ul>
+            </td>
+            <td>Cuando vas a desarrollar un paquete reutilizable destinado a ser publicado en PyPI.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry new mi_paquete --src</div>
+                <div class="why-note"><strong>Efecto:</strong> Crea la carpeta <code>mi_paquete/</code> con diseño de layout en <code>src/</code>.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 3. add -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry add</span></td>
+            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Conecta con PyPI, analiza el árbol de dependencias existente (versión de Python y paquetes ya instalados) y busca de forma automática la versión compatible. Permite fijar versiones exactas, rangos personalizados o comodines abiertos entre comillas.</li>
+              </ul>
+            </td>
+            <td>Cada vez que necesitas incorporar una nueva librería o dependencia externa al proyecto.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal (Manejo de Versiones, Rangos y Comodines)</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet"><span class="comment"># 1. Versión fija exacta (congela estrictamente el paquete a esa versión):</span>
+poetry add yamllint==1.35.1
+
+<span class="comment"># 2. Rango controlado y seguro (permite actualizaciones menores compatibles '^'):</span>
+poetry add yamllint
+
+<span class="comment"># 3. Rango explícito personalizado (ej. versiones superiores a 1.33 y menores o iguales a 1.35):</span>
+poetry add "yamllint>1.33,<=1.35"
+
+<span class="comment"># 4. Comodín abierto con comillas para buscar y aceptar automáticamente cualquier versión compatible:</span>
+poetry add "yamllint=*"</div>
+                <div class="why-note"><strong>Por qué se usa <code>"yamllint>1.33,<=1.35"</code> o <code>"yamllint=*"</code>:</strong> Permite definir restricciones de rangos personalizados o dejar que Poetry analice el árbol de dependencias actual y encuentre de forma automática la versión compatible óptima disponible en el índice.</div>
+                <div class="warning-note"><strong>WARNING:</strong> Usar comodines abiertos como <code>"yamllint=*"</code> puede introducir versiones mayores incompatibles si no se manejan rangos seguros en entornos de producción estrictos. Es preferible usar rangos controlados (ej. <code>^1.0.0</code> o <code>"yamllint>1.33,<=1.35"</code>) o versiones fijas exactas (ej. <code>yamllint==1.35.1</code>) para evitar roturas inesperadas en producción.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 4. remove -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry remove</span></td>
+            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Elimina una dependencia de <code>pyproject.toml</code>, regenera el lock y la desinstala del entorno virtual.</li>
+              </ul>
+            </td>
+            <td>Cuando una librería ya no es necesaria en la arquitectura del proyecto.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry remove "yamllint"</div>
+                <div class="why-note"><strong>Efecto:</strong> Limpia la dependencia del entorno y archivos de configuración.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 5. install -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry install</span></td>
+            <td><span class="badge badge-os">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Lee estrictamente el archivo <code>poetry.lock</code> e instala las versiones exactas congeladas en el entorno virtual.</li>
+              </ul>
+            </td>
+            <td>Al clonar un repositorio, tras un <code>git pull</code> o para configurar el entorno del equipo.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry install --without dev --no-root</div>
+                <div class="why-note"><strong>Efecto:</strong> Útil en contenedores Docker para instalar únicamente lo indispensable.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 6. update -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry update</span></td>
+            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Revisa las versiones disponibles en PyPI dentro de los rangos permitidos y actualiza el <code>poetry.lock</code>.</li>
+              </ul>
+            </td>
+            <td>Para actualizar dependencias de forma controlada a sus últimas versiones compatibles.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry update "pandas"</div>
+                <div class="why-note"><strong>Efecto:</strong> Actualiza únicamente el paquete pandas y sus dependencias directas.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 7. lock -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry lock</span></td>
+            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Calcula y actualiza el archivo <code>poetry.lock</code> basado en <code>pyproject.toml</code> sin realizar instalaciones físicas.</li>
+              </ul>
+            </td>
+            <td>Cuando modificas restricciones de versión manualmente en el toml y necesitas regenerar el lock.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry lock --no-update</div>
+                <div class="why-note"><strong>Efecto:</strong> Regenera el lock manteniendo las versiones actuales si siguen siendo válidas.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 8. sync -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry sync</span></td>
+            <td><span class="badge badge-os">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Sincroniza el entorno virtual con el lock, eliminando automáticamente paquetes huérfanos o sobrantes.</li>
+              </ul>
+            </td>
+            <td>En servidores de CI/CD o entornos donde requieras una sincronización estricta.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry sync</div>
+                <div class="why-note"><strong>Efecto:</strong> Garantiza que el entorno virtual contenga exactamente los paquetes del lock.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 9. show -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry show</span></td>
+            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Lista todos los paquetes instalados en el entorno virtual con sus versiones y descripciones.</li>
+              </ul>
+            </td>
+            <td>Para auditar dependencias o verificar actualizaciones con <code>--outdated</code>.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry show --tree
+poetry show --outdated</div>
+                <div class="why-note"><strong>Efecto:</strong> Muestra dependencias en formato de árbol y lista paquetes desactualizados.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 10. env info -->
+          <tr data-category="env">
+            <td><span class="func-name">poetry env info</span></td>
+            <td><span class="badge badge-os">ENTORNOS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Muestra información detallada sobre el entorno virtual activo (ruta, versión de Python, ejecutable).</li>
+              </ul>
+            </td>
+            <td>Para configurar editores como VS Code o depurar rutas del sistema.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry env info --path</div>
+                <div class="why-note"><strong>Efecto:</strong> Devuelve la ruta absoluta del entorno virtual actual.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 11. env list -->
+          <tr data-category="env">
+            <td><span class="func-name">poetry env list</span></td>
+            <td><span class="badge badge-os">ENTORNOS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Lista todos los entornos virtuales asociados al proyecto actual en el sistema operativo.</li>
+              </ul>
+            </td>
+            <td>Когда tienes múltiples entornos virtuales creados o quieres verificar el activo.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry env list --full-path</div>
+                <div class="why-note"><strong>Efecto:</strong> Muestra la lista completa con rutas detalladas de cada entorno.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 12. env use -->
+          <tr data-category="env">
+            <td><span class="func-name">poetry env use</span></td>
+            <td><span class="badge badge-os">ENTORNOS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Selecciona y activa una versión específica de Python para asociarla al entorno virtual del proyecto.</li>
+              </ul>
+            </td>
+            <td>Antes de instalar dependencias, para configurar el intérprete deseado.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry env use python3.12</div>
+                <div class="why-note"><strong>Efecto:</strong> Configura el entorno virtual utilizando Python 3.12.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 13. env remove -->
+          <tr data-category="env">
+            <td><span class="func-name">poetry env remove</span></td>
+            <td><span class="badge badge-os">ENTORNOS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Elimina de forma física el entorno virtual asociado del sistema operativo.</li>
+              </ul>
+            </td>
+            <td>Когда necesitas reconstruir el entorno desde cero por corrupción o cambio de versión.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry env remove python3.12</div>
+                <div class="why-note"><strong>Efecto:</strong> Borra la carpeta del entorno virtual liberando espacio en disco.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 14. run -->
+          <tr data-category="env">
+            <td><span class="func-name">poetry run</span></td>
+            <td><span class="badge badge-os">ENTORNOS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Ejecuta cualquier comando o script inyectando las variables de ruta del entorno virtual aislado.</li>
+              </ul>
+            </td>
+            <td>Para ejecutar scripts de Python, pruebas con pytest o herramientas CLI como dbt.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry run python main.py</div>
+                <div class="why-note"><strong>Efecto:</strong> Ejecuta el script dentro del entorno virtual sin activación manual previa.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 15. shell -->
+          <tr data-category="env">
+            <td><span class="func-name">poetry shell</span></td>
+            <td><span class="badge badge-os">ENTORNOS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Genera una nueva sub-shell interactiva en tu terminal con el entorno virtual activado automáticamente.</li>
+              </ul>
+            </td>
+            <td>Когда necesitas trabajar en una sesión interactiva prolongada en el entorno.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal (Para salir usar exit)</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry shell</div>
+                <div class="why-note"><strong>Efecto:</strong> Activa el entorno virtual en la sesión actual de la terminal.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 16. check -->
+          <tr data-category="config">
+            <td><span class="func-name">poetry check</span></td>
+            <td><span class="badge badge-yaml">VALIDACIÓN</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Valida la sintaxis del archivo <code>pyproject.toml</code> y verifica su consistencia con el lock.</li>
+              </ul>
+            </td>
+            <td>Antes de confirmar cambios en Git o al experimentar fallos de dependencias.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry check</div>
+                <div class="why-note"><strong>Efecto:</strong> Retorna "All set!" si todo está correcto.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 17. config -->
+          <tr data-category="config">
+            <td><span class="func-name">poetry config</span></td>
+            <td><span class="badge badge-yaml">CONFIGURACIÓN</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Muestra o modifica parámetros de configuración global o local de Poetry (ej. ubicación de .venv).</li>
+              </ul>
+            </td>
+            <td>Al configurar un nuevo equipo o ajustar comportamientos predeterminados.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry config --list
+poetry config virtualenvs.in-project true</div>
+                <div class="why-note"><strong>Efecto:</strong> Configura la creación local del entorno en formato <code>.venv</code>.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 18. export -->
+          <tr data-category="config">
+            <td><span class="func-name">poetry export</span></td>
+            <td><span class="badge badge-yaml">EXPORTACIÓN</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Exporta las dependencias resueltas en el lock a formatos tradicionales como <code>requirements.txt</code>.</li>
+              </ul>
+            </td>
+            <td>Para interoperabilidad con herramientas heredadas de infraestructura o pip.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry export -f requirements.txt -o requirements.txt --without-hashes</div>
+                <div class="why-note"><strong>Efecto:</strong> Genera un archivo requirements.txt idéntico al lock.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 19. search -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry search</span></td>
+            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Busca paquetes disponibles en el índice de PyPI directamente desde la terminal.</li>
+              </ul>
+            </td>
+            <td>Когда quieres explorar nombres de librerías o verificar disponibilidad.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry search "yamllint"</div>
+                <div class="why-note"><strong>Efecto:</strong> Retorna las coincidencias de paquetes en PyPI.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 20. publish -->
+          <tr data-category="config">
+            <td><span class="func-name">poetry publish</span></td>
+            <td><span class="badge badge-yaml">PUBLICACIÓN</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Empaqueta y publica tu librería o paquete desarrollado directamente en PyPI o un repositorio privado.</li>
+              </ul>
+            </td>
+            <td>Когда finalizas el desarrollo de un paquete open source o interno.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry publish --dry-run</div>
+                <div class="why-note"><strong>Efecto:</strong> Simula la publicación validando que todo el empaquetado sea correcto.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 21. build -->
+          <tr data-category="config">
+            <td><span class="func-name">poetry build</span></td>
+            <td><span class="badge badge-yaml">CONSTRUCCIÓN</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Genera los artefactos de distribución del paquete en formatos sdist (.tar.gz) y wheel (.whl).</li>
+              </ul>
+            </td>
+            <td>Перед de publicar o distribuir tu paquete localmente.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry build</div>
+                <div class="why-note"><strong>Efecto:</strong> Crea los archivos compilados en la carpeta <code>dist/</code>.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 22. cache -->
+          <tr data-category="config">
+            <td><span class="func-name">poetry cache</span></td>
+            <td><span class="badge badge-os">MANTENIMIENTO</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Gestiona la caché interna de Poetry para limpiar descargas y optimizar almacenamiento.</li>
+              </ul>
+            </td>
+            <td>Когда experimentas problemas de caché corrupta al instalar dependencias.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry cache clear --all pypi</div>
+                <div class="why-note"><strong>Efecto:</strong> Limpia completamente la caché de descargas de PyPI.</div>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  function filterTable(category, btnElement) {
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+
+    const rows = document.querySelectorAll('#poetryTable tbody tr');
+    rows.forEach(row => {
+      const rowCats = row.getAttribute('data-category');
+      if (category === 'all' || (rowCats && rowCats.includes(category))) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  function searchTable() {
+    const filter = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#poetryTable tbody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
