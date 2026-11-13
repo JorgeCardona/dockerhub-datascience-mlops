@@ -357,6 +357,26 @@
       color: #fde68a;
     }
 
+    .guide-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .guide-box h3 {
+      color: var(--accent);
+      font-size: 1.25rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .guide-box p {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
     .hl-yellow { color: #fbbf24; font-weight: bold; }
     .hl-cyan   { color: #38bdf8; font-weight: bold; }
     .hl-green  { color: #4ade80; font-weight: bold; }
@@ -368,8 +388,51 @@
 <div class="container">
   <header>
     <h1>Super Guía Definitiva de <span>Poetry 2.5.1</span>: Arquitectura, Comandos y Entornos</h1>
-    <p>Guía exhaustiva con los Conceptos Fundamentales, Ciclo de Vida, Configuración Completa de Entornos Virtuales y el Catálogo de Comandos Poetry CLI.</p>
+    <p>Guía exhaustiva con los Conceptos Fundamentales, Ciclo de Vida, Configuración Completa de Entornos Virtuales, Comandos CLI y Estrategias Universales de Migración a Poetry.</p>
   </header>
+
+  <!-- SECCIÓN: GUÍA DE MIGRACIÓN UNIVERSAL (CON/SIN VENV GLOBAL O LOCAL) -->
+  <section class="concepts-section">
+    <div class="guide-box">
+      <h3>Guía Universal Paso a Paso: Migrar cualquier Proyecto a Poetry (Soporte para Entornos Locales, Virtualenvs o Python Global del Sistema)</h3>
+      <p>Si tu proyecto ya está hecho pero nunca usó Poetry, las dependencias pueden estar en un entorno virtual aislado, en un <code>requirements.txt</code> olvidado, o instaladas directamente de forma global en el sistema operativo. Esta guía cubre todas las opciones posibles para capturar el estado real y llevarlo de forma limpia a Poetry:</p>
+      
+      <div class="flow-steps">
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 1</span>
+          <strong>Localizar la fuente de paquetes:</strong><br>
+          Si usas entorno virtual actívalo (`source venv/bin/activate`). Si usas Python global o del sistema, asegúrate de estar apuntando al intérprete correcto donde corre tu aplicación.
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 2</span>
+          <strong>Asociar explícitamente Python:</strong><br>
+          <code>poetry env use $(which python)</code>
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 3</span>
+          <strong>Inicializar Poetry:</strong><br>
+          <code>poetry init --no-interaction</code>
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 4</span>
+          <strong>Configurar aislamiento local (.venv):</strong><br>
+          <code>poetry config virtualenvs.in-project true</code>
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 5</span>
+          <strong>Inyectar dependencias (Elige A, B o C):</strong><br>
+          • <em>Opción A (Desde pip list global o venv):</em><br><code>pip list --format=freeze | xargs poetry add</code><br>
+          • <em>Opción B (Si tienes requirements.txt):</em><br><code>cat requirements.txt | xargs poetry add</code><br>
+          • <em>Opción C (Manual si son pocas):</em><br><code>poetry add pandas requests</code>
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 6</span>
+          <strong>Bloquear, Sincronizar y Validar:</strong><br>
+          <code>poetry lock --no-update && poetry install && poetry run python main.py</code>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- SECCIÓN 1: CONCEPTOS FUNDAMENTALES -->
   <section class="concepts-section">
@@ -385,7 +448,7 @@
 
       <div class="concept-card">
         <h3>¿Qué es poetry.lock? <span>(Reproducibilidad)</span></h3>
-        <p>Archivo que congela las versiones exactas y hashes criptográficos de todas las dependencias directas e indirectas.</p>
+        <p>Archivo obligatorio generado por Poetry que congela las versiones exactas y hashes criptográficos de todas las dependencias tras resolver el árbol completo.</p>
       </div>
 
       <div class="concept-card">
@@ -436,37 +499,15 @@
 
       <!-- Selección de Versión -->
       <div class="concept-card">
-        <h3>Selección de Versión de Python</h3>
+        <h3>Detección y Selección de Python</h3>
         <p>Define explícitamente qué binario de Python utilizará el entorno virtual antes de instalar o ejecutar dependencias:</p>
         <div style="margin-top: 0.5rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0;">
-          <span style="color:#64748b"># Asignar intérprete específico:</span><br>
-          poetry env use python3.12<br>
-          poetry env use /usr/bin/python3.11
+          <span style="color:#64748b"># Asignar intérprete activo actual o global:</span><br>
+          poetry env use $(which python)<br>
+          poetry env use python3.12
         </div>
       </div>
 
-    </div>
-
-    <div class="architecture-box" style="margin-top: 1.5rem;">
-      <h3>Ejemplo Práctico del Flujo de Creación y Activación</h3>
-      <div class="flow-steps">
-        <div class="flow-step">
-          <span class="flow-step-num">Paso 1</span>
-          Configurar almacenamiento local: <br><code>poetry config virtualenvs.in-project true</code>
-        </div>
-        <div class="flow-step">
-          <span class="flow-step-num">Paso 2</span>
-          Seleccionar Python: <br><code>poetry env use python3.12</code>
-        </div>
-        <div class="flow-step">
-          <span class="flow-step-num">Paso 3</span>
-          Crear entorno e instalar: <br><code>poetry install</code> <br>(Genera la carpeta <code>.venv/</code>)
-        </div>
-        <div class="flow-step">
-          <span class="flow-step-num">Paso 4 (Opcional)</span>
-          Activar manualmente: <br><code>source .venv/bin/activate</code> <br>(O usar <code>poetry run ...</code>)
-        </div>
-      </div>
     </div>
   </section>
 
@@ -529,7 +570,7 @@
                 <li>Crea la estructura de carpetas estándar para una nueva librería o paquete de Python, incluyendo tests y pyproject.toml.</li>
               </ul>
             </td>
-            <td>Cuando vas a desarrollar un paquete reutilizable destinado a ser publicado en PyPI.</td>
+            <td>Когда vas a desarrollar un paquete reutilizable destinado a ser publicado en PyPI.</td>
             <td>
               <div class="example-box">
                 <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
@@ -545,31 +586,53 @@
             <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
             <td>
               <ul class="explain-list">
-                <li>Conecta con PyPI, analiza el árbol de dependencias existente (versión de Python y paquetes ya instalados) y busca de forma automática la versión compatible. Permite fijar versiones exactas, rangos personalizados o comodines abiertos entre comillas.</li>
+                <li>Conecta con PyPI, analiza el árbol de dependencias existente y busca automáticamente la versión compatible. Actualiza tanto <code>pyproject.toml</code> como el <code>poetry.lock</code> de manera inmediata.</li>
               </ul>
             </td>
-            <td>Cada vez que necesitas incorporar una nueva librería o dependencia externa al proyecto.</td>
+            <td>Cada vez que necesitas incorporar una nueva librería o migrar paquetes previos.</td>
             <td>
               <div class="example-box">
-                <div class="file-header"><span>Comando Terminal (Manejo de Versiones, Rangos y Comodines)</span><span class="file-tag">BASH</span></div>
-                <div class="code-snippet"><span class="comment"># 1. Versión fija exacta (congela estrictamente el paquete a esa versión):</span>
+                <div class="file-header"><span>Comando Terminal (Manejo de Versiones y Migración)</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet"><span class="comment"># 1. Versión fija exacta:</span>
 poetry add yamllint==1.35.1
 
-<span class="comment"># 2. Rango controlado y seguro (permite actualizaciones menores compatibles '^'):</span>
+<span class="comment"># 2. Rango controlado y seguro ('^'):</span>
 poetry add yamllint
 
-<span class="comment"># 3. Rango explícito personalizado (ej. versiones superiores a 1.33 y menores o iguales a 1.35):</span>
+<span class="comment"># 3. Rango explícito personalizado:</span>
 poetry add "yamllint>1.33,<=1.35"
 
-<span class="comment"># 4. Comodín abierto con comillas para buscar y aceptar automáticamente cualquier versión compatible:</span>
-poetry add "yamllint=*"</div>
-                <div class="why-note"><strong>Por qué se usa <code>"yamllint>1.33,<=1.35"</code> o <code>"yamllint=*"</code>:</strong> Permite definir restricciones de rangos personalizados o dejar que Poetry analice el árbol de dependencias actual y encuentre de forma automática la versión compatible óptima disponible en el índice.</div>
-                <div class="warning-note"><strong>WARNING:</strong> Usar comodines abiertos como <code>"yamllint=*"</code> puede introducir versiones mayores incompatibles si no se manejan rangos seguros en entornos de producción estrictos. Es preferible usar rangos controlados (ej. <code>^1.0.0</code> o <code>"yamllint>1.33,<=1.35"</code>) o versiones fijas exactas (ej. <code>yamllint==1.35.1</code>) para evitar roturas inesperadas en producción.</div>
+<span class="comment"># 4. Comodín abierto con comillas para búsqueda automática:</span>
+poetry add "yamllint=*"
+
+<span class="comment"># 5. Migración masiva desde entorno global o virtualenv existente usando pip list:</span>
+pip list --format=freeze | xargs poetry add</div>
+                <div class="why-note"><strong>Efecto:</strong> Registra los paquetes en el toml, resuelve la compatibilidad en árbol y genera el <code>poetry.lock</code> automáticamente.</div>
+                <div class="warning-note"><strong>WARNING:</strong> Usar comodines abiertos como <code>"yamllint=*"</code> puede introducir versiones mayores incompatibles si no se manejan rangos seguros en entornos de producción estrictos. Es preferible usar rangos controlados (ej. <code>^1.0.0</code>) o versiones fijas exactas (ej. <code>yamllint==1.35.1</code>) para evitar roturas inesperadas en producción.</div>
               </div>
             </td>
           </tr>
 
-          <!-- 4. remove -->
+          <!-- 4. lock -->
+          <tr data-category="deps">
+            <td><span class="func-name">poetry lock</span></td>
+            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
+            <td>
+              <ul class="explain-list">
+                <li>Calcula, resuelve y genera explícitamente el archivo <code>poetry.lock</code> basado en <code>pyproject.toml</code> sin requerir instalación física inmediata en el entorno virtual.</li>
+              </ul>
+            </td>
+            <td>Когда modificas restricciones manualmente o realizas migraciones masivas y necesitas asegurar que el archivo <code>poetry.lock</code> quede creado y sincronizado.</td>
+            <td>
+              <div class="example-box">
+                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
+                <div class="code-snippet">poetry lock --no-update</div>
+                <div class="why-note"><strong>Efecto:</strong> Crea o actualiza físicamente el archivo <code>poetry.lock</code> en la raíz del proyecto garantizando la reproducibilidad estricta.</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 5. remove -->
           <tr data-category="deps">
             <td><span class="func-name">poetry remove</span></td>
             <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
@@ -578,7 +641,7 @@ poetry add "yamllint=*"</div>
                 <li>Elimina una dependencia de <code>pyproject.toml</code>, regenera el lock y la desinstala del entorno virtual.</li>
               </ul>
             </td>
-            <td>Cuando una librería ya no es necesaria en la arquitectura del proyecto.</td>
+            <td>Когда una librería ya no es necesaria en la arquitectura del proyecto.</td>
             <td>
               <div class="example-box">
                 <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
@@ -588,7 +651,7 @@ poetry add "yamllint=*"</div>
             </td>
           </tr>
 
-          <!-- 5. install -->
+          <!-- 6. install -->
           <tr data-category="deps">
             <td><span class="func-name">poetry install</span></td>
             <td><span class="badge badge-os">DEPENDENCIAS</span></td>
@@ -607,7 +670,7 @@ poetry add "yamllint=*"</div>
             </td>
           </tr>
 
-          <!-- 6. update -->
+          <!-- 7. update -->
           <tr data-category="deps">
             <td><span class="func-name">poetry update</span></td>
             <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
@@ -622,25 +685,6 @@ poetry add "yamllint=*"</div>
                 <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
                 <div class="code-snippet">poetry update "pandas"</div>
                 <div class="why-note"><strong>Efecto:</strong> Actualiza únicamente el paquete pandas y sus dependencias directas.</div>
-              </div>
-            </td>
-          </tr>
-
-          <!-- 7. lock -->
-          <tr data-category="deps">
-            <td><span class="func-name">poetry lock</span></td>
-            <td><span class="badge badge-yaml">DEPENDENCIAS</span></td>
-            <td>
-              <ul class="explain-list">
-                <li>Calcula y actualiza el archivo <code>poetry.lock</code> basado en <code>pyproject.toml</code> sin realizar instalaciones físicas.</li>
-              </ul>
-            </td>
-            <td>Cuando modificas restricciones de versión manualmente en el toml y necesitas regenerar el lock.</td>
-            <td>
-              <div class="example-box">
-                <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
-                <div class="code-snippet">poetry lock --no-update</div>
-                <div class="why-note"><strong>Efecto:</strong> Regenera el lock manteniendo las versiones actuales si siguen siendo válidas.</div>
               </div>
             </td>
           </tr>
@@ -735,8 +779,9 @@ poetry show --outdated</div>
             <td>
               <div class="example-box">
                 <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
-                <div class="code-snippet">poetry env use python3.12</div>
-                <div class="why-note"><strong>Efecto:</strong> Configura el entorno virtual utilizando Python 3.12.</div>
+                <div class="code-snippet">poetry env use python3.12
+poetry env use $(which python)</div>
+                <div class="why-note"><strong>Efecto:</strong> Configura y enlaza el entorno virtual utilizando el intérprete de Python especificado.</div>
               </div>
             </td>
           </tr>
@@ -769,7 +814,7 @@ poetry show --outdated</div>
                 <li>Ejecuta cualquier comando o script inyectando las variables de ruta del entorno virtual aislado.</li>
               </ul>
             </td>
-            <td>Para ejecutar scripts de Python, pruebas con pytest o herramientas CLI como dbt.</td>
+            <td>Для ejecutar scripts de Python, pruebas con pytest o herramientas CLI como dbt.</td>
             <td>
               <div class="example-box">
                 <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
@@ -846,7 +891,7 @@ poetry config virtualenvs.in-project true</div>
                 <li>Exporta las dependencias resueltas en el lock a formatos tradicionales como <code>requirements.txt</code>.</li>
               </ul>
             </td>
-            <td>Para interoperabilidad con herramientas heredadas de infraestructura o pip.</td>
+            <td>Для interoperabilidad con herramientas heredadas de infraestructura o pip.</td>
             <td>
               <div class="example-box">
                 <div class="file-header"><span>Comando Terminal</span><span class="file-tag">BASH</span></div>
