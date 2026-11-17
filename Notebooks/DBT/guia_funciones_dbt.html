@@ -415,522 +415,13 @@
         Warehouse y domina todas sus funciones Jinja con ejemplos completos de extremo a extremo.</p>
     </header>
 
-    <!-- SECCIÓN 0: PASO 0 - COMANDOS ESENCIALES DE DBT CLI -->
-    <section class="concepts-section">
-      <h2 class="section-title">0. Paso 0: Comandos Esenciales de dbt CLI (Guía 100% Completa y Sin Omisiones)</h2>
-      <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.95rem;">
-        Configuración completa del archivo global <code>~/.dbt/profiles.yml</code> con los 3 motores y bases de datos
-        diferenciadas, y desglose absoluto de cada comando con todas las variantes de materialización (Vistas, Tablas,
-        Incrementales sin llave, Incremental con APPEND y con MERGE).
-      </p>
-
-      <!-- EL ARCHIVO PROFILES.YML COMPLETO Y ORIGINAL AL INICIO -->
-      <div class="example-box" style="margin-bottom: 2rem;">
-        <div class="file-header"><span>Requisito Previo OBLIGATORIO: Archivo ~/.dbt/profiles.yml (Multiconexión
-            Completa)</span><span class="file-tag">.YML</span></div>
-        <div class="code-snippet"><span class="comment"># Este archivo define de forma transparente y diferenciada las
-            bases de datos para cada motor:</span>
-          mi_proyecto_analitica:
-          target: prod_postgres <span class="comment"># Ambiente activo por defecto</span>
-
-          outputs:
-          <span class="comment"># 1. MOTOR POSTGRES (Local / Servidor relacional)</span>
-          prod_postgres:
-          type: postgres
-          host: localhost
-          user: dbt_user
-          password: mi_password_secreto
-          port: 5432
-          dbname: <span class="hl-cyan">postgres_prod_dw</span>
-          schema: <span class="hl-cyan">analytics</span>
-
-          <span class="comment"># 2. MOTOR SNOWFLAKE (Cloud Data Warehouse)</span>
-          prod_snowflake:
-          type: snowflake
-          account: xy12345.us-east-1
-          user: dbt_prod_user
-          password: mi_password_snowflake
-          role: TRANSFORMER
-          database: <span class="hl-cyan">snowflake_prod_dw</span>
-          warehouse: COMPUTE_WH
-          schema: <span class="hl-cyan">analytics</span>
-
-          <span class="comment"># 3. MOTOR BIGQUERY (Google Cloud Platform)</span>
-          bigquery_dataware_house:
-          type: bigquery
-          method: service-account
-          keyfile: /path/to/keys/service_account.json
-          project: <span class="hl-cyan">bigquery_prod_dw</span>
-          dataset: <span class="hl-cyan">analytics</span>
-          threads: 4
-          timeout_seconds: 300
-        </div>
-        <div class="why-note">
-          <strong>Transparencia total:</strong> Cada motor apunta a su respectiva base de datos nativa y explícita
-          (<code>postgres_prod_dw</code>, <code>snowflake_prod_dw</code>, <code>bigquery_prod_dw</code>) manteniendo el
-          esquema analítico (<code>analytics</code>).
-        </div>
-      </div>
-
-      <div class="table-wrapper">
-        <table id="dbtTable0">
-          <thead>
-            <tr>
-              <th>Comando dbt</th>
-              <th>Tipo / Contexto</th>
-              <th>¿De dónde sale exactamente? (Archivos y Configuración)</th>
-              <th>Cuándo usarlo</th>
-              <th>Ejemplo Detallado con TODAS las opciones y variantes (Perfil ➔ Archivo Local ➔ SQL en la BD)</th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <!-- INIT -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt init</span></td>
-              <td><span class="badge badge-yaml">CLI / INICIO</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> No depende de archivos previos; crea toda la estructura estándar desde
-                    cero en tu computadora.</li>
-                  <li>Genera carpetas clave (<code>models/</code>, <code>seeds/</code>, <code>tests/</code>) y el
-                    archivo global <code>dbt_project.yml</code>.</li>
-                </ul>
-              </td>
-              <td>Únicamente al arrancar un nuevo proyecto de ingeniería o analítica de datos en tu entorno local.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Comando en Terminal</span><span class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt init <span class="hl-yellow">mi_proyecto_analitica</span></div>
-                  <div class="why-note">
-                    <strong>Efecto físico:</strong> Crea la carpeta <code>mi_proyecto_analitica/</code> con la
-                    arquitectura estándar lista para recibir código.
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- DEBUG -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt debug --target</span></td>
-              <td><span class="badge badge-yaml">CLI / CONEXIÓN</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> Lee tu archivo privado de credenciales ubicado en
-                    <code>~/.dbt/profiles.yml</code> según el target indicado.
-                  </li>
-                  <li>Prueba de forma activa la red y los permisos de acceso al motor seleccionado.</li>
-                </ul>
-              </td>
-              <td>Cada vez que configuras un motor nuevo o experimentas errores de acceso.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">type: snowflake | database: <span class="hl-cyan">snowflake_prod_dw</span> |
-                    schema: analytics</div>
-
-                  <div class="file-header"><span>2. Comando en Terminal (Probando Snowflake)</span><span
-                      class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt debug --target <span class="hl-cyan">prod_snowflake</span></div>
-
-                  <div class="file-header header-compiled"><span>3. Salida en consola</span><span
-                      class="file-tag">LOGS</span></div>
-                  <div class="code-snippet code-compiled">Connection test: [OK connection ok to Snowflake]</div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- DEPS -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt deps</span></td>
-              <td><span class="badge badge-yaml">CLI / PAQUETES</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> Lee el archivo <code>packages.yml</code> situado en la raíz de tu
-                    proyecto dbt.</li>
-                  <li>Descarga repositorios externos de código abierto para usarlos en tus modelos.</li>
-                </ul>
-              </td>
-              <td>Al clonar un repositorio de Git o tras añadir nuevas librerías en tu archivo
-                <code>packages.yml</code>.
-              </td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">type: postgres | dbname: <span class="hl-cyan">postgres_prod_dw</span> |
-                    schema: analytics</div>
-
-                  <div class="file-header"><span>2. Archivo local (packages.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">packages:
-                    - package: dbt-labs/dbt_utils
-                    version: 1.1.1</div>
-
-                  <div class="file-header"><span>3. Comando en Terminal</span><span class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt deps</div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- SEED -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt seed --target</span></td>
-              <td><span class="badge badge-csv">.CSV / CARGA</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen de datos:</strong> Lee el archivo plano creado en tu disco:
-                    <code>seeds/codigos_pais.csv</code>.
-                  </li>
-                  <li><strong>Origen de la ruta (BD y Esquema):</strong> Toma la base de datos específica y esquema
-                    definidos en el perfil activo de tu <code>~/.dbt/profiles.yml</code>.</li>
-                </ul>
-              </td>
-              <td>Para cargar catálogos estáticos de negocio que vienen de archivos planos CSV.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">type: bigquery | project: <span class="hl-cyan">bigquery_prod_dw</span> |
-                    dataset: analytics</div>
-
-                  <div class="file-header"><span>2. Archivo local en tu disco (seeds/codigos_pais.csv)</span><span
-                      class="file-tag">.CSV</span></div>
-                  <div class="code-snippet">id,nombre_pais,moneda
-                    CO,Colombia,COP
-                    MX,Mexico,MXN</div>
-
-                  <div class="file-header"><span>3. Comando ejecutado en Terminal</span><span
-                      class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt seed --target <span class="hl-cyan">bigquery_dataware_house</span></div>
-
-                  <div class="file-header header-compiled"><span>4. SQL real ejecutado en el Data Warehouse
-                      (BigQuery)</span><span class="file-tag">COMPILADO</span></div>
-                  <div class="code-snippet code-compiled">CREATE TABLE <span
-                      class="hl-green">bigquery_prod_dw.analytics.codigos_pais</span> AS (
-                    SELECT 'CO' AS id, 'Colombia' AS nombre_pais, 'COP' AS moneda
-                    UNION ALL
-                    SELECT 'MX', 'Mexico', 'MXN'
-                    );</div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- RUN -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt run --target</span></td>
-              <td><span class="badge badge-sql">.SQL / EJECUCIÓN (LAS 5 MATERIALIZACIONES EXPLICITAS)</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen de scripts:</strong> Lee todos los modelos <code>.sql</code> de la carpeta
-                    <code>models/</code>.
-                  </li>
-                  <li><strong>Desglose completo de las 5 variantes:</strong>
-                    <ul>
-                      <li><strong>1. View:</strong> Ejecuta <code>CREATE OR REPLACE VIEW</code>.</li>
-                      <li><strong>2. Table:</strong> Recrea toda la tabla desde cero con
-                        <code>CREATE OR REPLACE TABLE AS</code>.
-                      </li>
-                      <li><strong>3. Incremental SIN unique_key:</strong> Al no tener llave, dbt por defecto realiza un
-                        <code>INSERT INTO</code> (Append).
-                      </li>
-                      <li><strong>4. Incremental con STRATEGY='APPEND':</strong> Inserta solo registros nuevos usando un
-                        <code>INSERT INTO</code> plano explícito.
-                      </li>
-                      <li><strong>5. Incremental con STRATEGY='MERGE':</strong> Ejecuta un <code>MERGE INTO</code>
-                        nativo usando la <code>unique_key</code>.</li>
-                    </ul>
-                  </li>
-                </ul>
-              </td>
-              <td>Para ejecutar y compilar cualquier modelo en tu Data Warehouse aplicando la estrategia de
-                almacenamiento deseada.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>Configuración base en ~/.dbt/profiles.yml</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">dbname: <span class="hl-cyan">postgres_prod_dw</span> | schema: analytics
-                  </div>
-
-                  <!-- 1. VIEW -->
-                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 1: models/stg_ventas.sql
-                      (Materialized = View)</span><span class="file-tag">.SQL</span></div>
-                  <div class="code-snippet">{{ config(materialized='view') }}
-                    SELECT * FROM raw_ventas</div>
-                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (View)</span><span
-                      class="file-tag">COMPILADO</span></div>
-                  <div class="code-snippet code-compiled">CREATE OR REPLACE VIEW <span
-                      class="hl-green">postgres_prod_dw.analytics.stg_ventas</span> AS (
-                    SELECT * FROM raw_ventas
-                    );</div>
-
-                  <!-- 2. TABLE -->
-                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 2: models/fct_resumen.sql
-                      (Materialized = Table)</span><span class="file-tag">.YML</span></div>
-                  <div class="code-snippet">{{ config(materialized='table') }}
-                    SELECT * FROM {{ ref('stg_ventas') }}</div>
-                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (Table - Recrea
-                      todo)</span><span class="file-tag">COMPILADO</span></div>
-                  <div class="code-snippet code-compiled">CREATE OR REPLACE TABLE <span
-                      class="hl-green">postgres_prod_dw.analytics.fct_resumen</span> AS (
-                    SELECT * FROM <span class="hl-green">postgres_prod_dw.analytics.stg_ventas</span>
-                    );</div>
-
-                  <!-- 3. INCREMENTAL SIN UNIQUE_KEY -->
-                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 3: models/log_sin_llave.sql
-                      (Incremental SIN unique_key)</span><span class="file-tag">.SQL</span></div>
-                  <div class="code-snippet">{{ config(materialized='incremental') }}
-                    SELECT id, mensaje, fecha FROM raw_logs
-                    {% if is_incremental() %}
-                    WHERE fecha >= (SELECT MAX(fecha) FROM {{ this }})
-                    {% endif %}</div>
-                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (INSERT INTO / APPEND automático
-                      al no haber llave)</span><span class="file-tag">COMPILADO</span></div>
-                  <div class="code-snippet code-compiled">INSERT INTO <span
-                      class="hl-green">postgres_prod_dw.analytics.log_sin_llave</span> (id, mensaje, fecha)
-                    SELECT id, mensaje, fecha FROM raw_logs
-                    WHERE fecha >= (SELECT MAX(fecha) FROM <span
-                      class="hl-green">postgres_prod_dw.analytics.log_sin_llave</span>);</div>
-
-                  <!-- 4. INCREMENTAL APPEND -->
-                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 4: models/log_eventos.sql
-                      (Incremental con strategy='append')</span><span class="file-tag">.SQL</span></div>
-                  <div class="code-snippet">{{ config(materialized='incremental', strategy='append') }}
-                    SELECT id, mensaje, fecha FROM raw_logs
-                    {% if is_incremental() %}
-                    WHERE fecha >= (SELECT MAX(fecha) FROM {{ this }})
-                    {% endif %}</div>
-                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (INSERT INTO / APPEND explícito
-                      de registros nuevos)</span><span class="file-tag">COMPILADO</span></div>
-                  <div class="code-snippet code-compiled">INSERT INTO <span
-                      class="hl-green">postgres_prod_dw.analytics.log_eventos</span> (id, mensaje, fecha)
-                    SELECT id, mensaje, fecha FROM raw_logs
-                    WHERE fecha >= (SELECT MAX(fecha) FROM <span
-                      class="hl-green">postgres_prod_dw.analytics.log_eventos</span>);</div>
-
-                  <!-- 5. INCREMENTAL MERGE -->
-                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 5: models/dim_clientes.sql
-                      (Incremental con strategy='merge' y unique_key)</span><span class="file-tag">.SQL</span></div>
-                  <div class="code-snippet">{{ config(materialized='incremental', strategy='merge',
-                    unique_key='id_cliente') }}
-                    SELECT id_cliente, estado FROM {{ ref('stg_clientes') }}</div>
-                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (MERGE INTO nativo: Actualiza y
-                      Añade)</span><span class="file-tag">COMPILADO</span></div>
-                  <div class="code-snippet code-compiled">MERGE INTO <span
-                      class="hl-green">postgres_prod_dw.analytics.dim_clientes</span> AS DBT_DEST
-                    USING (SELECT id_cliente, estado FROM <span
-                      class="hl-green">postgres_prod_dw.analytics.stg_clientes</span>) AS DBT_SRC
-                    ON (DBT_DEST.id_cliente = DBT_SRC.id_cliente)
-                    WHEN MATCHED THEN UPDATE SET estado = DBT_SRC.estado
-                    WHEN NOT MATCHED THEN INSERT (id_cliente, estado) VALUES (DBT_SRC.id_cliente, DBT_SRC.estado);</div>
-
-                  <!-- COMANDO BASH -->
-                  <div class="file-header" style="margin-top:0.7rem;"><span>Comando en Terminal para ejecutar todo lo
-                      anterior</span><span class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt run --target <span class="hl-cyan">prod_postgres</span></div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- RUN --SELECT -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt run --select --target</span></td>
-              <td><span class="badge badge-sql">.SQL / SELECTIVO</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> Busca dentro de la carpeta <code>models/</code> únicamente el archivo
-                    especificado y resuelve automáticamente sus dependencias apuntando a la base de datos del perfil
-                    seleccionado (ej. <code>snowflake_prod_dw.analytics</code>).</li>
-                </ul>
-              </td>
-              <td>Cuando estás programando un modelo puntual y quieres validar tus cambios rápidamente en la nube.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">type: snowflake | database: <span class="hl-cyan">snowflake_prod_dw</span> |
-                    schema: analytics</div>
-
-                  <div class="file-header"><span>2. Archivo local en tu disco (models/stg_clientes.sql)</span><span
-                      class="file-tag">.SQL</span></div>
-                  <div class="code-snippet">SELECT id AS cliente_id FROM snowflake_prod_dw.raw_salesforce.sf_users</div>
-
-                  <div class="file-header"><span>3. Comando en Terminal</span><span class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt run --select <span class="hl-yellow">stg_clientes</span> --target <span
-                      class="hl-cyan">prod_snowflake</span></div>
-
-                  <div class="file-header header-compiled"><span>4. SQL real en la BD usando el perfil de
-                      Snowflake</span><span class="file-tag">COMPILADO</span></div>
-                  <div class="code-snippet code-compiled">CREATE OR REPLACE VIEW <span
-                      class="hl-green">snowflake_prod_dw.analytics.stg_clientes</span> AS (
-                    SELECT id AS cliente_id FROM snowflake_prod_dw.raw_salesforce.sf_users
-                    );</div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- TEST -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt test --target</span></td>
-              <td><span class="badge badge-yaml">.YML / CALIDAD</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> Lee las reglas definidas en tus archivos <code>.yml</code> (ej.
-                    <code>models/schema.yml</code>).
-                  </li>
-                  <li><strong>Lógica:</strong> Combina el nombre de la tabla con la base de datos específica y esquema
-                    del perfil activo (ej. <code>bigquery_prod_dw.analytics</code>) para lanzar queries de auditoría.
-                  </li>
-                </ul>
-              </td>
-              <td>Inmediatamente después de <code>dbt run</code> para garantizar la calidad antes de entregar datos a
-                negocio.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">type: bigquery | project: <span class="hl-cyan">bigquery_prod_dw</span> |
-                    dataset: analytics</div>
-
-                  <div class="file-header"><span>2. Definición local (models/schema.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">models:
-                    - name: dim_clientes
-                    columns:
-                    - name: cliente_id
-                    tests: [unique, not_null]</div>
-
-                  <div class="file-header"><span>3. Comando en Terminal</span><span class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt test --target <span class="hl-cyan">bigquery_dataware_house</span></div>
-
-                  <div class="file-header header-compiled"><span>4. Query de auditoría lanzado a la BD (Usando
-                      BigQuery)</span><span class="file-tag">VALIDACIÓN</span></div>
-                  <div class="code-snippet code-compiled">SELECT cliente_id
-                    FROM <span class="hl-green">bigquery_prod_dw.analytics.dim_clientes</span>
-                    WHERE cliente_id IS NULL;</div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- TEST ESPECÍFICO PARA UN SCRIPT -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt test selective</span></td>
-              <td><span class="badge badge-yaml">.YML / CALIDAD SELECTIVA</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> Lee únicamente las reglas de prueba asociadas al modelo o script
-                    específico que indiques (ej. <code>dim_clientes</code>).</li>
-                  <li>Lanza los queries de auditoría contra el motor y base de datos configurados en el target
-                    seleccionado (<code>bigquery_prod_dw.analytics</code>).</li>
-                </ul>
-              </td>
-              <td>Cuando modificas un script o modelo en particular y quieres validar su calidad de forma inmediata
-                contra un Data Warehouse específico sin perder tiempo ejecutando los tests de todo el proyecto.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino en ~/.dbt/profiles.yml</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">bigquery_dataware_house:
-                    type: bigquery
-                    method: service-account
-                    project: <span class="hl-cyan">bigquery_prod_dw</span>
-                    dataset: <span class="hl-cyan">analytics</span></div>
-
-                  <div class="file-header"><span>2. Definición de pruebas en el archivo schema.yml para ese
-                      modelo</span><span class="file-tag">.YML</span></div>
-                  <div class="code-snippet">models:
-                    - name: <span class="hl-yellow">dim_clientes</span>
-                    columns:
-                    - name: cliente_id
-                    tests: [unique, not_null]</div>
-
-                  <div class="file-header"><span>3. Comando exacto ejecutado en Terminal</span><span
-                      class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt test --target <span class="hl-cyan">bigquery_dataware_house</span>
-                    --select <span class="hl-yellow">dim_clientes</span></div>
-
-                  <div class="file-header header-compiled"><span>4. Query de auditoría real lanzado a la BD por
-                      BigQuery</span><span class="file-tag">VALIDACIÓN</span></div>
-                  <div class="code-snippet code-compiled">SELECT cliente_id
-                    FROM `<span class="hl-green">bigquery_prod_dw.analytics.dim_clientes</span>`
-                    WHERE cliente_id IS NULL;</div>
-                </div>
-              </td>
-            </tr>
-
-
-            <!-- DOCS -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt docs generate</span><br><span class="func-name"
-                  style="margin-top:0.3rem">dbt docs serve</span></td>
-              <td><span class="badge badge-os">WEB / DOCUMENTACIÓN</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> Lee el archivo de manifiesto compilado
-                    (<code>target/manifest.json</code>) generado localmente en base a la estructura del proyecto y
-                    perfiles.</li>
-                </ul>
-              </td>
-              <td>Cuando necesitas explorar visualmente el linaje (DAG) o documentar tablas para el equipo.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">type: snowflake | database: <span class="hl-cyan">snowflake_prod_dw</span> |
-                    schema: analytics</div>
-
-                  <div class="file-header"><span>2. Comandos en Terminal</span><span class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt docs generate --target <span
-                      class="hl-cyan">prod_snowflake</span><br>dbt docs serve</div>
-                  <div class="why-note">
-                    <strong>Efecto físico:</strong> Abre un servidor local interactivo (ej.
-                    <code>http://localhost:8080</code>).
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- CLEAN -->
-            <tr data-category="cli">
-              <td><span class="func-name">dbt clean</span></td>
-              <td><span class="badge badge-os">CLI / MANTENIMIENTO</span></td>
-              <td>
-                <ul class="explain-list">
-                  <li><strong>Origen:</strong> Borra físicamente las carpetas temporales de compilación guardadas en tu
-                    disco (como <code>target/</code>).</li>
-                </ul>
-              </td>
-              <td>Para solucionar errores de caché o antes de subir código limpio a Git.</td>
-              <td>
-                <div class="example-box">
-                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
-                      class="file-tag">.YML</span></div>
-                  <div class="code-snippet">type: postgres | dbname: <span class="hl-cyan">postgres_prod_dw</span> |
-                    schema: analytics</div>
-
-                  <div class="file-header"><span>2. Comando en Terminal</span><span class="file-tag">BASH</span></div>
-                  <div class="code-snippet">dbt clean</div>
-                  <div class="why-note">
-                    <strong>Efecto físico:</strong> Elimina la carpeta local <code>target/</code> para asegurar una
-                    compilación limpia.
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
-    </section>
-
     <!-- SECCIÓN 1: CONCEPTOS FUNDAMENTALES -->
     <section class="concepts-section">
       <h2 class="section-title">1. Conceptos Fundamentales de dbt (Antes de ver el código)</h2>
 
       <h3
         style="color: #60a5fa; font-size: 1.4rem; margin: 1rem 0 1.2rem; border-bottom: 2px solid #1e3a5f; padding-bottom: 0.4rem;">
-        1.1 Macros en dbt: Definición Detallada, Macros Integradas y Ejemplos de Extremo a Extremo</h3>
+        1.1 Fundamentos y Anatomía de Macros en dbt</h3>
 
       <!-- TARJETAS CONCEPTUALES DE MACROS -->
       <div class="concepts-grid">
@@ -1103,7 +594,228 @@
         </div>
       </div>
 
-      <!-- TABLA DE MACROS INTEGRADAS POR DEFECTO -->
+      <h3
+        style="color: #60a5fa; font-size: 1.4rem; margin: 3rem 0 1.2rem; border-bottom: 2px solid #1e3a5f; padding-bottom: 0.4rem;">
+        1.2 Demás Conceptos Fundamentales (Modelos, Materializaciones, Seeds, Sources, Tests, etc.)</h3>
+
+      <div class="concepts-grid">
+
+        <!-- 1. MODELO -->
+        <div class="concept-card">
+          <h3>¿Qué es un Modelo? <span>(.sql)</span></h3>
+          <p>Un <strong>modelo</strong> es simplemente un archivo de texto con extensión <code>.sql</code> guardado
+            dentro de la carpeta <code>models/</code> de tu computadora.</p>
+          <p>Contiene una única consulta <code>SELECT</code>. dbt se encarga de envolver ese <code>SELECT</code> dentro
+            de un <code>CREATE TABLE AS</code> o <code>CREATE VIEW AS</code> en tu base de datos.</p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Archivo: models/stg_clientes.sql</span><br>
+            SELECT<br>
+            &nbsp;&nbsp;id AS cliente_id, -- INT<br>
+            &nbsp;&nbsp;TRIM(full_name) AS nombre, -- VARCHAR<br>
+            &nbsp;&nbsp;status AS estado -- VARCHAR (Valores: activo, inactivo)<br>
+            FROM prod_dw.raw_salesforce.sf_users
+          </div>
+
+          <div
+            style="margin-top: 0.5rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Ejemplo adicional uniendo source() y ref():</span><br>
+            SELECT<br>
+            &nbsp;&nbsp;c.cliente_id,<br>
+            &nbsp;&nbsp;c.nombre,<br>
+            &nbsp;&nbsp;p.nombre_pais<br>
+            FROM <span style="color:#4ade80">{{ source('crm', 'clientes') }}</span> c<br>
+            LEFT JOIN <span style="color:#4ade80">{{ ref('codigos_pais') }}</span> p ON c.pais_id = p.id
+          </div>
+        </div>
+
+        <!-- 2. MATERIALIZACIÓN -->
+        <div class="concept-card">
+          <h3>¿Qué es una Materialización?</h3>
+          <p>Es la forma física en que dbt guarda el resultado de tu modelo <code>.sql</code> dentro del Data Warehouse:
+          </p>
+          <p><strong>• View (Vista):</strong> Guarda solo la consulta virtual.<br>
+            <strong>• Table (Tabla):</strong> Crea una tabla física completa cada vez.<br>
+            <strong>• Incremental:</strong> Crea la tabla la primera vez y luego solo inserta filas nuevas.
+          </p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Archivo: models/fct_ventas.sql</span><br>
+            <span style="color:#fbbf24">{{ config(materialized='table') }}</span><br><br>
+            SELECT<br>
+            &nbsp;&nbsp;id_venta, <span style="color:#38bdf8">-- INT</span><br>
+            &nbsp;&nbsp;monto, <span style="color:#38bdf8">-- FLOAT</span><br>
+            &nbsp;&nbsp;fecha <span style="color:#38bdf8">-- DATE</span><br>
+            FROM raw_ventas
+          </div>
+        </div>
+
+        <!-- 3. SEED -->
+        <div class="concept-card">
+          <h3>¿Qué es un Seed? <span>(.csv)</span></h3>
+          <p>Un <strong>seed</strong> es un archivo estático en formato <code>.csv</code> (como un catálogo de países,
+            monedas o metas) guardado en la carpeta <code>seeds/</code>.</p>
+          <p>Al ejecutar <code>dbt seed</code>, dbt lee ese CSV de tu disco y crea una tabla real con sus datos dentro
+            de la base de datos.</p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Archivo: seeds/codigos_pais.csv</span><br>
+            id,nombre_pais,moneda<br>
+            CO,Colombia,COP <span style="color:#38bdf8">-- VARCHAR</span><br>
+            MX,Mexico,MXN <span style="color:#38bdf8">-- VARCHAR</span>
+          </div>
+        </div>
+
+        <!-- 4. SOURCE -->
+        <div class="concept-card">
+          <h3>¿Qué es un Source? <span>(.yml + .sql)</span></h3>
+          <p>Son las <strong>tablas crudas (raw)</strong> que ya existen en tu base de datos porque las cargó otra
+            herramienta (Fivetran, Airbyte, Python).</p>
+          <p>Como dbt no las creó, debes declararlas en un archivo <code>sources.yml</code> especificando sus columnas,
+            tipos de datos y reglas, para luego consultarlas mediante <code>source()</code>.</p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Archivo: models/sources.yml</span><br>
+            version: 2<br>
+            sources:<br>
+            &nbsp;&nbsp;- name: crm <span style="color:#64748b"># Alias del sistema</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;tables:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: clientes <span style="color:#64748b"># Alias dbt</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifier: sf_users <span style="color:#64748b"># Tabla
+              real</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;columns:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: id <span style="color:#38bdf8">-- INT
+              (Único)</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: status <span style="color:#38bdf8">--
+              VARCHAR (Valores: activo, inactivo)</span>
+          </div>
+
+          <div
+            style="margin-top: 0.4rem; background: #060910; padding: 0.5rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Uso en models/stg_clientes.sql</span><br>
+            SELECT id, status FROM <span style="color:#4ade80">{{ source('crm', 'clientes') }}</span>
+          </div>
+        </div>
+
+        <!-- 5. REF() -->
+        <div class="concept-card">
+          <h3>¿Qué es ref()? <span>(Función Jinja)</span></h3>
+          <p><code>ref()</code> es la función principal de dbt para conectar modelos entre sí. Toma el nombre de otro
+            modelo o seed sin extensión y resuelve automáticamente su ruta física en el Data Warehouse.</p>
+          <p>Garantiza que dbt construya el DAG (linaje) ejecutando primero los modelos dependientes.</p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Archivo: models/dim_clientes.sql</span><br>
+            SELECT<br>
+            &nbsp;&nbsp;c.cliente_id,<br>
+            &nbsp;&nbsp;c.nombre,<br>
+            &nbsp;&nbsp;p.nombre_pais <span style="color:#38bdf8">-- VARCHAR</span><br>
+            FROM <span style="color:#4ade80">{{ ref('stg_clientes') }}</span> c<br>
+            LEFT JOIN <span style="color:#4ade80">{{ ref('codigos_pais') }}</span> p ON c.pais_id = p.id
+          </div>
+        </div>
+
+        <!-- 6. TEST -->
+        <div class="concept-card">
+          <h3>¿Qué es un Test? <span>(Prueba de Calidad)</span></h3>
+          <p>Los <strong>tests</strong> en dbt son aserciones sobre tus datos para garantizar la calidad (ej. verificar
+            que una columna sea única, no nula, o cumpla relaciones).</p>
+          <p>Se definen principalmente en archivos <code>.yml</code> adjuntos a tus modelos.</p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Archivo: models/schema.yml</span><br>
+            version: 2<br>
+            models:<br>
+            &nbsp;&nbsp;- name: dim_clientes<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;columns:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: cliente_id <span style="color:#38bdf8">-- INT</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tests: [<span style="color:#4ade80">unique</span>, <span
+              style="color:#4ade80">not_null</span>]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: estado <span style="color:#38bdf8">-- VARCHAR</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tests: [{accepted_values: {values: ['activo', 'inactivo']}}]
+          </div>
+        </div>
+
+        <!-- 7. DAG (LINAJE) -->
+        <div class="concept-card">
+          <h3>¿Qué es el DAG (Linaje)?</h3>
+          <p>Es el mapa de dependencias que dbt arma automáticamente al leer tus <code>source()</code> y
+            <code>ref()</code>.
+          </p>
+          <p>Si el modelo B tiene <code>{{ ref('modelo_a') }}</code>, dbt sabe que primero debe construir
+            <strong>modelo_a</strong> en la base de datos antes de ejecutar <strong>modelo_b</strong>.
+          </p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Orden de ejecución del DAG en consola:</span><br>
+            1. source('crm', 'clientes') ➔<br>
+            2. models/stg_clientes.sql ➔<br>
+            3. seeds/codigos_pais.csv ➔<br>
+            4. models/dim_clientes.sql
+          </div>
+        </div>
+
+        <!-- 8. PROFILES.YML -->
+        <div class="concept-card">
+          <h3>¿Qué es profiles.yml?</h3>
+          <p>Es el archivo de configuración de conexión (fuera del repositorio del proyecto) donde defines a qué base de
+            datos conectarte y en qué esquema trabajar.</p>
+          <p>Por ejemplo, define que en entorno <code>dev</code> escriba en <code>dev_juan</code> y en <code>prod</code>
+            escriba en <code>prod_dw.analytics</code>.</p>
+
+          <div
+            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+            <span style="color:#64748b">-- Archivo: ~/.dbt/profiles.yml</span><br>
+            mi_proyecto:<br>
+            &nbsp;&nbsp;target: dev <span style="color:#38bdf8">-- Entorno activo</span><br>
+            &nbsp;&nbsp;outputs:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;dev:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: snowflake<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;database: dev_dw <span style="color:#38bdf8">-- VARCHAR</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schema: dev_juan <span style="color:#38bdf8">-- VARCHAR</span>
+          </div>
+        </div>
+
+      </div>
+
+    <!-- EXPLICACIÓN CLAVE: ¿POR QUÉ LEE UN ARCHIVO LOCAL Y CONSULTA LA BD? -->
+    <div class="architecture-box">
+      <h3>1.3 La Duda Clave: Si <code>stg_clientes.sql</code> es un archivo local, ¿por qué
+        <code>{{ ref('stg_clientes') }}</code> consulta <code>prod_dw.analytics.stg_clientes</code>?
+      </h3>
+      <p style="color: #e2e8f0; font-size: 0.95rem;">
+        <strong>dbt nunca ejecuta consultas SQL contra archivos de texto en tu disco duro.</strong> dbt es un
+        <em>orquestador y compilador</em> que trabaja siempre contra tu Data Warehouse (Snowflake, BigQuery, Postgres,
+        etc.). El ciclo funciona en 3 pasos exactos:
+      </p>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 1: Orden de ejecución</span>
+          Al ver <code>{{ ref('stg_clientes') }}</code> dentro de <code>dim_clientes.sql</code>, dbt detecta una
+          dependencia y ejecuta primero el archivo <code>models/stg_clientes.sql</code>.
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 2: Creación en la BD</span>
+          dbt toma el <code>SELECT</code> de <code>stg_clientes.sql</code> y crea una tabla o vista real en tu Data
+          Warehouse llamada <strong><code>prod_dw.analytics.stg_clientes</code></strong> (usando la base de datos y
+          esquema configurados en tu <code>profiles.yml</code>).
+        </div>
+        <div class="flow-step">
+          <span class="flow-step-num">Paso 3: Traducción del ref()</span>
+          Ahora que la tabla física ya existe en la BD, dbt reemplaza el texto <code>{{ ref('stg_clientes') }}</code>
+          por la ruta real de esa tabla en la BD: <strong><code>prod_dw.analytics.stg_clientes</code></strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA DE MACROS INTEGRADAS POR DEFECTO -->
       <!-- MACROS INTEGRADAS POR DEFECTO (BUILT-IN) -->
       <div class="architecture-box" style="margin-top: 1rem;">
         <h3>¿Por qué <code>ref()</code>, <code>source()</code> y <code>config()</code> son macros? Porque funcionan
@@ -1147,8 +859,7 @@
         </div>
       </div>
 
-      <h3 style="color: var(--accent); font-size: 1.15rem; margin: 1.5rem 0 0.8rem;">Tabla de Macros Integradas por
-        Defecto en dbt (Built-in)</h3>
+      <h3 style="color: var(--accent); font-size: 1.25rem; margin: 2.5rem 0 0.8rem; border-left: 4px solid var(--accent); padding-left: 0.6rem;">1.4 Tabla de Macros Integradas por Defecto en dbt (Built-in)</h3>
       <div class="table-wrapper">
         <table id="dbtTableBuiltin">
           <thead>
@@ -1556,7 +1267,7 @@
       <!-- TABLA DE 13 EJEMPLOS DETALLADOS DE MACROS -->
       <h3
         style="color: var(--accent); font-size: 1.25rem; margin: 2.5rem 0 0.8rem; border-left: 4px solid var(--accent); padding-left: 0.6rem;">
-        1.1.2 Ejemplos Detallados de Macros en dbt (Macro Definida ➔ Modelo .sql ➔ SQL Compilado en BD)</h3>
+        1.5 Ejemplos Detallados de Macros en dbt (Macro Definida ➔ Modelo .sql ➔ SQL Compilado en BD)</h3>
       <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.95rem;">
         Las macros son la pieza más poderosa de dbt: te permiten escribir SQL una sola vez y reutilizarlo en cientos de
         modelos, adaptarlo a cada motor (Postgres, Snowflake, BigQuery), sobrescribir el comportamiento interno de dbt y
@@ -2443,231 +2154,519 @@
           </tbody>
         </table>
       </div>
+    </section>
 
-      <h3
-        style="color: #60a5fa; font-size: 1.4rem; margin: 3rem 0 1.2rem; border-bottom: 2px solid #1e3a5f; padding-bottom: 0.4rem;">
-        1.2 Demás Conceptos Fundamentales (Modelos, Materializaciones, Seeds, Sources, Tests, etc.)</h3>
+    <!-- SECCIÓN 2: COMANDOS ESENCIALES DE DBT CLI -->
+    <section class="concepts-section">
+      <h2 class="section-title">2. Comandos Esenciales de dbt CLI (Guía 100% Completa y Sin Omisiones)</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.95rem;">
+        Configuración completa del archivo global <code>~/.dbt/profiles.yml</code> con los 3 motores y bases de datos
+        diferenciadas, y desglose absoluto de cada comando con todas las variantes de materialización (Vistas, Tablas,
+        Incrementales sin llave, Incremental con APPEND y con MERGE).
+      </p>
 
-      <div class="concepts-grid">
+      <!-- EL ARCHIVO PROFILES.YML COMPLETO Y ORIGINAL AL INICIO -->
+      <div class="example-box" style="margin-bottom: 2rem;">
+        <div class="file-header"><span>Requisito Previo OBLIGATORIO: Archivo ~/.dbt/profiles.yml (Multiconexión
+            Completa)</span><span class="file-tag">.YML</span></div>
+        <div class="code-snippet"><span class="comment"># Este archivo define de forma transparente y diferenciada las
+            bases de datos para cada motor:</span>
+          mi_proyecto_analitica:
+          target: prod_postgres <span class="comment"># Ambiente activo por defecto</span>
 
-        <!-- 1. MODELO -->
-        <div class="concept-card">
-          <h3>¿Qué es un Modelo? <span>(.sql)</span></h3>
-          <p>Un <strong>modelo</strong> es simplemente un archivo de texto con extensión <code>.sql</code> guardado
-            dentro de la carpeta <code>models/</code> de tu computadora.</p>
-          <p>Contiene una única consulta <code>SELECT</code>. dbt se encarga de envolver ese <code>SELECT</code> dentro
-            de un <code>CREATE TABLE AS</code> o <code>CREATE VIEW AS</code> en tu base de datos.</p>
+          outputs:
+          <span class="comment"># 1. MOTOR POSTGRES (Local / Servidor relacional)</span>
+          prod_postgres:
+          type: postgres
+          host: localhost
+          user: dbt_user
+          password: mi_password_secreto
+          port: 5432
+          dbname: <span class="hl-cyan">postgres_prod_dw</span>
+          schema: <span class="hl-cyan">analytics</span>
 
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Archivo: models/stg_clientes.sql</span><br>
-            SELECT<br>
-            &nbsp;&nbsp;id AS cliente_id, -- INT<br>
-            &nbsp;&nbsp;TRIM(full_name) AS nombre, -- VARCHAR<br>
-            &nbsp;&nbsp;status AS estado -- VARCHAR (Valores: activo, inactivo)<br>
-            FROM prod_dw.raw_salesforce.sf_users
-          </div>
+          <span class="comment"># 2. MOTOR SNOWFLAKE (Cloud Data Warehouse)</span>
+          prod_snowflake:
+          type: snowflake
+          account: xy12345.us-east-1
+          user: dbt_prod_user
+          password: mi_password_snowflake
+          role: TRANSFORMER
+          database: <span class="hl-cyan">snowflake_prod_dw</span>
+          warehouse: COMPUTE_WH
+          schema: <span class="hl-cyan">analytics</span>
 
-          <div
-            style="margin-top: 0.5rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Ejemplo adicional uniendo source() y ref():</span><br>
-            SELECT<br>
-            &nbsp;&nbsp;c.cliente_id,<br>
-            &nbsp;&nbsp;c.nombre,<br>
-            &nbsp;&nbsp;p.nombre_pais<br>
-            FROM <span style="color:#4ade80">{{ source('crm', 'clientes') }}</span> c<br>
-            LEFT JOIN <span style="color:#4ade80">{{ ref('codigos_pais') }}</span> p ON c.pais_id = p.id
-          </div>
+          <span class="comment"># 3. MOTOR BIGQUERY (Google Cloud Platform)</span>
+          bigquery_dataware_house:
+          type: bigquery
+          method: service-account
+          keyfile: /path/to/keys/service_account.json
+          project: <span class="hl-cyan">bigquery_prod_dw</span>
+          dataset: <span class="hl-cyan">analytics</span>
+          threads: 4
+          timeout_seconds: 300
         </div>
-
-        <!-- 2. MATERIALIZACIÓN -->
-        <div class="concept-card">
-          <h3>¿Qué es una Materialización?</h3>
-          <p>Es la forma física en que dbt guarda el resultado de tu modelo <code>.sql</code> dentro del Data Warehouse:
-          </p>
-          <p><strong>• View (Vista):</strong> Guarda solo la consulta virtual.<br>
-            <strong>• Table (Tabla):</strong> Crea una tabla física completa cada vez.<br>
-            <strong>• Incremental:</strong> Crea la tabla la primera vez y luego solo inserta filas nuevas.
-          </p>
-
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Archivo: models/fct_ventas.sql</span><br>
-            <span style="color:#fbbf24">{{ config(materialized='table') }}</span><br><br>
-            SELECT<br>
-            &nbsp;&nbsp;id_venta, <span style="color:#38bdf8">-- INT</span><br>
-            &nbsp;&nbsp;monto, <span style="color:#38bdf8">-- FLOAT</span><br>
-            &nbsp;&nbsp;fecha <span style="color:#38bdf8">-- DATE</span><br>
-            FROM raw_ventas
-          </div>
+        <div class="why-note">
+          <strong>Transparencia total:</strong> Cada motor apunta a su respectiva base de datos nativa y explícita
+          (<code>postgres_prod_dw</code>, <code>snowflake_prod_dw</code>, <code>bigquery_prod_dw</code>) manteniendo el
+          esquema analítico (<code>analytics</code>).
         </div>
+      </div>
 
-        <!-- 3. SEED -->
-        <div class="concept-card">
-          <h3>¿Qué es un Seed? <span>(.csv)</span></h3>
-          <p>Un <strong>seed</strong> es un archivo estático en formato <code>.csv</code> (como un catálogo de países,
-            monedas o metas) guardado en la carpeta <code>seeds/</code>.</p>
-          <p>Al ejecutar <code>dbt seed</code>, dbt lee ese CSV de tu disco y crea una tabla real con sus datos dentro
-            de la base de datos.</p>
+      <div class="table-wrapper">
+        <table id="dbtTable0">
+          <thead>
+            <tr>
+              <th>Comando dbt</th>
+              <th>Tipo / Contexto</th>
+              <th>¿De dónde sale exactamente? (Archivos y Configuración)</th>
+              <th>Cuándo usarlo</th>
+              <th>Ejemplo Detallado con TODAS las opciones y variantes (Perfil ➔ Archivo Local ➔ SQL en la BD)</th>
+            </tr>
+          </thead>
+          <tbody>
 
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Archivo: seeds/codigos_pais.csv</span><br>
-            id,nombre_pais,moneda<br>
-            CO,Colombia,COP <span style="color:#38bdf8">-- VARCHAR</span><br>
-            MX,Mexico,MXN <span style="color:#38bdf8">-- VARCHAR</span>
-          </div>
-        </div>
+            <!-- INIT -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt init</span></td>
+              <td><span class="badge badge-yaml">CLI / INICIO</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> No depende de archivos previos; crea toda la estructura estándar desde
+                    cero en tu computadora.</li>
+                  <li>Genera carpetas clave (<code>models/</code>, <code>seeds/</code>, <code>tests/</code>) y el
+                    archivo global <code>dbt_project.yml</code>.</li>
+                </ul>
+              </td>
+              <td>Únicamente al arrancar un nuevo proyecto de ingeniería o analítica de datos en tu entorno local.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Comando en Terminal</span><span class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt init <span class="hl-yellow">mi_proyecto_analitica</span></div>
+                  <div class="why-note">
+                    <strong>Efecto físico:</strong> Crea la carpeta <code>mi_proyecto_analitica/</code> con la
+                    arquitectura estándar lista para recibir código.
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-        <!-- 4. SOURCE -->
-        <div class="concept-card">
-          <h3>¿Qué es un Source? <span>(.yml + .sql)</span></h3>
-          <p>Son las <strong>tablas crudas (raw)</strong> que ya existen en tu base de datos porque las cargó otra
-            herramienta (Fivetran, Airbyte, Python).</p>
-          <p>Como dbt no las creó, debes declararlas en un archivo <code>sources.yml</code> especificando sus columnas,
-            tipos de datos y reglas, para luego consultarlas mediante <code>source()</code>.</p>
+            <!-- DEBUG -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt debug --target</span></td>
+              <td><span class="badge badge-yaml">CLI / CONEXIÓN</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> Lee tu archivo privado de credenciales ubicado en
+                    <code>~/.dbt/profiles.yml</code> según el target indicado.
+                  </li>
+                  <li>Prueba de forma activa la red y los permisos de acceso al motor seleccionado.</li>
+                </ul>
+              </td>
+              <td>Cada vez que configuras un motor nuevo o experimentas errores de acceso.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">type: snowflake | database: <span class="hl-cyan">snowflake_prod_dw</span> |
+                    schema: analytics</div>
 
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Archivo: models/sources.yml</span><br>
-            version: 2<br>
-            sources:<br>
-            &nbsp;&nbsp;- name: crm <span style="color:#64748b"># Alias del sistema</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;tables:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: clientes <span style="color:#64748b"># Alias dbt</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifier: sf_users <span style="color:#64748b"># Tabla
-              real</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;columns:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: id <span style="color:#38bdf8">-- INT
-              (Único)</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: status <span style="color:#38bdf8">--
-              VARCHAR (Valores: activo, inactivo)</span>
-          </div>
+                  <div class="file-header"><span>2. Comando en Terminal (Probando Snowflake)</span><span
+                      class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt debug --target <span class="hl-cyan">prod_snowflake</span></div>
 
-          <div
-            style="margin-top: 0.4rem; background: #060910; padding: 0.5rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Uso en models/stg_clientes.sql</span><br>
-            SELECT id, status FROM <span style="color:#4ade80">{{ source('crm', 'clientes') }}</span>
-          </div>
-        </div>
+                  <div class="file-header header-compiled"><span>3. Salida en consola</span><span
+                      class="file-tag">LOGS</span></div>
+                  <div class="code-snippet code-compiled">Connection test: [OK connection ok to Snowflake]</div>
+                </div>
+              </td>
+            </tr>
 
-        <!-- 5. REF() -->
-        <div class="concept-card">
-          <h3>¿Qué es ref()? <span>(Función Jinja)</span></h3>
-          <p><code>ref()</code> es la función principal de dbt para conectar modelos entre sí. Toma el nombre de otro
-            modelo o seed sin extensión y resuelve automáticamente su ruta física en el Data Warehouse.</p>
-          <p>Garantiza que dbt construya el DAG (linaje) ejecutando primero los modelos dependientes.</p>
+            <!-- DEPS -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt deps</span></td>
+              <td><span class="badge badge-yaml">CLI / PAQUETES</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> Lee el archivo <code>packages.yml</code> situado en la raíz de tu
+                    proyecto dbt.</li>
+                  <li>Descarga repositorios externos de código abierto para usarlos en tus modelos.</li>
+                </ul>
+              </td>
+              <td>Al clonar un repositorio de Git o tras añadir nuevas librerías en tu archivo
+                <code>packages.yml</code>.
+              </td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">type: postgres | dbname: <span class="hl-cyan">postgres_prod_dw</span> |
+                    schema: analytics</div>
 
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Archivo: models/dim_clientes.sql</span><br>
-            SELECT<br>
-            &nbsp;&nbsp;c.cliente_id,<br>
-            &nbsp;&nbsp;c.nombre,<br>
-            &nbsp;&nbsp;p.nombre_pais <span style="color:#38bdf8">-- VARCHAR</span><br>
-            FROM <span style="color:#4ade80">{{ ref('stg_clientes') }}</span> c<br>
-            LEFT JOIN <span style="color:#4ade80">{{ ref('codigos_pais') }}</span> p ON c.pais_id = p.id
-          </div>
-        </div>
+                  <div class="file-header"><span>2. Archivo local (packages.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">packages:
+                    - package: dbt-labs/dbt_utils
+                    version: 1.1.1</div>
 
-        <!-- 6. TEST -->
-        <div class="concept-card">
-          <h3>¿Qué es un Test? <span>(Prueba de Calidad)</span></h3>
-          <p>Los <strong>tests</strong> en dbt son aserciones sobre tus datos para garantizar la calidad (ej. verificar
-            que una columna sea única, no nula, o cumpla relaciones).</p>
-          <p>Se definen principalmente en archivos <code>.yml</code> adjuntos a tus modelos.</p>
+                  <div class="file-header"><span>3. Comando en Terminal</span><span class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt deps</div>
+                </div>
+              </td>
+            </tr>
 
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Archivo: models/schema.yml</span><br>
-            version: 2<br>
-            models:<br>
-            &nbsp;&nbsp;- name: dim_clientes<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;columns:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: cliente_id <span style="color:#38bdf8">-- INT</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tests: [<span style="color:#4ade80">unique</span>, <span
-              style="color:#4ade80">not_null</span>]<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: estado <span style="color:#38bdf8">-- VARCHAR</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tests: [{accepted_values: {values: ['activo', 'inactivo']}}]
-          </div>
-        </div>
+            <!-- SEED -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt seed --target</span></td>
+              <td><span class="badge badge-csv">.CSV / CARGA</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen de datos:</strong> Lee el archivo plano creado en tu disco:
+                    <code>seeds/codigos_pais.csv</code>.
+                  </li>
+                  <li><strong>Origen de la ruta (BD y Esquema):</strong> Toma la base de datos específica y esquema
+                    definidos en el perfil activo de tu <code>~/.dbt/profiles.yml</code>.</li>
+                </ul>
+              </td>
+              <td>Para cargar catálogos estáticos de negocio que vienen de archivos planos CSV.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">type: bigquery | project: <span class="hl-cyan">bigquery_prod_dw</span> |
+                    dataset: analytics</div>
 
-        <!-- 7. DAG (LINAJE) -->
-        <div class="concept-card">
-          <h3>¿Qué es el DAG (Linaje)?</h3>
-          <p>Es el mapa de dependencias que dbt arma automáticamente al leer tus <code>source()</code> y
-            <code>ref()</code>.
-          </p>
-          <p>Si el modelo B tiene <code>{{ ref('modelo_a') }}</code>, dbt sabe que primero debe construir
-            <strong>modelo_a</strong> en la base de datos antes de ejecutar <strong>modelo_b</strong>.
-          </p>
+                  <div class="file-header"><span>2. Archivo local en tu disco (seeds/codigos_pais.csv)</span><span
+                      class="file-tag">.CSV</span></div>
+                  <div class="code-snippet">id,nombre_pais,moneda
+                    CO,Colombia,COP
+                    MX,Mexico,MXN</div>
 
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Orden de ejecución del DAG en consola:</span><br>
-            1. source('crm', 'clientes') ➔<br>
-            2. models/stg_clientes.sql ➔<br>
-            3. seeds/codigos_pais.csv ➔<br>
-            4. models/dim_clientes.sql
-          </div>
-        </div>
+                  <div class="file-header"><span>3. Comando ejecutado en Terminal</span><span
+                      class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt seed --target <span class="hl-cyan">bigquery_dataware_house</span></div>
 
-        <!-- 8. PROFILES.YML -->
-        <div class="concept-card">
-          <h3>¿Qué es profiles.yml?</h3>
-          <p>Es el archivo de configuración de conexión (fuera del repositorio del proyecto) donde defines a qué base de
-            datos conectarte y en qué esquema trabajar.</p>
-          <p>Por ejemplo, define que en entorno <code>dev</code> escriba en <code>dev_juan</code> y en <code>prod</code>
-            escriba en <code>prod_dw.analytics</code>.</p>
+                  <div class="file-header header-compiled"><span>4. SQL real ejecutado en el Data Warehouse
+                      (BigQuery)</span><span class="file-tag">COMPILADO</span></div>
+                  <div class="code-snippet code-compiled">CREATE TABLE <span
+                      class="hl-green">bigquery_prod_dw.analytics.codigos_pais</span> AS (
+                    SELECT 'CO' AS id, 'Colombia' AS nombre_pais, 'COP' AS moneda
+                    UNION ALL
+                    SELECT 'MX', 'Mexico', 'MXN'
+                    );</div>
+                </div>
+              </td>
+            </tr>
 
-          <div
-            style="margin-top: 0.6rem; background: #060910; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-            <span style="color:#64748b">-- Archivo: ~/.dbt/profiles.yml</span><br>
-            mi_proyecto:<br>
-            &nbsp;&nbsp;target: dev <span style="color:#38bdf8">-- Entorno activo</span><br>
-            &nbsp;&nbsp;outputs:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;dev:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: snowflake<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;database: dev_dw <span style="color:#38bdf8">-- VARCHAR</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schema: dev_juan <span style="color:#38bdf8">-- VARCHAR</span>
-          </div>
-        </div>
+            <!-- RUN -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt run --target</span></td>
+              <td><span class="badge badge-sql">.SQL / EJECUCIÓN (LAS 5 MATERIALIZACIONES EXPLICITAS)</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen de scripts:</strong> Lee todos los modelos <code>.sql</code> de la carpeta
+                    <code>models/</code>.
+                  </li>
+                  <li><strong>Desglose completo de las 5 variantes:</strong>
+                    <ul>
+                      <li><strong>1. View:</strong> Ejecuta <code>CREATE OR REPLACE VIEW</code>.</li>
+                      <li><strong>2. Table:</strong> Recrea toda la tabla desde cero con
+                        <code>CREATE OR REPLACE TABLE AS</code>.
+                      </li>
+                      <li><strong>3. Incremental SIN unique_key:</strong> Al no tener llave, dbt por defecto realiza un
+                        <code>INSERT INTO</code> (Append).
+                      </li>
+                      <li><strong>4. Incremental con STRATEGY='APPEND':</strong> Inserta solo registros nuevos usando un
+                        <code>INSERT INTO</code> plano explícito.
+                      </li>
+                      <li><strong>5. Incremental con STRATEGY='MERGE':</strong> Ejecuta un <code>MERGE INTO</code>
+                        nativo usando la <code>unique_key</code>.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </td>
+              <td>Para ejecutar y compilar cualquier modelo en tu Data Warehouse aplicando la estrategia de
+                almacenamiento deseada.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>Configuración base en ~/.dbt/profiles.yml</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">dbname: <span class="hl-cyan">postgres_prod_dw</span> | schema: analytics
+                  </div>
 
+                  <!-- 1. VIEW -->
+                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 1: models/stg_ventas.sql
+                      (Materialized = View)</span><span class="file-tag">.SQL</span></div>
+                  <div class="code-snippet">{{ config(materialized='view') }}
+                    SELECT * FROM raw_ventas</div>
+                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (View)</span><span
+                      class="file-tag">COMPILADO</span></div>
+                  <div class="code-snippet code-compiled">CREATE OR REPLACE VIEW <span
+                      class="hl-green">postgres_prod_dw.analytics.stg_ventas</span> AS (
+                    SELECT * FROM raw_ventas
+                    );</div>
+
+                  <!-- 2. TABLE -->
+                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 2: models/fct_resumen.sql
+                      (Materialized = Table)</span><span class="file-tag">.YML</span></div>
+                  <div class="code-snippet">{{ config(materialized='table') }}
+                    SELECT * FROM {{ ref('stg_ventas') }}</div>
+                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (Table - Recrea
+                      todo)</span><span class="file-tag">COMPILADO</span></div>
+                  <div class="code-snippet code-compiled">CREATE OR REPLACE TABLE <span
+                      class="hl-green">postgres_prod_dw.analytics.fct_resumen</span> AS (
+                    SELECT * FROM <span class="hl-green">postgres_prod_dw.analytics.stg_ventas</span>
+                    );</div>
+
+                  <!-- 3. INCREMENTAL SIN UNIQUE_KEY -->
+                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 3: models/log_sin_llave.sql
+                      (Incremental SIN unique_key)</span><span class="file-tag">.SQL</span></div>
+                  <div class="code-snippet">{{ config(materialized='incremental') }}
+                    SELECT id, mensaje, fecha FROM raw_logs
+                    {% if is_incremental() %}
+                    WHERE fecha >= (SELECT MAX(fecha) FROM {{ this }})
+                    {% endif %}</div>
+                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (INSERT INTO / APPEND automático
+                      al no haber llave)</span><span class="file-tag">COMPILADO</span></div>
+                  <div class="code-snippet code-compiled">INSERT INTO <span
+                      class="hl-green">postgres_prod_dw.analytics.log_sin_llave</span> (id, mensaje, fecha)
+                    SELECT id, mensaje, fecha FROM raw_logs
+                    WHERE fecha >= (SELECT MAX(fecha) FROM <span
+                      class="hl-green">postgres_prod_dw.analytics.log_sin_llave</span>);</div>
+
+                  <!-- 4. INCREMENTAL APPEND -->
+                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 4: models/log_eventos.sql
+                      (Incremental con strategy='append')</span><span class="file-tag">.SQL</span></div>
+                  <div class="code-snippet">{{ config(materialized='incremental', strategy='append') }}
+                    SELECT id, mensaje, fecha FROM raw_logs
+                    {% if is_incremental() %}
+                    WHERE fecha >= (SELECT MAX(fecha) FROM {{ this }})
+                    {% endif %}</div>
+                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (INSERT INTO / APPEND explícito
+                      de registros nuevos)</span><span class="file-tag">COMPILADO</span></div>
+                  <div class="code-snippet code-compiled">INSERT INTO <span
+                      class="hl-green">postgres_prod_dw.analytics.log_eventos</span> (id, mensaje, fecha)
+                    SELECT id, mensaje, fecha FROM raw_logs
+                    WHERE fecha >= (SELECT MAX(fecha) FROM <span
+                      class="hl-green">postgres_prod_dw.analytics.log_eventos</span>);</div>
+
+                  <!-- 5. INCREMENTAL MERGE -->
+                  <div class="file-header" style="margin-top:0.7rem;"><span>Variante 5: models/dim_clientes.sql
+                      (Incremental con strategy='merge' y unique_key)</span><span class="file-tag">.SQL</span></div>
+                  <div class="code-snippet">{{ config(materialized='incremental', strategy='merge',
+                    unique_key='id_cliente') }}
+                    SELECT id_cliente, estado FROM {{ ref('stg_clientes') }}</div>
+                  <div class="file-header header-compiled"><span>SQL Compilado en la BD (MERGE INTO nativo: Actualiza y
+                      Añade)</span><span class="file-tag">COMPILADO</span></div>
+                  <div class="code-snippet code-compiled">MERGE INTO <span
+                      class="hl-green">postgres_prod_dw.analytics.dim_clientes</span> AS DBT_DEST
+                    USING (SELECT id_cliente, estado FROM <span
+                      class="hl-green">postgres_prod_dw.analytics.stg_clientes</span>) AS DBT_SRC
+                    ON (DBT_DEST.id_cliente = DBT_SRC.id_cliente)
+                    WHEN MATCHED THEN UPDATE SET estado = DBT_SRC.estado
+                    WHEN NOT MATCHED THEN INSERT (id_cliente, estado) VALUES (DBT_SRC.id_cliente, DBT_SRC.estado);</div>
+
+                  <!-- COMANDO BASH -->
+                  <div class="file-header" style="margin-top:0.7rem;"><span>Comando en Terminal para ejecutar todo lo
+                      anterior</span><span class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt run --target <span class="hl-cyan">prod_postgres</span></div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- RUN --SELECT -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt run --select --target</span></td>
+              <td><span class="badge badge-sql">.SQL / SELECTIVO</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> Busca dentro de la carpeta <code>models/</code> únicamente el archivo
+                    especificado y resuelve automáticamente sus dependencias apuntando a la base de datos del perfil
+                    seleccionado (ej. <code>snowflake_prod_dw.analytics</code>).</li>
+                </ul>
+              </td>
+              <td>Cuando estás programando un modelo puntual y quieres validar tus cambios rápidamente en la nube.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">type: snowflake | database: <span class="hl-cyan">snowflake_prod_dw</span> |
+                    schema: analytics</div>
+
+                  <div class="file-header"><span>2. Archivo local en tu disco (models/stg_clientes.sql)</span><span
+                      class="file-tag">.SQL</span></div>
+                  <div class="code-snippet">SELECT id AS cliente_id FROM snowflake_prod_dw.raw_salesforce.sf_users</div>
+
+                  <div class="file-header"><span>3. Comando en Terminal</span><span class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt run --select <span class="hl-yellow">stg_clientes</span> --target <span
+                      class="hl-cyan">prod_snowflake</span></div>
+
+                  <div class="file-header header-compiled"><span>4. SQL real en la BD usando el perfil de
+                      Snowflake</span><span class="file-tag">COMPILADO</span></div>
+                  <div class="code-snippet code-compiled">CREATE OR REPLACE VIEW <span
+                      class="hl-green">snowflake_prod_dw.analytics.stg_clientes</span> AS (
+                    SELECT id AS cliente_id FROM snowflake_prod_dw.raw_salesforce.sf_users
+                    );</div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- TEST -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt test --target</span></td>
+              <td><span class="badge badge-yaml">.YML / CALIDAD</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> Lee las reglas definidas en tus archivos <code>.yml</code> (ej.
+                    <code>models/schema.yml</code>).
+                  </li>
+                  <li><strong>Lógica:</strong> Combina el nombre de la tabla con la base de datos específica y esquema
+                    del perfil activo (ej. <code>bigquery_prod_dw.analytics</code>) para lanzar queries de auditoría.
+                  </li>
+                </ul>
+              </td>
+              <td>Inmediatamente después de <code>dbt run</code> para garantizar la calidad antes de entregar datos a
+                negocio.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">type: bigquery | project: <span class="hl-cyan">bigquery_prod_dw</span> |
+                    dataset: analytics</div>
+
+                  <div class="file-header"><span>2. Definición local (models/schema.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">models:
+                    - name: dim_clientes
+                    columns:
+                    - name: cliente_id
+                    tests: [unique, not_null]</div>
+
+                  <div class="file-header"><span>3. Comando en Terminal</span><span class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt test --target <span class="hl-cyan">bigquery_dataware_house</span></div>
+
+                  <div class="file-header header-compiled"><span>4. Query de auditoría lanzado a la BD (Usando
+                      BigQuery)</span><span class="file-tag">VALIDACIÓN</span></div>
+                  <div class="code-snippet code-compiled">SELECT cliente_id
+                    FROM <span class="hl-green">bigquery_prod_dw.analytics.dim_clientes</span>
+                    WHERE cliente_id IS NULL;</div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- TEST ESPECÍFICO PARA UN SCRIPT -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt test selective</span></td>
+              <td><span class="badge badge-yaml">.YML / CALIDAD SELECTIVA</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> Lee únicamente las reglas de prueba asociadas al modelo o script
+                    específico que indiques (ej. <code>dim_clientes</code>).</li>
+                  <li>Lanza los queries de auditoría contra el motor y base de datos configurados en el target
+                    seleccionado (<code>bigquery_prod_dw.analytics</code>).</li>
+                </ul>
+              </td>
+              <td>Cuando modificas un script o modelo en particular y quieres validar su calidad de forma inmediata
+                contra un Data Warehouse específico sin perder tiempo ejecutando los tests de todo el proyecto.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino en ~/.dbt/profiles.yml</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">bigquery_dataware_house:
+                    type: bigquery
+                    method: service-account
+                    project: <span class="hl-cyan">bigquery_prod_dw</span>
+                    dataset: <span class="hl-cyan">analytics</span></div>
+
+                  <div class="file-header"><span>2. Definición de pruebas en el archivo schema.yml para ese
+                      modelo</span><span class="file-tag">.YML</span></div>
+                  <div class="code-snippet">models:
+                    - name: <span class="hl-yellow">dim_clientes</span>
+                    columns:
+                    - name: cliente_id
+                    tests: [unique, not_null]</div>
+
+                  <div class="file-header"><span>3. Comando exacto ejecutado en Terminal</span><span
+                      class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt test --target <span class="hl-cyan">bigquery_dataware_house</span>
+                    --select <span class="hl-yellow">dim_clientes</span></div>
+
+                  <div class="file-header header-compiled"><span>4. Query de auditoría real lanzado a la BD por
+                      BigQuery</span><span class="file-tag">VALIDACIÓN</span></div>
+                  <div class="code-snippet code-compiled">SELECT cliente_id
+                    FROM `<span class="hl-green">bigquery_prod_dw.analytics.dim_clientes</span>`
+                    WHERE cliente_id IS NULL;</div>
+                </div>
+              </td>
+            </tr>
+
+
+            <!-- DOCS -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt docs generate</span><br><span class="func-name"
+                  style="margin-top:0.3rem">dbt docs serve</span></td>
+              <td><span class="badge badge-os">WEB / DOCUMENTACIÓN</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> Lee el archivo de manifiesto compilado
+                    (<code>target/manifest.json</code>) generado localmente en base a la estructura del proyecto y
+                    perfiles.</li>
+                </ul>
+              </td>
+              <td>Cuando necesitas explorar visualmente el linaje (DAG) o documentar tablas para el equipo.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">type: snowflake | database: <span class="hl-cyan">snowflake_prod_dw</span> |
+                    schema: analytics</div>
+
+                  <div class="file-header"><span>2. Comandos en Terminal</span><span class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt docs generate --target <span
+                      class="hl-cyan">prod_snowflake</span><br>dbt docs serve</div>
+                  <div class="why-note">
+                    <strong>Efecto físico:</strong> Abre un servidor local interactivo (ej.
+                    <code>http://localhost:8080</code>).
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- CLEAN -->
+            <tr data-category="cli">
+              <td><span class="func-name">dbt clean</span></td>
+              <td><span class="badge badge-os">CLI / MANTENIMIENTO</span></td>
+              <td>
+                <ul class="explain-list">
+                  <li><strong>Origen:</strong> Borra físicamente las carpetas temporales de compilación guardadas en tu
+                    disco (como <code>target/</code>).</li>
+                </ul>
+              </td>
+              <td>Para solucionar errores de caché o antes de subir código limpio a Git.</td>
+              <td>
+                <div class="example-box">
+                  <div class="file-header"><span>1. Configuración de destino (~/.dbt/profiles.yml)</span><span
+                      class="file-tag">.YML</span></div>
+                  <div class="code-snippet">type: postgres | dbname: <span class="hl-cyan">postgres_prod_dw</span> |
+                    schema: analytics</div>
+
+                  <div class="file-header"><span>2. Comando en Terminal</span><span class="file-tag">BASH</span></div>
+                  <div class="code-snippet">dbt clean</div>
+                  <div class="why-note">
+                    <strong>Efecto físico:</strong> Elimina la carpeta local <code>target/</code> para asegurar una
+                    compilación limpia.
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
       </div>
     </section>
 
-    <!-- EXPLICACIÓN CLAVE: ¿POR QUÉ LEE UN ARCHIVO LOCAL Y CONSULTA LA BD? -->
-    <div class="architecture-box">
-      <h3>2. La Duda Clave: Si <code>stg_clientes.sql</code> es un archivo local, ¿por qué
-        <code>{{ ref('stg_clientes') }}</code> consulta <code>prod_dw.analytics.stg_clientes</code>?
-      </h3>
-      <p style="color: #e2e8f0; font-size: 0.95rem;">
-        <strong>dbt nunca ejecuta consultas SQL contra archivos de texto en tu disco duro.</strong> dbt es un
-        <em>orquestador y compilador</em> que trabaja siempre contra tu Data Warehouse (Snowflake, BigQuery, Postgres,
-        etc.). El ciclo funciona en 3 pasos exactos:
-      </p>
-      <div class="flow-steps">
-        <div class="flow-step">
-          <span class="flow-step-num">Paso 1: Orden de ejecución</span>
-          Al ver <code>{{ ref('stg_clientes') }}</code> dentro de <code>dim_clientes.sql</code>, dbt detecta una
-          dependencia y ejecuta primero el archivo <code>models/stg_clientes.sql</code>.
-        </div>
-        <div class="flow-step">
-          <span class="flow-step-num">Paso 2: Creación en la BD</span>
-          dbt toma el <code>SELECT</code> de <code>stg_clientes.sql</code> y crea una tabla o vista real en tu Data
-          Warehouse llamada <strong><code>prod_dw.analytics.stg_clientes</code></strong> (usando la base de datos y
-          esquema configurados en tu <code>profiles.yml</code>).
-        </div>
-        <div class="flow-step">
-          <span class="flow-step-num">Paso 3: Traducción del ref()</span>
-          Ahora que la tabla física ya existe en la BD, dbt reemplaza el texto <code>{{ ref('stg_clientes') }}</code>
-          por la ruta real de esa tabla en la BD: <strong><code>prod_dw.analytics.stg_clientes</code></strong>.
-        </div>
-      </div>
-    </div>
-
     <section class="concepts-section">
-      <h2 class="section-title">2. Guía Detallada de Funciones y Variables Jinja en dbt</h2>
+      <h2 class="section-title">3. Guía Detallada de Funciones y Variables Jinja en dbt</h2>
 
       <div class="controls">
         <div class="filters">
