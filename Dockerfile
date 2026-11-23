@@ -8,7 +8,13 @@
 # docker buildx build --platform linux/amd64,linux/arm64 --tag jorgecardona/datascience-mlops:3.14.7 --push .
 
 # docker build --tag jorgecardona/datascience-mlops:3.14.7 .
-# docker run -d --name mlops-new -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:3.14.7
+# docker run -d --name mlops-new -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 --restart always jorgecardona/datascience-mlops:3.14.7
+
+# REPLACE CONTAINER mlops-new IF EXISTS
+# docker run -d --name mlops-new -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 9091:9091 --restart always jorgecardona/datascience-mlops:3.14.7; if ((docker inspect -f '{{.State.Running}}' mlops-new 2>$null) -ne "true") { docker rm -f mlops-new; Write-Host "Error: Port already in use. Container removed." -ForegroundColor Red }
+
+
+
 # (Invoke-RestMethod -Uri "https://hub.docker.com/v2/repositories/jorgecardona/datascience-mlops/").pull_count
 # (Invoke-RestMethod -Uri "https://hub.docker.com/v2/repositories/jorgecardona/datascience-mlops-kernels/").pull_count
 
@@ -55,7 +61,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     "langgraph"                `# [REMPLAZADO POR]: crewai` 
-    # "crewai"                   `# [COMPITE CON]: langgraph (para agentes multi-paso por roles)`
+# "crewai"                   `# [COMPITE CON]: langgraph (para agentes multi-paso por roles)`
 
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     "langchain-openai"         `# [WRAPPER]: Conector de OpenAI exclusivo para LangChain` \
@@ -128,7 +134,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     mssql-python
 
 # --- MANIPULACIÓN DE DATOS, ARCHIVOS Y LECTORES ---
-    RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     pandas \
     polars \
     tables \
@@ -164,7 +170,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     dask \
     dask-labextension \
     apache-beam[interactive]
-    # airbyte
+# airbyte
 
 # --- ORQUESTACIÓN, MLOps Y PRUEBAS ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
@@ -182,7 +188,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     pytest-selenium \
     behave \
     locust 
-    
+
 # --- ENTORNO Y EXTENSIONES DE JUPYTERLAB ---
 RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     jupyterlab-git \
@@ -273,7 +279,7 @@ RUN mkdir -p /root/airflow/dags
 # Crear archivo de contraseñas del Simple Auth Manager
 RUN echo '{"admin": "12345678"}' > /root/airflow/simple_auth_manager_passwords.json && \
     cp /root/airflow/simple_auth_manager_passwords.json \
-       /root/airflow/simple_auth_manager_passwords.json.generated
+    /root/airflow/simple_auth_manager_passwords.json.generated
 
 # copia la configuracion del notebook personalizada
 COPY NotebookConfig/tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
