@@ -247,6 +247,7 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
 # SQL FORMAT ---
 RUN  pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     metricflow \
+    "dbt-metricflow[postgres]" \
     sqlfluff \
     sqlfluff-templater-dbt
 
