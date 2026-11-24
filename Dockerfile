@@ -214,16 +214,6 @@ RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
     grpcio \
     grpcio-tools
 
-# --- GESTIÓN DE CONFIGURACIÓN Y VARIABLES DE ENTORNO ---
-RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
-    python-dotenv \
-    pydantic-settings \
-    python-decouple \
-    environs \
-    dynaconf \
-    pyyaml \
-    tomli
-
 #########################################################################
 #               OBSERVABILIDAD, TELEMETRÍA Y MONITORIZACIÓN             #
 #########################################################################
@@ -242,6 +232,32 @@ ENV OTEL_TRACES_EXPORTER="otlp"
 ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4317"
 ENV OTEL_EXPORTER_OTLP_INSECURE="true"
 ENV OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="SPAN_ONLY"
+
+# --- GESTIÓN DE CONFIGURACIÓN Y VARIABLES DE ENTORNO ---
+RUN pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    python-dotenv \
+    pydantic-settings \
+    python-decouple \
+    environs \
+    dynaconf \
+    pyyaml \
+    yamllint \
+    tomli
+
+# SQL FORMAT ---
+RUN  pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    metricflow \
+    sqlfluff \
+    sqlfluff-templater-dbt
+
+# VALIDACION GIT
+RUN  pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    pre-commit
+
+# ENTORNOS
+RUN  pip install --no-cache-dir -i https://pypi.org/simple --upgrade \
+    virtualenv \
+    poetry
 
 ###############################################################
 ################ UTILIDADES PARA EL CONTENEDOR ################
