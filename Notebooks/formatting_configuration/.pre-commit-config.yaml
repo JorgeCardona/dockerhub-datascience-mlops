@@ -34,7 +34,7 @@
 #
 # - Uso normal: Al ejecutar "git commit -m 'feat: ...'", todo corre automático.
 #   NOTA: Como está activo "no-commit-to-branch", crea primero una rama nueva:
-#     git checkout -b feat/mi-cambio
+#     git checkout -b feat/PROJ-123-mi-cambio
 #
 # - Omitir UNA regla específica en un commit puntual (usa el valor de "id"):
 #     SKIP=pytest-cov git commit -m "wip: avance sin tests"
@@ -54,7 +54,7 @@
 #   Luego ejecuta "pre-commit autoupdate" para traer la última versión.
 #
 # - Opción B (Desde una herramienta ya instalada en tu entorno/Docker): Agrégala
-#   dentro de la sección "6. HERRAMIENTAS INSTALADAS EN TU DOCKERFILE" usando
+#   dentro de la sección "7. HERRAMIENTAS INSTALADAS EN TU DOCKERFILE" usando
 #   "language: system":
 #     - id: mi-regla-local
 #       name: mi-regla-local
@@ -112,46 +112,98 @@ repos:
         args: ['--autofix', '--no-sort-keys']
 
   # ==============================================================================
-  # 2. SEGURIDAD AVANZADA: DETECCIÓN DE SECRETOS Y API KEYS (OpenAI, AWS, DBs)
+  # 2. SEGURIDAD AVANZADA Y ANÁLISIS ESTÁTICO (SAST, Secretos y Dependencias)
   # ==============================================================================
   - repo: https://github.comgitleaks/gitleaks
     rev: v8.21.2
     hooks:
       - id: gitleaks                  # Escanea tokens de OpenAI, Gemini, AWS, contraseñas, etc.
 
+  - repo: https://github.comPyCQA/bandit
+    rev: 1.7.10
+    hooks:
+      - id: bandit                    # Detecta vulnerabilidades de seguridad en Python (SQLi, pickle, eval)
+        args: ['-ll']                 # Solo bloquea vulnerabilidades de severidad Media o Alta
+
+  - repo: https://github.compypa/pip-audit
+    rev: v2.7.3
+    hooks:
+      - id: pip-audit                 # Audita requirements.txt en busca de paquetes con fallos CVE
+
   # ==============================================================================
-  # 3. LIMPIEZA DE JUPYTER NOTEBOOKS (.ipynb)
+  # 3. LIMPIEZA Y SINCRONIZACIÓN DE JUPYTER NOTEBOOKS (.ipynb)
   # ==============================================================================
   - repo: https://github.comkynan/nbstripout
     rev: 0.8.1
     hooks:
       - id: nbstripout                # Borra salidas pesadas (gráficos, tablas) de los notebooks
 
+  - repo: https://github.commwouts/jupytext
+    rev: v1.16.4
+    hooks:
+      - id: jupytext                  # Sincroniza cada .ipynb con un .py limpio para facilitar Code Review
+        args: ['--sync']
+
   # ==============================================================================
-  # 4. CALIDAD DE INFRAESTRUCTURA Y DOCUMENTACIÓN (Dockerfile y Ortografía)
+  # 4. CALIDAD DE INFRAESTRUCTURA, ESQUEMAS Y DOCUMENTACIÓN
   # ==============================================================================
-  - repo: https://github.comhadolint/hadolint
+  - repo: https://github.com
     rev: v2.13.1-beta
     hooks:
       - id: hadolint-docker           # Revisa buenas prácticas y seguridad en archivos Dockerfile
 
-  - repo: https://github.comcodespell-project/codespell
+  - repo: https://github.com
+    rev: 0.30.0
+    hooks:
+      - id: check-github-workflows    # Valida sintaxis de archivos .github/workflows/*.yml
+      - id: check-compose-spec        # Valida estructura y claves de archivos docker-compose.yml
+
+  - repo: https://github.com
     rev: v2.3.0
     hooks:
       - id: codespell                 # Corrige errores ortográficos (ignora notebooks y JSON)
         args: ['--write-changes', '--skip=*.ipynb,*.json']
 
+  - repo: https://github.com
+    rev: 0.7.19
+    hooks:
+      - id: mdformat                  # Formatea y estandariza automáticamente archivos Markdown (.md)
+
   # ==============================================================================
   # 5. ESTÁNDAR DE MENSAJES DE COMMIT (Conventional Commits)
   # ==============================================================================
-  - repo: https://github.comcompilerla/conventional-pre-commit
+  - repo: https://github.com
     rev: v3.6.0
     hooks:
       - id: conventional-pre-commit   # Obliga mensajes con prefijo: feat:, fix:, docs:, chore:, etc.
         stages: [commit-msg]
 
   # ==============================================================================
-  # 6. HERRAMIENTAS LOCALES DEL ENTORNO (Python, Tipos, YAML, SQL y Pytest)
+  # 6. REGLAS PERSONALIZADAS DE GOBERNANZA Y PRIVACIDAD (PII, TODOs y Ramas)
+  # ==============================================================================
+  - repo: local
+    hooks:
+      - id: forbid-todos              # Bloquea commits si dejaste comentarios TODO: o FIXME: sin resolver
+        name: forbid-todos-and-fixmes
+        entry: "(TODO|FIXME):"
+        language: pygrep
+        types: [python, sql]
+
+      - id: forbid-pii-emails         # Evita subir correos reales de clientes dentro de archivos CSV
+        name: forbid-pii-emails-in-csv
+        entry: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+        language: pygrep
+        files: "\\.csv$"
+
+      - id: validate-branch-name      # Exige formato de rama: feat/PROJ-123-descripcion o fix/...
+        name: validate-branch-name
+        entry: bash -c 'branch=$(git rev-parse --abbrev-ref HEAD); echo "$branch" | grep -Eq "^(feat|fix|docs|chore|refactor|test)/([A-Z]+-[0-9]+-)?[a-z0-9._-]+$" || { echo "Nombre de rama invalido ($branch). Usa: feat/PROJ-123-descripcion"; exit 1; }'
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  # ==============================================================================
+  # 7. HERRAMIENTAS LOCALES DEL ENTORNO (Python, Tipos, YAML, SQL y Pytest)
   # ==============================================================================
   - repo: local
     hooks:
@@ -183,3 +235,14 @@ repos:
         name: sqlfluff-fix
         entry: sqlfluff fix
         language: system
+        types: [sql]
+
+      # Nota: Si tu proyecto crece y los tests tardan mucho, añade "stages: [pre-push]"
+      # aquí abajo para que corran al hacer push en lugar de cada commit.
+      - id: pytest-cov                # Ejecuta tests y exige cobertura >= 85% para permitir el commit
+        name: pytest-coverage-85
+        entry: pytest --cov=. --cov-fail-under=85
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
