@@ -1,0 +1,28 @@
+[sqlfluff]
+# Dialecto SQL por defecto (puedes cambiarlo a duckdb, sparksql, bigquery, snowflake, etc.)
+dialect = postgres
+
+# Si usas modelos de dbt con Jinja ({{ ref('...') }}), cambia 'raw' por 'dbt'
+templater = raw
+
+# Regla 1: Obligar a que TODAS las palabras clave de SQL (SELECT, FROM, WHERE, JOIN, etc.)
+# estén en MAYÚSCULAS (capitalisation_policy = upper)
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = upper
+
+# Regla 2: Obligar a que los tipos de datos (INT, VARCHAR, TIMESTAMP, BOOLEAN)
+# también estén en MAYÚSCULAS
+[sqlfluff:rules:capitalisation.types]
+capitalisation_policy = upper
+
+# Regla 3: Obligar a que las funciones (COUNT, SUM, COALESCE, MAX) estén en MAYÚSCULAS
+[sqlfluff:rules:capitalisation.functions]
+capitalisation_policy = upper
+
+# Regla 4: Obligar a que SIEMPRE se use la palabra "AS" antes de un alias
+# tanto en columnas (SELECT a AS b) como en tablas (FROM usuarios AS u)
+[sqlfluff:rules:aliasing.table]
+aliasing = explicit
+
+[sqlfluff:rules:aliasing.column]
+aliasing = explicit
