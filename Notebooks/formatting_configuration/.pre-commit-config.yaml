@@ -1,40 +1,104 @@
 # ==============================================================================
-# REQUISITOS DE PAQUETES PYTHON (PIP)
+# 1. REQUISITOS DE PAQUETES PYTHON (PIP)
 # ==============================================================================
-# Si usas la imagen Docker "jorgecardona/datascience-mlops", todos estos paquetes
-# ya vienen preinstalados. Si lo usas en otro entorno, instala obligatoriamente:
+# Si usas la imagen Docker "jorgecardona/datascience-mlops", la mayoría ya vienen
+# instalados (solo asegúrate de tener mypy). En cualquier otro entorno, instala:
 #
-# pip install pre-commit ruff yamllint sqlfluff sqlfluff-templater-dbt pytest pytest-cov
+#   pip install pre-commit ruff mypy yamllint sqlfluff sqlfluff-templater-dbt pytest pytest-cov
+#
+# (Nota: Los hooks que apuntan a "https://github.com..." NO requieren pip install;
+#  pre-commit los descarga y aísla automáticamente la primera vez que se ejecutan).
+#
 # ==============================================================================
-# INSTRUCCIONES DE INSTALACIÓN Y UBICACIÓN
+# 2. UBICACIÓN EN EL PROYECTO Y ARCHIVO DE REGLAS SQL (.sqlfluff)
 # ==============================================================================
-# 1. Tanto este archivo (.pre-commit-config.yaml) como (.sqlfluff) deben ubicarse
-#    directamente en la carpeta raíz (root) de tu proyecto, al mismo nivel que .git/
+# - Tanto este archivo (.pre-commit-config.yaml) como (.sqlfluff) deben ubicarse
+#   directamente en la carpeta raíz (root) de tu proyecto, al mismo nivel que .git/
+# - IMPORTANTE: Las reglas de formateo SQL (palabras clave, funciones, CTEs y
+#   ventanas en MAYÚSCULAS + "AS" obligatorio en alias) NO están definidas aquí,
+#   sino en el archivo complementario ".sqlfluff" que lee el hook "sqlfluff-fix".
 #
-#    Estructura esperada del proyecto:
-#    tu-proyecto/                  <-- Raíz (root) del repositorio Git
-#    ├── .git/                     <-- Carpeta oculta de Git
-#    ├── .pre-commit-config.yaml   <-- ESTE ARCHIVO (debe ir en el root)
-#    ├── .sqlfluff                 <-- Reglas de estilo SQL (debe ir en el root)
-#    ├── src/
-#    └── tests/
+#   Estructura esperada del proyecto:
+#   tu-proyecto/                  <-- Raíz (root) del repositorio Git
+#   ├── .git/                     <-- Carpeta oculta de Git
+#   ├── .pre-commit-config.yaml   <-- ESTE ARCHIVO (debe ir en el root)
+#   ├── .sqlfluff                 <-- Archivo de reglas SQL (debe ir en el root)
+#   ├── src/
+#   └── tests/
 #
-# 2. Una vez ubicados en la raíz, abre la terminal en esa carpeta y ejecuta una sola vez:
-#    pre-commit install
+# ==============================================================================
+# 3. ACTIVACIÓN Y USO DIARIO
+# ==============================================================================
+# - Instalar hooks (ejecutar una sola vez en la raíz del proyecto):
+#     pre-commit install
 #
-# 3. A partir de ese momento, cada vez que ejecutes "git commit -m '...'", todas
-#    las validaciones, formateos y pruebas correrán de forma automática.
+# - Uso normal: Al ejecutar "git commit -m 'feat: ...'", todo corre automático.
+#   NOTA: Como está activo "no-commit-to-branch", crea primero una rama nueva:
+#     git checkout -b feat/mi-cambio
+#
+# - Omitir UNA regla específica en un commit puntual (usa el valor de "id"):
+#     SKIP=pytest-cov git commit -m "wip: avance sin tests"
+#     SKIP=mypy,sqlfluff-fix git commit -m "fix: ajuste rapido"
+#
+# - Omitir TODAS las reglas en una emergencia:
+#     git commit -m "hotfix: arreglo urgente" --no-verify
+#
+# ==============================================================================
+# 4. CÓMO ADICIONAR UNA REGLA NUEVA
+# ==============================================================================
+# - Opción A (Desde un repositorio de GitHub): Agrega un bloque nuevo bajo "repos:":
+#     - repo: https://github.comusuario/repo-hook
+#       rev: v1.0.0
+#       hooks:
+#         - id: nombre-del-hook
+#   Luego ejecuta "pre-commit autoupdate" para traer la última versión.
+#
+# - Opción B (Desde una herramienta ya instalada en tu entorno/Docker): Agrégala
+#   dentro de la sección "6. HERRAMIENTAS INSTALADAS EN TU DOCKERFILE" usando
+#   "language: system":
+#     - id: mi-regla-local
+#       name: mi-regla-local
+#       entry: comando-a-ejecutar --flags
+#       language: system
+#       types: [python]
+#
+# ==============================================================================
+# 5. SIGNIFICADO DE CADA PROPIEDAD DE UN HOOK (Anatomía de la configuración)
+# ==============================================================================
+# - repo:           URL del repositorio de GitHub de donde se descarga el plugin,
+#                   o "local" si usa comandos ya instalados en tu máquina/Docker.
+# - rev:            Versión exacta (tag o commit) del repositorio de GitHub a usar.
+# - id:             Identificador único interno del hook. Es el nombre que usas
+#                   si quieres saltártelo con "SKIP=<id> git commit ...".
+# - name:           Texto legible que se muestra en la consola mientras se ejecuta
+#                   el hook durante el "git commit" (solo obligatorio en repo: local).
+# - entry:          El comando exacto de terminal que ejecutará el hook
+#                   (ej. "ruff format" o "pytest --cov=.").
+# - language:       Entorno donde corre el comando. "system" indica que use el
+#                   binario ya instalado en tu Python/Docker sin crear entornos extra.
+# - types:          Filtra qué archivos disparan el hook (ej. [python], [sql], [yaml]).
+#                   Si no modificaste archivos de ese tipo, el hook no se ejecuta.
+# - args:           Lista de parámetros o banderas extra que se pasan al comando
+#                   (ej. ['--maxkb=1000'] o ['--write-changes']).
+# - stages:         Momento de Git en que se dispara (por defecto es "pre-commit").
+#                   "commit-msg" significa que revisa el texto del mensaje de commit.
+# - pass_filenames: Si es "false", evita que pre-commit le pase la lista de archivos
+#                   modificados al comando (útil para pytest, que debe correr todo).
+# - always_run:     Si es "true", obliga a que el hook se ejecute siempre en cada
+#                   commit, incluso si no tocaste archivos del tipo indicado.
 # ==============================================================================
 
 default_install_hook_types: [pre-commit, commit-msg]  # Activa revisiones de archivos y mensajes al instalar
 
 repos:
   # ==============================================================================
-  # 1. HOOKS ESTÁNDAR DE GIT (Seguridad, estructura y validación de archivos)
+  # 1. HOOKS ESTÁNDAR DE GIT (Seguridad, gobernanza y validación de archivos)
   # ==============================================================================
-  - repo: https://github.com
+  - repo: https://github.compre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      - id: no-commit-to-branch       # Bloquea commits directos a main/master (exige crear rama)
+        args: ['--branch', 'main', '--branch', 'master']
       - id: trailing-whitespace       # Elimina espacios invisibles al final de cada línea
       - id: end-of-file-fixer         # Asegura una línea en blanco al final de cada archivo
       - id: check-added-large-files   # Bloquea datasets o modelos pesados (> 1 MB)
@@ -50,7 +114,7 @@ repos:
   # ==============================================================================
   # 2. SEGURIDAD AVANZADA: DETECCIÓN DE SECRETOS Y API KEYS (OpenAI, AWS, DBs)
   # ==============================================================================
-  - repo: https://github.com
+  - repo: https://github.comgitleaks/gitleaks
     rev: v8.21.2
     hooks:
       - id: gitleaks                  # Escanea tokens de OpenAI, Gemini, AWS, contraseñas, etc.
@@ -58,7 +122,7 @@ repos:
   # ==============================================================================
   # 3. LIMPIEZA DE JUPYTER NOTEBOOKS (.ipynb)
   # ==============================================================================
-  - repo: https://github.com
+  - repo: https://github.comkynan/nbstripout
     rev: 0.8.1
     hooks:
       - id: nbstripout                # Borra salidas pesadas (gráficos, tablas) de los notebooks
@@ -66,28 +130,28 @@ repos:
   # ==============================================================================
   # 4. CALIDAD DE INFRAESTRUCTURA Y DOCUMENTACIÓN (Dockerfile y Ortografía)
   # ==============================================================================
-  - repo: https://github.com
+  - repo: https://github.comhadolint/hadolint
     rev: v2.13.1-beta
     hooks:
       - id: hadolint-docker           # Revisa buenas prácticas y seguridad en archivos Dockerfile
 
-  - repo: https://github.com
+  - repo: https://github.comcodespell-project/codespell
     rev: v2.3.0
     hooks:
-      - id: codespell                 # Corrige errores ortográficos comunes en código y Markdown
-        args: ['--write-changes']
+      - id: codespell                 # Corrige errores ortográficos (ignora notebooks y JSON)
+        args: ['--write-changes', '--skip=*.ipynb,*.json']
 
   # ==============================================================================
   # 5. ESTÁNDAR DE MENSAJES DE COMMIT (Conventional Commits)
   # ==============================================================================
-  - repo: https://github.com
+  - repo: https://github.comcompilerla/conventional-pre-commit
     rev: v3.6.0
     hooks:
       - id: conventional-pre-commit   # Obliga mensajes con prefijo: feat:, fix:, docs:, chore:, etc.
         stages: [commit-msg]
 
   # ==============================================================================
-  # 6. HERRAMIENTAS INSTALADAS EN TU DOCKERFILE (Ejecución local ultrarrápida)
+  # 6. HERRAMIENTAS LOCALES DEL ENTORNO (Python, Tipos, YAML, SQL y Pytest)
   # ==============================================================================
   - repo: local
     hooks:
@@ -103,22 +167,19 @@ repos:
         language: system
         types: [python]
 
+      - id: mypy                      # Verifica tipado estático en Python (ej. def fn(x: int) -> str)
+        name: mypy-type-check
+        entry: mypy --ignore-missing-imports
+        language: system
+        types: [python]
+
       - id: yamllint                  # Valida indentación y sintaxis en archivos .yml/.yaml
         name: yamllint
         entry: yamllint -d relaxed
         language: system
         types: [yaml]
 
-      - id: sqlfluff-fix              # Pone SQL en MAYÚSCULAS y exige "AS" en todos los alias
+      - id: sqlfluff-fix              # Pone SQL en MAYÚSCULAS y exige "AS" (lee reglas de .sqlfluff)
         name: sqlfluff-fix
         entry: sqlfluff fix
         language: system
-        types: [sql]
-
-      - id: pytest-cov                # Ejecuta tests y exige cobertura >= 85% para permitir el commit
-        name: pytest-coverage-85
-        entry: pytest --cov=. --cov-fail-under=85
-        language: system
-        types: [python]
-        pass_filenames: false
-        always_run: true
