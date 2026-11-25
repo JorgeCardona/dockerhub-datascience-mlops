@@ -15,7 +15,7 @@
 dialect = postgres                                    # Motor SQL objetivo (postgres, duckdb, sparksql, etc.)
 templater = raw                                       # Usa 'raw' para SQL puro o 'dbt' si usas Jinja/dbt
 max_line_length = 100                                 # Longitud máxima de línea para evitar scroll horizontal
-exclude_rules = AM04                                  # Permite SELECT * solo si es estrictamente necesario (quítalo para prohibirlo)
+exclude_rules = AM04, CP02                            # AM04: permite SELECT *; CP02: respeta nombres originales de tablas/columnas
 
 # ==============================================================================
 # 1. MAYÚSCULAS Y MINÚSCULAS (Capitalisation)
@@ -38,10 +38,9 @@ capitalisation_policy = upper                         # Fuerza mayúsculas en no
 [sqlfluff:rules:capitalisation.literals]
 capitalisation_policy = upper                         # Fuerza mayúsculas en booleanos y nulos
 
-# Nombres de tablas, CTEs, columnas y alias SIEMPRE en minúsculas (snake_case)
-# Ejemplo: convierte "SELECT UserID AS TotalVentas" en "SELECT userid AS totalventas"
-[sqlfluff:rules:capitalisation.identifiers]
-capitalisation_policy = lower                         # Evita nombres mezclados en CamelCase o MAYÚSCULAS
+# (Nota: Se omite "capitalisation.identifiers" y se excluye CP02 arriba para NO
+#  alterar nunca el nombre original ni las mayúsculas/minúsculas de tablas o columnas
+#  de bases de datos externas como "UserID" o "CreatedAt").
 
 # ==============================================================================
 # 2. ALIAS EXPLÍCITOS (Aliasing)
