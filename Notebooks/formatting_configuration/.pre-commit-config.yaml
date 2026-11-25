@@ -1,4 +1,11 @@
 # ==============================================================================
+# REQUISITOS DE PAQUETES PYTHON (PIP)
+# ==============================================================================
+# Si usas la imagen Docker "jorgecardona/datascience-mlops", todos estos paquetes
+# ya vienen preinstalados. Si lo usas en otro entorno, instala obligatoriamente:
+#
+# pip install pre-commit ruff yamllint sqlfluff sqlfluff-templater-dbt pytest pytest-cov
+# ==============================================================================
 # INSTRUCCIONES DE INSTALACIÓN Y UBICACIÓN
 # ==============================================================================
 # 1. Tanto este archivo (.pre-commit-config.yaml) como (.sqlfluff) deben ubicarse
