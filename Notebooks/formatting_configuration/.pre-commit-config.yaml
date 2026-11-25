@@ -1,0 +1,88 @@
+repos:
+  # ==============================================================================
+  # 1. HOOKS ESTÁNDAR DE GIT (Seguridad, higiene y prevención de errores)
+  # ==============================================================================
+  - repo: https://github.com
+    rev: v5.0.0
+    hooks:
+      # Elimina espacios en blanco invisibles al final de cada línea de código.
+      # Evita cambios "basura" en el historial de Git (diffs innecesarios).
+      - id: trailing-whitespace
+
+      # Asegura que todos los archivos terminen con exactamente una línea en blanco.
+      # Es un estándar de POSIX que evita advertencias en herramientas de Linux/Docker.
+      - id: end-of-file-fixer
+
+      # Bloquea el commit si intentas subir archivos mayores a 1 MB (1000 KB).
+      # Crucial en Data Science para no subir datasets (.csv/.parquet) o modelos (.pkl/.pt) por error.
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+
+      # Revisa que no hayas dejado marcas de conflicto de Git (<<<<<<<, =======, >>>>>>>)
+      # dentro del código después de hacer un git merge o git pull.
+      - id: check-merge-conflict
+
+      # Escanea los archivos en busca de llaves privadas SSH, tokens o certificados.
+      # Impide el commit si detecta credenciales expuestas para proteger tu seguridad.
+      - id: detect-private-key
+
+      # Revisa archivos Python en busca de llamadas olvidadas a breakpoint(), pdb.set_trace()
+      # o pudb, evitando que el código se congele si llega a producción.
+      - id: debug-statements
+
+  # ==============================================================================
+  # 2. LIMPIEZA DE JUPYTER NOTEBOOKS (.ipynb)
+  # ==============================================================================
+  - repo: https://github.com
+    rev: 0.8.1
+    hooks:
+      # Borra automáticamente las salidas de las celdas (gráficos, tablas pesadas y contadores
+      # de ejecución) antes de guardar el notebook en Git. Hace que los .ipynb pesen muy poco
+      # y que revisar cambios en GitHub sea legible.
+      - id: nbstripout
+
+  # ==============================================================================
+  # 3. HERRAMIENTAS YA INSTALADAS EN TU IMAGEN DOCKER (Ejecución instantánea)
+  # Usamos "repo: local" y "language: system" para que pre-commit use los paquetes
+  # que ya instalaste en tu Dockerfile sin tener que descargarlos de nuevo.
+  # ==============================================================================
+  - repo: local
+    hooks:
+      # --- LINTER DE PYTHON (Ruff) ---
+      # Analiza tu código Python en busca de errores de sintaxis, variables sin usar,
+      # malas prácticas y ordena los imports (reemplaza a Flake8 e isort).
+      # El flag "--fix" corrige automáticamente todo lo que pueda arreglarse solo.
+      - id: ruff-check
+        name: ruff-check
+        entry: ruff check --fix
+        language: system
+        types: [python]
+
+      # --- FORMATEADOR DE PYTHON (Ruff) ---
+      # Da formato visual uniforme a tu código (comillas, indentación, longitud de línea),
+      # funcionando exactamente igual que Black pero mucho más rápido.
+      - id: ruff-format
+        name: ruff-format
+        entry: ruff format
+        language: system
+        types: [python]
+
+      # --- VALIDADOR DE ARCHIVOS YAML (yamllint) ---
+      # Revisa errores de indentación o sintaxis en archivos .yml/.yaml (como docker-compose,
+      # GitHub Actions o configuraciones de Airflow). "-d relaxed" evita que sea excesivamente
+      # estricto con la longitud de las líneas.
+      - id: yamllint
+        name: yamllint
+        entry: yamllint -d relaxed
+        language: system
+        types: [yaml]
+
+      # --- FORMATEADOR Y LINTER DE SQL Y DBT (sqlfluff) ---
+      # Lee las reglas del archivo .sqlfluff en la raíz del proyecto.
+      # Usa "fix" para corregir automáticamente: convierte palabras clave a MAYÚSCULAS
+      # y añade "AS" explícito a todos los alias de tablas y columnas.
+      - id: sqlfluff-fix
+        name: sqlfluff-fix
+        entry: sqlfluff fix
+        language: system
+        types: [sql]
