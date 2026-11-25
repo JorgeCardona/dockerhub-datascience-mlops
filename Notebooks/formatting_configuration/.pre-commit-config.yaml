@@ -1,6 +1,25 @@
-# Esta línea hace que un simple "pre-commit install" active tanto las revisiones
-# de archivos (pre-commit) como la validación del mensaje (commit-msg) automáticamente.
-default_install_hook_types: [pre-commit, commit-msg]
+# ==============================================================================
+# INSTRUCCIONES DE INSTALACIÓN Y UBICACIÓN
+# ==============================================================================
+# 1. Tanto este archivo (.pre-commit-config.yaml) como (.sqlfluff) deben ubicarse
+#    directamente en la carpeta raíz (root) de tu proyecto, al mismo nivel que .git/
+#
+#    Estructura esperada del proyecto:
+#    tu-proyecto/                  <-- Raíz (root) del repositorio Git
+#    ├── .git/                     <-- Carpeta oculta de Git
+#    ├── .pre-commit-config.yaml   <-- ESTE ARCHIVO (debe ir en el root)
+#    ├── .sqlfluff                 <-- Reglas de estilo SQL (debe ir en el root)
+#    ├── src/
+#    └── tests/
+#
+# 2. Una vez ubicados en la raíz, abre la terminal en esa carpeta y ejecuta una sola vez:
+#    pre-commit install
+#
+# 3. A partir de ese momento, cada vez que ejecutes "git commit -m '...'", todas
+#    las validaciones, formateos y pruebas correrán de forma automática.
+# ==============================================================================
+
+default_install_hook_types: [pre-commit, commit-msg]  # Activa revisiones de archivos y mensajes al instalar
 
 repos:
   # ==============================================================================
@@ -17,8 +36,8 @@ repos:
       - id: detect-private-key        # Detecta llaves privadas SSH o certificados
       - id: debug-statements          # Evita dejar llamadas a breakpoint() o pdb olvidadas
       - id: check-json                # Valida que los archivos .json no tengan errores de sintaxis
-      - id: check-toml                # Valida sintaxis en archivos pyproject.toml
-      - id: pretty-format-json        # Formatea archivos .json automáticamente
+      - id: check-toml                # Valida que los archivos .toml no tengan errores de sintaxis
+      - id: pretty-format-json        # Formatea archivos .json automáticamente manteniendo orden de claves
         args: ['--autofix', '--no-sort-keys']
 
   # ==============================================================================
@@ -27,8 +46,7 @@ repos:
   - repo: https://github.com
     rev: v8.21.2
     hooks:
-      # Escanea el código en busca de tokens de OpenAI, Gemini, AWS, passwords, etc.
-      - id: gitleaks
+      - id: gitleaks                  # Escanea tokens de OpenAI, Gemini, AWS, contraseñas, etc.
 
   # ==============================================================================
   # 3. LIMPIEZA DE JUPYTER NOTEBOOKS (.ipynb)
@@ -36,8 +54,7 @@ repos:
   - repo: https://github.com
     rev: 0.8.1
     hooks:
-      # Borra salidas pesadas (gráficos, tablas) de los notebooks antes del commit
-      - id: nbstripout
+      - id: nbstripout                # Borra salidas pesadas (gráficos, tablas) de los notebooks
 
   # ==============================================================================
   # 4. CALIDAD DE INFRAESTRUCTURA Y DOCUMENTACIÓN (Dockerfile y Ortografía)
@@ -45,14 +62,12 @@ repos:
   - repo: https://github.com
     rev: v2.13.1-beta
     hooks:
-      # Revisa buenas prácticas y seguridad en tus archivos Dockerfile
-      - id: hadolint-docker
+      - id: hadolint-docker           # Revisa buenas prácticas y seguridad en archivos Dockerfile
 
   - repo: https://github.com
     rev: v2.3.0
     hooks:
-      # Corrige errores tipográficos comunes en comentarios, docstrings y READMEs
-      - id: codespell
+      - id: codespell                 # Corrige errores ortográficos comunes en código y Markdown
         args: ['--write-changes']
 
   # ==============================================================================
@@ -61,8 +76,7 @@ repos:
   - repo: https://github.com
     rev: v3.6.0
     hooks:
-      # Obliga a que el mensaje del commit empiece con: feat:, fix:, docs:, chore:, test:, etc.
-      - id: conventional-pre-commit
+      - id: conventional-pre-commit   # Obliga mensajes con prefijo: feat:, fix:, docs:, chore:, etc.
         stages: [commit-msg]
 
   # ==============================================================================
@@ -70,38 +84,31 @@ repos:
   # ==============================================================================
   - repo: local
     hooks:
-      # --- LINTER Y FORMATEO DE PYTHON (Ruff) ---
-      - id: ruff-check
+      - id: ruff-check                # Revisa errores, ordena imports y corrige automáticamente
         name: ruff-check
         entry: ruff check --fix
         language: system
         types: [python]
 
-      - id: ruff-format
+      - id: ruff-format               # Formatea el código Python al estilo Black
         name: ruff-format
         entry: ruff format
         language: system
         types: [python]
 
-      # --- VALIDADOR DE YAML (yamllint) ---
-      - id: yamllint
+      - id: yamllint                  # Valida indentación y sintaxis en archivos .yml/.yaml
         name: yamllint
         entry: yamllint -d relaxed
         language: system
         types: [yaml]
 
-      # --- FORMATEADOR Y LINTER DE SQL (sqlfluff) ---
-      # Ajusta "code-quality/.sqlfluff" al nombre de la carpeta donde guardes el ejemplo
-      - id: sqlfluff-fix
+      - id: sqlfluff-fix              # Pone SQL en MAYÚSCULAS y exige "AS" en todos los alias
         name: sqlfluff-fix
-        entry: sqlfluff fix --config code-quality/.sqlfluff
+        entry: sqlfluff fix
         language: system
         types: [sql]
 
-      # --- TESTS UNITARIOS CON COBERTURA MÍNIMA DEL 85% (pytest + pytest-cov) ---
-      # Corre automáticamente al hacer "git commit". Si la cobertura es < 85% o falla un test,
-      # bloquea el commit.
-      - id: pytest-cov
+      - id: pytest-cov                # Ejecuta tests y exige cobertura >= 85% para permitir el commit
         name: pytest-coverage-85
         entry: pytest --cov=. --cov-fail-under=85
         language: system
