@@ -1,3 +1,4 @@
+
 # ==============================================================================
 # 1. REQUISITOS DE PAQUETES PYTHON (PIP)
 # ==============================================================================
@@ -47,7 +48,7 @@
 # 4. CÓMO ADICIONAR UNA REGLA NUEVA
 # ==============================================================================
 # - Opción A (Desde un repositorio de GitHub): Agrega un bloque nuevo bajo "repos:":
-#     - repo: https://github.comusuario/repo-hook
+#     - repo: https://github.com/usuario/repo-hook
 #       rev: v1.0.0
 #       hooks:
 #         - id: nombre-del-hook
@@ -87,58 +88,58 @@
 # - always_run:     Si es "true", obliga a que el hook se ejecute siempre en cada
 #                   commit, incluso si no tocaste archivos del tipo indicado.
 # ==============================================================================
-
 default_install_hook_types: [pre-commit, commit-msg]  # Activa revisiones de archivos y mensajes al instalar
-
 repos:
   # ==============================================================================
   # 1. HOOKS ESTÁNDAR DE GIT (Seguridad, gobernanza y validación de archivos)
   # ==============================================================================
-  - repo: https://github.compre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: no-commit-to-branch       # Bloquea commits directos a main/master (exige crear rama)
         args: ['--branch', 'main', '--branch', 'master']
       - id: trailing-whitespace       # Elimina espacios invisibles al final de cada línea
       - id: end-of-file-fixer         # Asegura una línea en blanco al final de cada archivo
-      - id: check-added-large-files   # Bloquea datasets o modelos pesados (> 1 MB)
+      - id: check-added-large-files   # Bloquea commits de datasets o modelos pesados (> 1 MB)
         args: ['--maxkb=1000']
       - id: check-merge-conflict      # Evita commits con marcas de conflicto sin resolver
       - id: detect-private-key        # Detecta llaves privadas SSH o certificados
       - id: debug-statements          # Evita dejar llamadas a breakpoint() o pdb olvidadas
       - id: check-json                # Valida que los archivos .json no tengan errores de sintaxis
       - id: check-toml                # Valida que los archivos .toml no tengan errores de sintaxis
+      - id: check-yaml                # Valida archivos YAML
       - id: pretty-format-json        # Formatea archivos .json automáticamente manteniendo orden de claves
         args: ['--autofix', '--no-sort-keys']
 
   # ==============================================================================
   # 2. SEGURIDAD AVANZADA Y ANÁLISIS ESTÁTICO (SAST, Secretos y Dependencias)
   # ==============================================================================
-  - repo: https://github.comgitleaks/gitleaks
+  - repo: https://github.com/gitleaks/gitleaks
     rev: v8.21.2
     hooks:
       - id: gitleaks                  # Escanea tokens de OpenAI, Gemini, AWS, contraseñas, etc.
 
-  - repo: https://github.comPyCQA/bandit
+  - repo: https://github.com/PyCQA/bandit
     rev: 1.7.10
     hooks:
       - id: bandit                    # Detecta vulnerabilidades de seguridad en Python (SQLi, pickle, eval)
         args: ['-ll']                 # Solo bloquea vulnerabilidades de severidad Media o Alta
+        types: [python]
 
-  - repo: https://github.compypa/pip-audit
+  - repo: https://github.com/pypa/pip-audit
     rev: v2.7.3
     hooks:
-      - id: pip-audit                 # Audita requirements.txt en busca de paquetes con fallos CVE
+      - id: pip-audit                 # Audita dependencias Python en busca de paquetes con fallos CVE
 
   # ==============================================================================
   # 3. LIMPIEZA Y SINCRONIZACIÓN DE JUPYTER NOTEBOOKS (.ipynb)
   # ==============================================================================
-  - repo: https://github.comkynan/nbstripout
+  - repo: https://github.com/kynan/nbstripout
     rev: 0.8.1
     hooks:
       - id: nbstripout                # Borra salidas pesadas (gráficos, tablas) de los notebooks
 
-  - repo: https://github.commwouts/jupytext
+  - repo: https://github.com/mwouts/jupytext
     rev: v1.16.4
     hooks:
       - id: jupytext                  # Sincroniza cada .ipynb con un .py limpio para facilitar Code Review
@@ -147,24 +148,28 @@ repos:
   # ==============================================================================
   # 4. CALIDAD DE INFRAESTRUCTURA, ESQUEMAS Y DOCUMENTACIÓN
   # ==============================================================================
-  - repo: https://github.com
-    rev: v2.13.1-beta
+  # Hadolint se ejecuta como herramienta local instalada en Docker o en el entorno.
+  - repo: local
     hooks:
-      - id: hadolint-docker           # Revisa buenas prácticas y seguridad en archivos Dockerfile
+      - id: hadolint-docker
+        name: hadolint-docker
+        entry: hadolint
+        language: system
+        files: '(^|/)(Dockerfile|[^/]+\.Dockerfile)$'
 
-  - repo: https://github.com
+  - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.30.0
     hooks:
       - id: check-github-workflows    # Valida sintaxis de archivos .github/workflows/*.yml
       - id: check-compose-spec        # Valida estructura y claves de archivos docker-compose.yml
 
-  - repo: https://github.com
+  - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
       - id: codespell                 # Corrige errores ortográficos (ignora notebooks y JSON)
         args: ['--write-changes', '--skip=*.ipynb,*.json']
 
-  - repo: https://github.com
+  - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.19
     hooks:
       - id: mdformat                  # Formatea y estandariza automáticamente archivos Markdown (.md)
@@ -172,11 +177,12 @@ repos:
   # ==============================================================================
   # 5. ESTÁNDAR DE MENSAJES DE COMMIT (Conventional Commits)
   # ==============================================================================
-  - repo: https://github.com
+  - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.6.0
     hooks:
       - id: conventional-pre-commit   # Obliga mensajes con prefijo: feat:, fix:, docs:, chore:, etc.
         stages: [commit-msg]
+        args: [feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert]
 
   # ==============================================================================
   # 6. REGLAS PERSONALIZADAS DE GOBERNANZA Y PRIVACIDAD (PII, TODOs y Ramas)
@@ -239,10 +245,32 @@ repos:
 
       # Nota: Si tu proyecto crece y los tests tardan mucho, añade "stages: [pre-push]"
       # aquí abajo para que corran al hacer push en lugar de cada commit.
+      #
+      # IMPORTANTE:
+      # Pytest se ejecuta únicamente cuando se crea, modifica o elimina un archivo
+      # Python (.py) dentro de los cambios preparados (staged) para el commit.
+      #
+      # Se utiliza git diff --cached porque pre-commit no entrega normalmente
+      # los nombres de archivos eliminados a los hooks.
+      #
+      # Comportamiento:
+      #   - Archivo .py creado: ejecuta Pytest.
+      #   - Archivo .py modificado: ejecuta Pytest.
+      #   - Archivo .py eliminado: ejecuta Pytest.
+      #   - Archivo .md, .yaml, .sql o .ipynb modificado: omite Pytest.
+      #
+      # La suite completa se ejecuta con cobertura mínima del 85%.
+      #
       - id: pytest-cov                # Ejecuta tests y exige cobertura >= 85% para permitir el commit
         name: pytest-coverage-85
-        entry: pytest --cov=. --cov-fail-under=85
+        entry: >-
+          bash -c 'if git diff --cached --name-only --diff-filter=ACMD -- "*.py" | grep -q .;
+          then
+            echo "Se detectaron cambios en archivos Python. Ejecutando pruebas...";
+            pytest --cov=. --cov-fail-under=85;
+          else
+            echo "No hay cambios staged en archivos Python. Se omiten las pruebas.";
+          fi'
         language: system
-        types: [python]
         pass_filenames: false
         always_run: true
