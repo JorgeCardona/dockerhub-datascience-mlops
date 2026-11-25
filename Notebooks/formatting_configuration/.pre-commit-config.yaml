@@ -1,88 +1,110 @@
+# Esta línea hace que un simple "pre-commit install" active tanto las revisiones
+# de archivos (pre-commit) como la validación del mensaje (commit-msg) automáticamente.
+default_install_hook_types: [pre-commit, commit-msg]
+
 repos:
   # ==============================================================================
-  # 1. HOOKS ESTÁNDAR DE GIT (Seguridad, higiene y prevención de errores)
+  # 1. HOOKS ESTÁNDAR DE GIT (Seguridad, estructura y validación de archivos)
   # ==============================================================================
   - repo: https://github.com
     rev: v5.0.0
     hooks:
-      # Elimina espacios en blanco invisibles al final de cada línea de código.
-      # Evita cambios "basura" en el historial de Git (diffs innecesarios).
-      - id: trailing-whitespace
-
-      # Asegura que todos los archivos terminen con exactamente una línea en blanco.
-      # Es un estándar de POSIX que evita advertencias en herramientas de Linux/Docker.
-      - id: end-of-file-fixer
-
-      # Bloquea el commit si intentas subir archivos mayores a 1 MB (1000 KB).
-      # Crucial en Data Science para no subir datasets (.csv/.parquet) o modelos (.pkl/.pt) por error.
-      - id: check-added-large-files
+      - id: trailing-whitespace       # Elimina espacios invisibles al final de cada línea
+      - id: end-of-file-fixer         # Asegura una línea en blanco al final de cada archivo
+      - id: check-added-large-files   # Bloquea datasets o modelos pesados (> 1 MB)
         args: ['--maxkb=1000']
-
-      # Revisa que no hayas dejado marcas de conflicto de Git (<<<<<<<, =======, >>>>>>>)
-      # dentro del código después de hacer un git merge o git pull.
-      - id: check-merge-conflict
-
-      # Escanea los archivos en busca de llaves privadas SSH, tokens o certificados.
-      # Impide el commit si detecta credenciales expuestas para proteger tu seguridad.
-      - id: detect-private-key
-
-      # Revisa archivos Python en busca de llamadas olvidadas a breakpoint(), pdb.set_trace()
-      # o pudb, evitando que el código se congele si llega a producción.
-      - id: debug-statements
+      - id: check-merge-conflict      # Evita commits con marcas de conflicto sin resolver
+      - id: detect-private-key        # Detecta llaves privadas SSH o certificados
+      - id: debug-statements          # Evita dejar llamadas a breakpoint() o pdb olvidadas
+      - id: check-json                # Valida que los archivos .json no tengan errores de sintaxis
+      - id: check-toml                # Valida sintaxis en archivos pyproject.toml
+      - id: pretty-format-json        # Formatea archivos .json automáticamente
+        args: ['--autofix', '--no-sort-keys']
 
   # ==============================================================================
-  # 2. LIMPIEZA DE JUPYTER NOTEBOOKS (.ipynb)
+  # 2. SEGURIDAD AVANZADA: DETECCIÓN DE SECRETOS Y API KEYS (OpenAI, AWS, DBs)
+  # ==============================================================================
+  - repo: https://github.com
+    rev: v8.21.2
+    hooks:
+      # Escanea el código en busca de tokens de OpenAI, Gemini, AWS, passwords, etc.
+      - id: gitleaks
+
+  # ==============================================================================
+  # 3. LIMPIEZA DE JUPYTER NOTEBOOKS (.ipynb)
   # ==============================================================================
   - repo: https://github.com
     rev: 0.8.1
     hooks:
-      # Borra automáticamente las salidas de las celdas (gráficos, tablas pesadas y contadores
-      # de ejecución) antes de guardar el notebook en Git. Hace que los .ipynb pesen muy poco
-      # y que revisar cambios en GitHub sea legible.
+      # Borra salidas pesadas (gráficos, tablas) de los notebooks antes del commit
       - id: nbstripout
 
   # ==============================================================================
-  # 3. HERRAMIENTAS YA INSTALADAS EN TU IMAGEN DOCKER (Ejecución instantánea)
-  # Usamos "repo: local" y "language: system" para que pre-commit use los paquetes
-  # que ya instalaste en tu Dockerfile sin tener que descargarlos de nuevo.
+  # 4. CALIDAD DE INFRAESTRUCTURA Y DOCUMENTACIÓN (Dockerfile y Ortografía)
+  # ==============================================================================
+  - repo: https://github.com
+    rev: v2.13.1-beta
+    hooks:
+      # Revisa buenas prácticas y seguridad en tus archivos Dockerfile
+      - id: hadolint-docker
+
+  - repo: https://github.com
+    rev: v2.3.0
+    hooks:
+      # Corrige errores tipográficos comunes en comentarios, docstrings y READMEs
+      - id: codespell
+        args: ['--write-changes']
+
+  # ==============================================================================
+  # 5. ESTÁNDAR DE MENSAJES DE COMMIT (Conventional Commits)
+  # ==============================================================================
+  - repo: https://github.com
+    rev: v3.6.0
+    hooks:
+      # Obliga a que el mensaje del commit empiece con: feat:, fix:, docs:, chore:, test:, etc.
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # ==============================================================================
+  # 6. HERRAMIENTAS INSTALADAS EN TU DOCKERFILE (Ejecución local ultrarrápida)
   # ==============================================================================
   - repo: local
     hooks:
-      # --- LINTER DE PYTHON (Ruff) ---
-      # Analiza tu código Python en busca de errores de sintaxis, variables sin usar,
-      # malas prácticas y ordena los imports (reemplaza a Flake8 e isort).
-      # El flag "--fix" corrige automáticamente todo lo que pueda arreglarse solo.
+      # --- LINTER Y FORMATEO DE PYTHON (Ruff) ---
       - id: ruff-check
         name: ruff-check
         entry: ruff check --fix
         language: system
         types: [python]
 
-      # --- FORMATEADOR DE PYTHON (Ruff) ---
-      # Da formato visual uniforme a tu código (comillas, indentación, longitud de línea),
-      # funcionando exactamente igual que Black pero mucho más rápido.
       - id: ruff-format
         name: ruff-format
         entry: ruff format
         language: system
         types: [python]
 
-      # --- VALIDADOR DE ARCHIVOS YAML (yamllint) ---
-      # Revisa errores de indentación o sintaxis en archivos .yml/.yaml (como docker-compose,
-      # GitHub Actions o configuraciones de Airflow). "-d relaxed" evita que sea excesivamente
-      # estricto con la longitud de las líneas.
+      # --- VALIDADOR DE YAML (yamllint) ---
       - id: yamllint
         name: yamllint
         entry: yamllint -d relaxed
         language: system
         types: [yaml]
 
-      # --- FORMATEADOR Y LINTER DE SQL Y DBT (sqlfluff) ---
-      # Lee las reglas del archivo .sqlfluff en la raíz del proyecto.
-      # Usa "fix" para corregir automáticamente: convierte palabras clave a MAYÚSCULAS
-      # y añade "AS" explícito a todos los alias de tablas y columnas.
+      # --- FORMATEADOR Y LINTER DE SQL (sqlfluff) ---
+      # Ajusta "code-quality/.sqlfluff" al nombre de la carpeta donde guardes el ejemplo
       - id: sqlfluff-fix
         name: sqlfluff-fix
-        entry: sqlfluff fix
+        entry: sqlfluff fix --config code-quality/.sqlfluff
         language: system
         types: [sql]
+
+      # --- TESTS UNITARIOS CON COBERTURA MÍNIMA DEL 85% (pytest + pytest-cov) ---
+      # Corre automáticamente al hacer "git commit". Si la cobertura es < 85% o falla un test,
+      # bloquea el commit.
+      - id: pytest-cov
+        name: pytest-coverage-85
+        entry: pytest --cov=. --cov-fail-under=85
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
