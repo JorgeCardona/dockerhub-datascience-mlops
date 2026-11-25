@@ -1,28 +1,93 @@
+# ==============================================================================
+# ARCHIVO DE REGLAS DE ESTILO SQL (.sqlfluff) - ESTÁNDAR DATA ENGINEERING
+# ==============================================================================
+# 1. UBICACIÓN: Este archivo DEBE guardarse en la carpeta raíz (root) de tu
+#    proyecto, exactamente al mismo nivel que ".pre-commit-config.yaml" y ".git/".
+# 2. FUNCIONAMIENTO: Es leído automáticamente por el hook "sqlfluff-fix" cada vez
+#    que modificas un archivo .sql y haces git commit.
+# 3. DIALECTOS DISPONIBLES: Puedes cambiar "dialect = postgres" por el motor que
+#    uses: duckdb, sparksql, bigquery, snowflake, mysql, tsql, ansi, etc.
+# 4. USO CON DBT: Si usas modelos de dbt con Jinja ({{ ref('...') }}), cambia
+#    "templater = raw" por "templater = dbt".
+# ==============================================================================
+
 [sqlfluff]
-# Dialecto SQL por defecto (puedes cambiarlo a duckdb, sparksql, bigquery, snowflake, etc.)
-dialect = postgres
+dialect = postgres                                    # Motor SQL objetivo (postgres, duckdb, sparksql, etc.)
+templater = raw                                       # Usa 'raw' para SQL puro o 'dbt' si usas Jinja/dbt
+max_line_length = 100                                 # Longitud máxima de línea para evitar scroll horizontal
+exclude_rules = AM04                                  # Permite SELECT * solo si es estrictamente necesario (quítalo para prohibirlo)
 
-# Si usas modelos de dbt con Jinja ({{ ref('...') }}), cambia 'raw' por 'dbt'
-templater = raw
-
-# Regla 1: Obligar a que TODAS las palabras clave de SQL (SELECT, FROM, WHERE, JOIN, etc.)
-# estén en MAYÚSCULAS (capitalisation_policy = upper)
+# ==============================================================================
+# 1. MAYÚSCULAS Y MINÚSCULAS (Capitalisation)
+# ==============================================================================
+# Palabras clave, CTEs y cláusulas de ventana en MAYÚSCULAS
+# (SELECT, FROM, WHERE, WITH, OVER, PARTITION BY, ORDER BY, CASE, WHEN, JOIN, etc.)
 [sqlfluff:rules:capitalisation.keywords]
-capitalisation_policy = upper
+capitalisation_policy = upper                         # Fuerza mayúsculas en todas las palabras reservadas
 
-# Regla 2: Obligar a que los tipos de datos (INT, VARCHAR, TIMESTAMP, BOOLEAN)
-# también estén en MAYÚSCULAS
+# Tipos de datos en MAYÚSCULAS (INT, VARCHAR, NUMERIC, TIMESTAMP, BOOLEAN, etc.)
 [sqlfluff:rules:capitalisation.types]
-capitalisation_policy = upper
+capitalisation_policy = upper                         # Fuerza mayúsculas en definiciones de tipos de datos
 
-# Regla 3: Obligar a que las funciones (COUNT, SUM, COALESCE, MAX) estén en MAYÚSCULAS
+# Funciones escalares, de agregación y de ventana en MAYÚSCULAS
+# (COUNT, SUM, COALESCE, MAX, ROW_NUMBER, RANK, LAG, LEAD, etc.)
 [sqlfluff:rules:capitalisation.functions]
-capitalisation_policy = upper
+capitalisation_policy = upper                         # Fuerza mayúsculas en nombres de funciones SQL
 
-# Regla 4: Obligar a que SIEMPRE se use la palabra "AS" antes de un alias
-# tanto en columnas (SELECT a AS b) como en tablas (FROM usuarios AS u)
+# Valores literales especiales en MAYÚSCULAS (TRUE, FALSE, NULL)
+[sqlfluff:rules:capitalisation.literals]
+capitalisation_policy = upper                         # Fuerza mayúsculas en booleanos y nulos
+
+# Nombres de tablas, CTEs, columnas y alias SIEMPRE en minúsculas (snake_case)
+# Ejemplo: convierte "SELECT UserID AS TotalVentas" en "SELECT userid AS totalventas"
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = lower                         # Evita nombres mezclados en CamelCase o MAYÚSCULAS
+
+# ==============================================================================
+# 2. ALIAS EXPLÍCITOS (Aliasing)
+# ==============================================================================
+# Alias de tablas y CTEs SIEMPRE precedidos de "AS" ("FROM usuarios AS u")
 [sqlfluff:rules:aliasing.table]
-aliasing = explicit
+aliasing = explicit                                   # Prohíbe alias implícitos en tablas
 
+# Alias de columnas SIEMPRE precedidos de "AS" ("SELECT COUNT(*) AS total")
 [sqlfluff:rules:aliasing.column]
-aliasing = explicit
+aliasing = explicit                                   # Prohíbe alias implícitos en columnas
+
+# Prohíbe crear alias que no se usan después o que repiten el mismo nombre ("a AS a")
+[sqlfluff:rules:aliasing.unused]
+alias_case_check = dialect                            # Detecta alias de tablas declarados pero nunca usados
+
+# ==============================================================================
+# 3. INDENTACIÓN, COMAS Y FORMATO VISUAL (Indentation & Layout)
+# ==============================================================================
+[sqlfluff:indentation]
+indented_joins = False                                # Mantiene los JOIN alineados al mismo nivel que FROM
+indented_ctes = False                                 # Mantiene los bloques WITH / CTE sin indentación extra
+indented_using_on = True                              # Indenta las condiciones ON / USING debajo de cada JOIN
+tab_space_size = 4                                    # Usa 4 espacios por nivel de indentación
+
+# Ubicación de comas en listas de columnas (trailing = al final de cada línea)
+[sqlfluff:layout:type:comma]
+line_position = trailing                              # Coloca las comas al final de cada columna, no al inicio
+
+# ==============================================================================
+# 4. BUENAS PRÁCTICAS DE CONSULTAS Y JOINS (Ambiguity & Convention)
+# ==============================================================================
+# Exige calificar las columnas con el alias de su tabla cuando hay JOINs
+# Ejemplo: exige "u.id" en lugar de "id" solo para evitar ambigüedad
+[sqlfluff:rules:ambiguous.column_references]
+group_by_and_order_by_style = explicit                # Exige nombres explícitos en GROUP BY/ORDER BY (evita GROUP BY 1, 2)
+
+# Convierte "JOIN tabla" en "INNER JOIN tabla" explícito
+[sqlfluff:rules:convention.left_join]
+# (Activo por defecto en SQLFluff: estandariza INNER JOIN y evita RIGHT JOIN)
+
+# Evita condiciones redundantes o comparaciones con NULL usando "=" ("= NULL" -> "IS NULL")
+[sqlfluff:rules:convention.is_null]
+# (Activo por defecto en SQLFluff: corrige "= NULL" a "IS NULL" y "!= NULL" a "IS NOT NULL")
+
+# Elimina punto y coma innecesario al final de consultas únicas (estándar en dbt)
+[sqlfluff:rules:convention.terminator]
+multiline_newline = False                             # Mantiene el ";" pegado a la última línea si se usa
+require_final_semicolon = False                       # No obliga ni falla si falta el ";" al final
