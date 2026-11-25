@@ -1,0 +1,105 @@
+{
+  "@jupyterlab/filebrowser-extension:browser": {
+    "showHiddenFiles": true
+  },
+  "@jupyterlab/filebrowser-extension:widget": {
+    "toolbar": [
+      {
+        "name": "toggle-hidden-files",
+        "command": "filebrowser:toggle-hidden-files",
+        "icon": "ui-components:search",
+        "rank": 10
+      },
+      {
+        "name": "copy-file",
+        "command": "filebrowser:copy",
+        "icon": "ui-components:copy",
+        "rank": 11
+      },
+      {
+        "name": "cut-file",
+        "command": "filebrowser:cut",
+        "icon": "ui-components:cut",
+        "rank": 11
+      },
+      {
+        "name": "paste-file",
+        "command": "filebrowser:paste",
+        "icon": "ui-components:paste",
+        "rank": 12
+      },
+      {
+        "name": "delete-file",
+        "command": "filebrowser:delete",
+        "icon": "ui-components:delete",
+        "rank": 13
+      },
+      {
+        "name": "new-text-file",
+        "caption": "TXT",
+        "command": "docmanager:new-untitled",
+        "args": {
+          "type": "file",
+          "ext": ".txt",
+          "label": "TXT"
+        },
+        "icon": "ui-components:file",
+        "rank": 14
+      },
+      {
+        "name": "new-notebook-file",
+        "caption": "Notebook",
+        "command": "notebook:create-new",
+        "icon": "ui-components:notebook",
+        "rank": 15
+      },
+      {
+        "name": "new-python-file",
+        "caption": "Python",
+        "command": "docmanager:new-untitled",
+        "args": {
+          "type": "file",
+          "ext": ".py",
+          "label": "Python"
+        },
+        "icon": "ui-components:python",
+        "rank": 16
+      },
+      {
+        "name": "new-sql-file",
+        "caption": "SQL",
+        "command": "docmanager:new-untitled",
+        "args": {
+          "type": "file",
+          "ext": ".sql",
+          "label": "SQL"
+        },
+        "rank": 17
+      },
+      {
+        "name": "new-csv-file",
+        "caption": "CSV",
+        "command": "docmanager:new-untitled",
+        "args": {
+          "type": "file",
+          "ext": ".csv",
+          "label": "CSV"
+        },
+        "icon": "ui-components:spreadsheet",
+        "rank": 18
+      },
+      {
+        "name": "new-sh-file",
+        "caption": "SH",
+        "command": "docmanager:new-untitled",
+        "args": {
+          "type": "file",
+          "ext": ".sh",
+          "label": "SH"
+        },
+        "icon": "ui-components:terminal",
+        "rank": 19
+      }
+    ]
+  }
+}

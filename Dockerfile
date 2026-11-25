@@ -305,11 +305,24 @@ COPY NotebookConfig/manager.jupyterlab-settings /root/.jupyter/lab/user-settings
 COPY NotebookConfig/plugin.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/cell-toolbar-extension/plugin.jupyterlab-settings
 COPY NotebookConfig/kernels/sos/kernel.json /usr/local/share/jupyter/kernels/sos/kernel.json
 
+# Configuracion del explorador de archivos (botones + archivos ocultos)
+COPY NotebookConfig/browser.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/filebrowser-extension/browser.jupyterlab-settings
+COPY NotebookConfig/overrides.json /usr/local/share/jupyter/lab/settings/overrides.json
+
+# Permitir archivos ocultos en el servidor de Jupyter
+RUN mkdir -p /etc/jupyter && \
+    echo "c.ContentsManager.allow_hidden = True" >> /etc/jupyter/jupyter_server_config.py
+
 # JARS de PySpark
 COPY /jars_scala_spark_2026/*.jar /usr/local/spark/jars/
 
 ###############################################################
 ################### CONFIGURACION DE INICIO ###################
 ###############################################################
+# --- HABILITAR ARCHIVOS OCULTOS POR DEFECTO EN JUPYTERLAB ---
+RUN mkdir -p /root/.jupyter/lab/user-settings/@jupyterlab/filebrowser-extension && \
+    echo '{"showHiddenFiles": true}' > /root/.jupyter/lab/user-settings/@jupyterlab/filebrowser-extension/widget.jupyterlab-settings && \
+    echo "c.ContentsManager.allow_hidden = True" >> /root/.jupyter/jupyter_server_config.py && \
+    echo "c.FileContentsManager.allow_hidden = True" >> /root/.jupyter/jupyter_server_config.py
 
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--LabApp.token=''"]
+CMD ["jupyter-lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--LabApp.token=''", "--ContentsManager.allow_hidden=True", "--FileContentsManager.allow_hidden=True"]
