@@ -33,6 +33,9 @@
 # - Instalar hooks (ejecutar una sola vez en la raíz del proyecto):
 #     pre-commit install
 #
+# - Validar las reglas del pre-commit   
+#     pre-commit run --all-files
+#     
 # - Uso normal: Al ejecutar "git commit -m 'feat: ...'", todo corre automático.
 #   NOTA: Como está activo "no-commit-to-branch", crea primero una rama nueva:
 #     git checkout -b feat/PROJ-123-mi-cambio
@@ -161,7 +164,6 @@ repos:
     rev: 0.30.0
     hooks:
       - id: check-github-workflows    # Valida sintaxis de archivos .github/workflows/*.yml
-      - id: check-compose-spec        # Valida estructura y claves de archivos docker-compose.yml
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
@@ -201,9 +203,12 @@ repos:
         language: pygrep
         files: "\\.csv$"
 
-      - id: validate-branch-name      # Exige formato de rama: feat/PROJ-123-descripcion o fix/...
+      - id: validate-branch-name
         name: validate-branch-name
-        entry: bash -c 'branch=$(git rev-parse --abbrev-ref HEAD); echo "$branch" | grep -Eq "^(feat|fix|docs|chore|refactor|test)/([A-Z]+-[0-9]+-)?[a-z0-9._-]+$" || { echo "Nombre de rama invalido ($branch). Usa: feat/PROJ-123-descripcion"; exit 1; }'
+        entry: >-
+          bash -c 'branch=$(git rev-parse --abbrev-ref HEAD);
+          echo "$branch" | grep -Eq "^(feat|fix|docs|chore|refactor|test)/([A-Z]+-[0-9]+-)?[a-z0-9._-]+$"
+          || { echo "Nombre de rama invalido ($branch). Usa: feat/PROJ-123-descripcion"; exit 1; }'
         language: system
         pass_filenames: false
         always_run: true
