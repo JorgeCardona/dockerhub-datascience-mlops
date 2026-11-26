@@ -8,13 +8,13 @@
         "name": "toggle-hidden-files",
         "command": "filebrowser:toggle-hidden-files",
         "icon": "ui-components:search",
-        "rank": 10
+        "rank": 9
       },
       {
         "name": "copy-file",
         "command": "filebrowser:copy",
         "icon": "ui-components:copy",
-        "rank": 11
+        "rank": 10
       },
       {
         "name": "cut-file",
@@ -35,6 +35,13 @@
         "rank": 13
       },
       {
+        "name": "rename-file",
+        "caption": "Rename",
+        "command": "docmanager:rename",
+        "icon": "ui-components:edit",
+        "rank": 14
+      },
+      {
         "name": "new-text-file",
         "caption": "TXT",
         "command": "docmanager:new-untitled",
@@ -44,14 +51,14 @@
           "label": "TXT"
         },
         "icon": "ui-components:file",
-        "rank": 14
+        "rank": 15
       },
       {
         "name": "new-notebook-file",
         "caption": "Notebook",
         "command": "notebook:create-new",
         "icon": "ui-components:notebook",
-        "rank": 15
+        "rank": 16
       },
       {
         "name": "new-python-file",
@@ -63,18 +70,17 @@
           "label": "Python"
         },
         "icon": "ui-components:python",
-        "rank": 16
+        "rank": 17
       },
       {
         "name": "new-sql-file",
-        "caption": "SQL",
+        "label": "SQL",
         "command": "docmanager:new-untitled",
         "args": {
           "type": "file",
-          "ext": ".sql",
-          "label": "SQL"
+          "ext": ".sql"
         },
-        "rank": 17
+        "rank": 18
       },
       {
         "name": "new-csv-file",
@@ -86,7 +92,7 @@
           "label": "CSV"
         },
         "icon": "ui-components:spreadsheet",
-        "rank": 18
+        "rank": 19
       },
       {
         "name": "new-sh-file",
@@ -98,7 +104,7 @@
           "label": "SH"
         },
         "icon": "ui-components:terminal",
-        "rank": 19
+        "rank": 20
       }
     ]
   }
