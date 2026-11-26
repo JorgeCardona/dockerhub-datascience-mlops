@@ -291,7 +291,7 @@ ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
 
 # Crear directorio base
 RUN mkdir -p /root/airflow/dags
-#COPY /airflow_files/dbt_airflow.py /root/airflow/dags
+COPY /airflow_files/dbt_airflow.py /root/airflow/dags
 
 # Crear archivo de contraseñas del Simple Auth Manager
 RUN echo '{"admin": "12345678"}' > /root/airflow/simple_auth_manager_passwords.json && \
