@@ -95,50 +95,99 @@
 
 
 # Relevant Packages & Installed Apps
-| Package | Version |Port|
-|---------|--------|-----|
-| Apache Spark UI| 3.4.3| 4040|
-| Node.js     | 18.13.0|3000   |
-| Kafka       | 3.6.1| 9091-9094|
-| Panel| 1.3.8 |5006|
-| jupyterlab | 4.0.16 | 8888|
-| dbt-docs server| 1.7.4|8081|
-| apache-airflow| 2.8.0| 8082 |
-| jenkins| 2.440.2 | 8083|
-| pyspark | 3.4.3 | 4040|
-| confluent-kafka | 2.3.0| 
-| jupyterlab-git | 0.50.0 |
-| pandas | 2.2.2 |
-| apache-beam[interactive] | 2.55.1 |
-| dask | 2024.1.0 |
-| duckdb| 0.9.2 |
-| scikit-learn|  1.4.0| 
-| OpenCV Python|  4.9.0.80| 
-| Spacy|  3.7.2| 
-| NLTK|  3.8.1| 
-| bokeh |  3.3.4 | 
-| seaborn|  0.13.2 | 
-| dbt-core| 1.7.4|
-| mysql-connector-python | 8.3.0|
-| psycopg2 | 2.9.9 |
-| pymongo | 4.6.1 |
-| Faker | 22.5.1 |
-| itables | 1.6.3 |
-| pytest| 8.0.0 |
-| diagrams| 0.23.4 |
-| jupyterlab_code_formatter| 2.2.1 |
-| black| 24.1.2 |
-| isort| 5.13.2 |
-| autopep8| 2.1.0 |
-| yapf| 0.40.2 |
-| pycodestyle| 2.11.1 |
-| jupyterlab-indent-guides| 0.1.0 |
-| jupyterlab-lsp| 5.1.0 |
-| python-language-server| 0.36.2 |
-| AnsiColorPrinter|  0.0.2| 
-| Pyxtension| 1.16.10| 
-| delta-spark | 2.4.0| 
-| mlflow | 2.17.2| 
+## Relevant Packages & Installed Apps
+
+| Package | Version | Port |
+| :--- | :--- | :--- |
+| Apache Spark UI | `4.2.0` | `4040` |
+| Node.js | `20.19.2` | `3000` |
+| Kafka | *(base image)* | `9091` |
+| Panel | `1.10.0` | `5006` |
+| jupyterlab | `4.6.4` | `8888` |
+| dbt-docs server | `1.12.6` | `8081` |
+| apache-airflow | `3.4.0` | `8082` |
+| jenkins | *(base image)* | `8083` |
+| pyspark | `4.2.0` | `4040` |
+| delta-spark | `4.4.1` | |
+| delta-sharing | `1.4.3` | |
+| dask | `2026.8.0` | |
+| apache-beam | `2.77.0` | |
+| confluent-kafka | `2.16.1` | |
+| dbt-core | `1.12.6` | |
+| mlflow | `3.18.0` | |
+| papermill | `2.7.0` | |
+| torch | `2.14.1+cpu` | |
+| tensorflow | `2.22.0rc0` | |
+| keras | `3.15.1` | |
+| scikit-learn | `1.9.1` | |
+| opencv-python | `5.0.0.93` | |
+| spacy | `3.8.16` | |
+| transformers | `5.20.2` | |
+| datasets | `5.1.0` | |
+| accelerate | `1.15.0` | |
+| langchain | `1.4.6` | |
+| langgraph | `1.2.16` | |
+| pydantic-ai | `2.57.0` | |
+| dspy | `3.4.1` | |
+| llama-index | `0.10.68` | |
+| openai | `2.54.0` | |
+| google-genai | `2.31.0` | |
+| langsmith | `0.14.11` | |
+| langfuse | `2.60.10` | |
+| opik | `2.2.105` | |
+| arize-phoenix | `20.3.0` | |
+| opentelemetry-api | `1.45.2` | |
+| pandas | `2.3.3` | |
+| polars | `2.1.0` | |
+| duckdb | `2.0.0` | |
+| pyarrow | `23.0.1` | |
+| faker | `40.44.0` | |
+| sdv | `2.2.0` | |
+| ctgan | `0.13.0` | |
+| docling | `2.148.0` | |
+| pyxtension | `1.17.1` | |
+| sqlalchemy | `2.1.8` | |
+| psycopg | `3.3.8` | |
+| psycopg2-binary | `2.9.13` | |
+| mysql-connector-python | `26.10.0` | |
+| pymongo | `4.19.0` | |
+| redis | `8.1.0` | |
+| chromadb | `1.5.9` | |
+| oracledb | `26.1.0` | |
+| mssql-python | `1.17.0` | |
+| streamlit | `1.67.0` | |
+| bokeh | `3.10.2` | |
+| plotly | `7.1.0` | |
+| seaborn | `0.13.2` | |
+| matplotlib | `3.11.2` | |
+| itables | `2.9.1` | |
+| diagrams | `0.25.1` | |
+| fastapi | `0.162.2` | |
+| uvicorn | `0.54.0` | |
+| gunicorn | `26.2.0` | |
+| pydantic | `2.14.3` | |
+| fastmcp | `4.1.6` | |
+| mcp | `2.3.0` | |
+| grpcio | `1.85.1` | |
+| beautifulsoup4 | `4.15.0` | |
+| scrapy | `2.19.0` | |
+| playwright | `1.64.0` | |
+| selenium | `4.52.0` | |
+| httpx | `0.28.1` | |
+| scapy | `2.8.0` | |
+| paramiko | `5.1.0` | |
+| cryptography | `50.0.2` | |
+| pwntools | `4.15.0` | |
+| mitmproxy | `12.2.3` | |
+| jupyterlab-git | `0.50.0` | |
+| jupyterlab_code_formatter | `3.1.0` | |
+| jupyterlab-indent-guides | `0.1.0` | |
+| black | `26.10.1` | |
+| isort | `9.0.2` | |
+| ruff | `0.17.4` | |
+| pytest | `9.2.0` | |
+| behave | `1.3.3` | |
+| locust | `2.47.0` | |
 
 # EXAMPLES OF INSTALLED PACKAGES
 ## 🐳 ```Test Basic Packages Notebook GUIDE```  <a href="https://github.com/JorgeCardona/recursos/blob/main/Notebooks/Test%20Basic%20Functions%20and%20Packages.ipynb" target="_blank">CLICK HERE </a>🐳
