@@ -1,55 +1,65 @@
-# dockerhub-datascience-mlops
+# Jorge Cardona - [dockerhub-datascience-mlops](https://github.com/JorgeCardona/dockerhub-datascience-mlops)
+--------------- ------------------------------
 
-Jorge Cardona
+<div align="center">
+  <table border="0">
+    <tr>
+      <td align="center"><a href="https://www.linkedin.com/in/jorgecardona1" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" width="80" height="80"></a></td>
+      <td align="center"><a href="https://www.youtube.com/jorgeCardona1" target="_blank"><img src="https://i1.wp.com/www.siempreviajero.com/wp-content/uploads/2017/03/logo-youtube-png.png" width="80" height="80"></a></td>
+      <td align="center"><a href="https://www.hackerrank.com/jorgecardona" target="_blank"><img src="https://avatars.githubusercontent.com/u/7596827?v=4" width="80" height="80"></a></td>
+      <td align="center"><a href="https://hub.docker.com/u/jorgecardona" target="_blank"><img src="https://raw.githubusercontent.com/docker-library/docs/c350af05d3fac7b5c3f6327ac82fe4d990d8729c/docker/logo.png" width="80" height="80"></a></td>
+      <td align="center"><a href="https://pypi.org/user/jorgecardona/" target="_blank"><img src="https://raw.githubusercontent.com/JorgeCardona/PipPackageInstaller/main/imagenes/PyPI.png" width="80" height="80"></a></td>
+      <td align="center"><a href="https://jorgecardona.github.io/portfolio/" target="_blank"><img src="https://raw.githubusercontent.com/JorgeCardona/PipPackageInstaller/refs/heads/main/imagenes/github.svg" width="80" height="80"></a></td>
+    </tr>
+  </table>
+</div>
 
--------------------  -------------------------------------------
-<a href="https://www.linkedin.com/in/jorgecardona1" target="_blank"><img src="https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Bug.svg.original.svg" width="80" height="80"></a>
-<a href="https://www.youtube.com/jorgeCardona1" target="_blank"><img src="https://i1.wp.com/www.siempreviajero.com/wp-content/uploads/2017/03/logo-youtube-png.png" width="80" height="80"></a>
-<a href="https://www.hackerrank.com/jorgecardona" target="_blank"><img src="https://d29fhpw069ctt2.cloudfront.net/icon/image/38712/preview.svg" width="80" height="80"></a>
-<a href="https://hub.docker.com/u/jorgecardona" target="_blank"><img src="https://raw.githubusercontent.com/docker-library/docs/c350af05d3fac7b5c3f6327ac82fe4d990d8729c/docker/logo.png" width="80" height="80"></a>
-<a href="https://pypi.org/user/jorgecardona/" target="_blank"><img src="https://raw.githubusercontent.com/JorgeCardona/PipPackageInstaller/main/imagenes/PyPI.png" width="80" height="80"></a>
-<a href="https://jorgecardona.github.io/portfolio/" target="_blank"><img src="https://raw.githubusercontent.com/JorgeCardona/PipPackageInstaller/refs/heads/main/imagenes/github.svg" width="80" height="80"></a>
--------------------     ----------------------------
-
-# Jupyter Lab Icons and Commands references
-```
-https://jupyterlab.readthedocs.io/en/stable/user/commands.html
-
-https://github.com/jupyterlab/jupyterlab/blob/main/packages/ui-components/src/icon/iconimports.ts
-```
-
+--------------- ------------------------------
 # Available Kernels, Languages And Packages
-<img src="https://raw.githubusercontent.com/JorgeCardona/recursos/main/docker_hub/data_science_3.11.7.png"/>
+<img src="https://raw.githubusercontent.com/JorgeCardona/recursos/main/docker_hub/data_science_3.14.7.png"/>
 
-# ❎ In a python cell run the following code to check the version of each installed language ❎
-```python
-%%bash
-echo "C++ Version" && g++ --version && echo
-echo "Go Version" && go version && echo
-echo "Java Version" && java -version && echo
-echo "NodeJs Version" && node -v && echo
-echo "Kotlin Version" && kotlin -version && echo
-echo "Python Version" && python --version && echo
-echo "R Version" && R --version && echo
-echo "Rust Version" && rustc --version && echo
-echo "Scala Version" && scala -version && echo
-echo "Julia Version" && julia -version && echo
-```
+--------------- ------------------------------
+## Installed Kernels & Runtime Versions
+
+| Verification Command | Kernel / Language | Runtime / Tool | Installed Version |
+| :--- | :--- | :--- | :--- |
+| `echo "Python Version" && python --version` | **Python - ML - Data Science** | Python | `3.14.7` |
+| `echo ".NET (C# / F#) Version" && dotnet --version` | **.NET (C# / F#)** | .NET SDK | `10.0.401` |
+| `echo ".NET (PowerShell) Version" && dotnet --version` | **.NET (PowerShell)** | .NET Interactive | `10.0.401` *(embedded, no `pwsh` CLI)* |
+| `echo "Bash Version" && bash --version \| head -n 1` | **Bash** | GNU Bash | `5.2.37` |
+| `echo "C++ Version" && g++ --version` | **C++ 20** | g++ (Debian) | `14.2.0` |
+| `echo "Deno Version" && deno --version` | **Deno** | Deno (V8 `15.0.245.2` / TS `6.0.3`) | `2.9.7` |
+| `echo "Elixir Version" && elixir --version` | **Elixir** | Elixir (Erlang/OTP `27`) | `1.18.3` |
+| `echo "Go Version" && go version` | **Go** | Go | `1.24.4` |
+| `echo "Java Version" && java -version` | **Java** | Oracle JDK (LTS) | `25.0.4.1` |
+| `echo "NodeJs Version" && node -v` | **JavaScript (Node.js)** | Node.js | `20.19.2` |
+| `echo "Julia Version" && julia -version` | **Julia** | Julia | `1.13.0` |
+| `println(KotlinVersion.CURRENT)` *(in Kotlin kernel)* | **Kotlin** | Kotlin (Kernel `0.19.0.944`) | `2.4.0` |
+| `echo "Octave (MATLAB) Version" && octave --version \| head -n 1` | **MATLAB / Octave** | GNU Octave | `9.4.0` |
+| `echo "R Version" && R --version \| head -n 1` | **R** | R | `4.5.0` |
+| `echo "Ruby Version" && ruby -v` | **Ruby** | Ruby | `3.3.8` |
+| `echo "Rust Version" && rustc --version` | **Rust** | rustc | `1.98.1` |
+| `echo "Scala Version" && scala -version` | **Scala** | Scala | `2.13.18` |
+| `echo "Solidity Version" && solc --version` | **Solidity** | solc (Emscripten) | `0.8.37` |
+| `echo "SoS Version" && sos --version` | **SoS - Multi-language Notebook** | SoS | `0.25.2` |
+
+---------------------------- ------------
+
 
 # ⚠️ For this image, it is **not necessary to use the token** to access the notebooks ⚠️
 # How to run the image.
 
 #  TEMPORAL CONTAINER
 ## 🔥If you want to just test the image and do not keep the container when you finish running the container use the next command🔥:
-#### ``` docker run --name jorgecardona-datascience-mlops --rm -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 jorgecardona/datascience-mlops:latest```
+#### ``` docker run --name jorgecardona-datascience-mlops --rm -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 jorgecardona/datascience-mlops:main```
 
 # PERSISTENT CONTAINER
 ## 💦If you want to keep the container, save the notebooks, and continue working on this container use the next command:💦
-#### ``` docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 -p 9092:9092 -p 9093:9093 -p 9094:9094 --restart always jorgecardona/datascience-mlops:latest```
+#### ``` docker run --name jorgecardona-datascience-mlops -p 8888:8888 -p 4040:4040 -p 5006:5006 -p 3000:3000 -p 8081:8081 -p 8082:8082 -p 8083:8083  -p 9091:9091 --restart always jorgecardona/datascience-mlops:main```
 
 #  ACCESS TO JUPYTER LAB AND SPARK UI 
 ##  🐱 access to JUPYTERLAB ```http://localhost:8888```  <a href=" http://localhost:8888" target="_blank">CLICK HERE </a> 🐱
-## 🐶access to sparkUI with pySpark  ```http://localhost:4040```  <a href=" http://localhost:4040" target="_blank">CLICK HERE </a>🐶
+## 🐶access to sparkUI with PySpark  ```http://localhost:4040```  <a href=" http://localhost:4040" target="_blank">CLICK HERE </a>🐶
 
 # 🌀To run Spark for Scala, on the terminal execute ```spark-shell``` command to start it.🌀
 <img src="https://github.com/JorgeCardona/recursos/blob/main/docker_hub/running_spark.png?raw=true"/>
@@ -58,17 +68,30 @@ echo "Julia Version" && julia -version && echo
 <img src="https://github.com/JorgeCardona/recursos/blob/main/docker_hub/spark_ui.png?raw=true"/>
 
 # EXAMPLES BY LANGUAGE
-| Language   | Example                                                                                     |
-|-----------|---------------------------------------------------------------------------------------------|
-| C++       |#include &lt;iostream&gt;<br>int calculateSquare(int number) {<br>&nbsp;&nbsp;&nbsp;&nbsp;return number * number;<br>}<br>int main() {<br>&nbsp;&nbsp;&nbsp;&nbsp;// Print "Hello, C++!"<br>&nbsp;&nbsp;&nbsp;&nbsp;std::cout << "Hello, C++!" << std::endl;<br>&nbsp;&nbsp;&nbsp;&nbsp;// Use the function to calculate the square of 5<br>&nbsp;&nbsp;&nbsp;&nbsp;int result = calculateSquare(5);<br>&nbsp;&nbsp;&nbsp;&nbsp;// Print the result<br>&nbsp;&nbsp;&nbsp;&nbsp;std::cout << "The square of 5 is: " << result << std::endl;<br>&nbsp;&nbsp;&nbsp;&nbsp;return 0;<br>}<br>|
-| Go        | package main<br><br>import "fmt"<br><br>func main() {<br>&nbsp;&nbsp;&nbsp;&nbsp;fmt.Println("Hello, Go!")<br><br>&nbsp;&nbsp;&nbsp;&nbsp;// Define a function to calculate the square of a number<br>&nbsp;&nbsp;&nbsp;&nbsp;calculateSquare := func(number int) int {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return number * number<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>&nbsp;&nbsp;&nbsp;&nbsp;// Use the function to calculate the square of 5<br>&nbsp;&nbsp;&nbsp;&nbsp;result := calculateSquare(5)<br>&nbsp;&nbsp;&nbsp;&nbsp;fmt.Println("Square of 5:", result)<br>}<br>main() |
-| Java      | public class Main {<br>&nbsp;&nbsp;&nbsp;&nbsp;public static void greeting() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("Hello, Java!");<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>}<br>Main.greeting(); |
-| Node.js   | const http = require('http');<br><br>// Create the server<br>const server = http.createServer((req, res) => {<br>&nbsp;&nbsp;&nbsp;&nbsp;// Configure the server response<br>&nbsp;&nbsp;&nbsp;&nbsp;res.statusCode = 200;<br>&nbsp;&nbsp;&nbsp;&nbsp;res.setHeader('Content-Type', 'text/plain');<br>&nbsp;&nbsp;&nbsp;&nbsp;res.end('Hello, from JupyterLab Container!');<br>});<br><br>// Define the port on which the server will run<br>const port = 3000;<br><br>// Start the server<br>server.listen(port, () => {<br>&nbsp;&nbsp;&nbsp;&nbsp;console.log('Node.js server is running at http://localhost:' + port + '/');<br>});<br> |
-| Julia     | print("Hello Julia!\n")<br><br># Define a function to calculate the square of a number<br>function square(number::Int) <br>&nbsp;&nbsp;&nbsp;&nbsp;return number * number<br>end<br><br># Use the function to calculate the square of 5<br>num = 5<br><br># Print the result<br>println("The square of ", num, " is ", square(num))<br> |
-| Kotlin    | fun main() {<br>&nbsp;&nbsp;&nbsp;&nbsp;// Print "Hello, Kotlin!"<br>&nbsp;&nbsp;&nbsp;&nbsp;println("Hello, Kotlin!")<br><br>&nbsp;&nbsp;&nbsp;&nbsp;// Define a function to calculate the square of a number<br>&nbsp;&nbsp;&nbsp;&nbsp;fun calculateSquare(number: Int): Int {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return number * number<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>&nbsp;&nbsp;&nbsp;&nbsp;// Use the function to calculate the square of 5<br>&nbsp;&nbsp;&nbsp;&nbsp;val result = calculateSquare(5)<br>&nbsp;&nbsp;&nbsp;&nbsp;println("Square of 5: \$result")<br>}<br>main() |
-| R         | # Print "Hello, R!"<br>cat("Hello, R!\n")<br><br># Define a function to calculate the square of a number<br>calculateSquare <- function(number) {<br>&nbsp;&nbsp;&nbsp;&nbsp;return (number * number)<br>}<br><br># Use the function to calculate the square of 5<br>result <- calculateSquare(5)<br>cat("Square of 5: ", result, "\n")<br> |
-| Rust      | fn main() {<br>&nbsp;&nbsp;&nbsp;&nbsp;// Print "Hello, Rust!"<br>&nbsp;&nbsp;&nbsp;&nbsp;println!("Hello, Rust!");<br><br>&nbsp;&nbsp;&nbsp;&nbsp;// Define a function to calculate the square of a number<br>&nbsp;&nbsp;&nbsp;&nbsp;fn calculate_square(number: i32) -> i32 {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return number * number;<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>&nbsp;&nbsp;&nbsp;&nbsp;// Use the function to calculate the square of 5<br>&nbsp;&nbsp;&nbsp;&nbsp;let result = calculate_square(5);<br>&nbsp;&nbsp;&nbsp;&nbsp;println!("Square of 5: {}", result);<br>}<br>main() |
-| Scala     | println("Hello, Scala!")<br><br>// Define a function to calculate the square of a number<br>def calculateSquare(number: Int): Int = {<br>&nbsp;&nbsp;&nbsp;&nbsp;number * number<br>}<br><br>// Use the function to calculate the square of 5<br>val result = calculateSquare(5)<br><br>// Print the result<br>println("The square of 5 is: " + result)<br> |
+
+| Language | Example |
+| :--- | :--- |
+| Python | import math<br>print(math.sqrt(25)) |
+| C# | Console.WriteLine(Math.Sqrt(25)); |
+| F# | printfn "%f" (sqrt 25.0) |
+| PowerShell | [Math]::Sqrt(25) |
+| Bash | awk 'BEGIN{print sqrt(25)}' |
+| C++ 20 | #include &lt;iostream&gt;<br>#include &lt;cmath&gt;<br>std::cout &lt;&lt; std::sqrt(25) &lt;&lt; std::endl; |
+| Deno | console.log(Math.sqrt(25)); |
+| Elixir | IO.puts(:math.sqrt(25)) |
+| Go | import ("fmt"; "math")<br>fmt.Println(math.Sqrt(25)) |
+| Java | System.out.println(Math.sqrt(25)); |
+| JavaScript (Node.js) | console.log(Math.sqrt(25)); |
+| Julia | println(sqrt(25)) |
+| Kotlin | import kotlin.math.sqrt<br>println(sqrt(25.0)) |
+| MATLAB / Octave | disp(sqrt(25)) |
+| R | cat(sqrt(25), "\n") |
+| Ruby | puts Math.sqrt(25) |
+| Rust | println!("{}", (25.0_f64).sqrt()); |
+| Scala | println(math.sqrt(25)) |
+| Solidity | pragma solidity ^0.8.0;<br>contract Sqrt {<br>uint256 public r = (((uint256(25) / 13 + 13) / 2) + 25 / ((uint256(25) / 13 + 13) / 2)) / 2;<br>} |
+| SoS | import math<br>print(math.sqrt(25)) |
+
 
 
 # Relevant Packages & Installed Apps
@@ -135,15 +158,21 @@ echo "Julia Version" && julia -version && echo
 | AnsiColorPrinter | A Python package for printing text in various ANSI colors.                                | Easy-to-use functions for colorizing text.      | Limited functionality compared to others.       | <br>import AnsiColorPrinter as acp<br><br># Print red text<br>print(acp.red("Hello, World!"))<br><br># Print bold blue text<br>print(acp.blue("Welcome!", formats=["bold"]))<br><br># Print bold red multiple formats<br>print(acp.cyan("Multi Formats", formats=['underlined', 'bold', 'reverse'])) |
 | Pyxtension   | A Python package providing extended functionality and tools.   | Simplifies common data manipulation tasks.                    | May have a learning curve for beginners.                     | `from pyxtension.streams import stream`<br><br>`data = [{'name': 'Alice', 'age': 28, 'gender': 'F'},{'name': 'Bob', 'age': 23, 'gender': 'M'},{'name': 'Charlie', 'age': 35, 'gender': 'M'},{'name': 'David', 'age': 22, 'gender': 'M'},{'name': 'Eve', 'age': 30, 'gender': 'F'},{'name': 'Frank', 'age': 26, 'gender': 'M'},{'name': 'Grace', 'age': 29, 'gender': 'F'},{'name': 'Hank', 'age': 31, 'gender': 'M'},{'name': 'Ivy', 'age': 24, 'gender': 'F'},{'name': 'Jack', 'age': 27, 'gender': 'M'}]`<br><br>`print(stream(data).filter(lambda person: person['age'] > 25).map(lambda person: person['name']).toList())`<br>`print(stream(data).map(lambda person: person['age']).toList())`<br>`print(stream(data).map(lambda person: person['age']).mean())`<br>`print(stream(data).min(lambda person: person['age'])['name'])`<br>`print(stream(data).map(lambda person: {'name': person['name'].upper(), 'age': person['age'], 'gender': person['gender']}).toList())`<br>`print(stream(data).map(lambda person: person['name']).join(", "))`<br>`print(stream(data).sorted(key=lambda person: person['age']).toList())`<br>`print(stream(data).map(lambda person: person['age']).sum())`<br>`print(len(stream(data).filter(lambda person: person['age'] > 30).toList()))`<br>`print(dict(stream(data).map(lambda person: (person['name'], person['age'])).toList()))`<br>`print(stream(data).filter(lambda person: person['age'] > 25).filter(lambda person: 'c' in person['name'].lower()).map(lambda person: person['gender']).reduce(lambda acc, gender: {**acc, gender: acc.get(gender, 0) + 1}, {}))` |
 
-### ADDED SUPPORT TO CONNECT SPARK FOR EXTRACTION DATA FROM MySQL, MongoDB, AND PostgreSQL
-# PING to databases MySQL, MongoDB, PostgreSQL
+### ADDED SUPPORT TO CONNECT SPARK FOR EXTRACTION DATA FROM SQL, MongoDB, REDIS.
+
 # USE TEMPORAL DOCKER IMAGES FOR TESTING,  delete  *--rm* on docker command to do persistent databases
 
+# Docker Redis
+## `docker run --name jorgecardona-redis --rm -d -p 6379:6379 redis:8.8.4 redis-server --user default off --user admin on ">12345678" "~*" "&*" "+@all"`
+
 # DOCKER FOR PostgreSQL
-##  `docker run --name jorgecardona-postgres --rm -e POSTGRES_DB=spark -e POSTGRES_PASSWORD=12345678 -e POSTGRES_USER=admin -d -p 5432:5432 postgres:15.4`
+##  `docker run --name jorgecardona-postgres --rm -e POSTGRES_DB=spark -e POSTGRES_PASSWORD=12345678 -e POSTGRES_USER=admin -d -p 5432:5432 postgres:18.6`
 
 # DOCKER FOR MySQL
-##  `docker run --name jorgecardona-mysql --rm -e MYSQL_DATABASE=spark -e MYSQL_PASSWORD=12345678 -e MYSQL_USER=admin -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:8.4.0`
+##  `docker run --name jorgecardona-mysql --rm -e MYSQL_DATABASE=spark -e MYSQL_PASSWORD=12345678 -e MYSQL_USER=admin -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:8.4.13`
+
+# DOCKER FOR ORACLE
+###  `docker run -d --name jorgecardona-oracle --rm -e ORACLE_PWD=12345678 -p 1521:1521 jorgecardona/oracle:23.26.0`
 
 # DOCKER FOR SQL SERVER
 `user: sa`
@@ -152,7 +181,7 @@ echo "Julia Version" && julia -version && echo
 ###  `docker run --name jorgecardona-sqlserver -d --rm -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Admin@123" -e "MSSQL_DATA_DIR=/var/opt/mssql/data" -e "MSSQL_PID=Developer" -e "MSSQL_TCP_PORT=1433" -p 1433:1433 --hostname jorgecardona-sqlserver mcr.microsoft.com/mssql/server:2022-latest`
 
 # DOCKER FOR MongoDB
-###  `docker run --name jorgecardona-mongodb --rm -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=12345678 mongodb/mongodb-community-server:6.0.7-ubuntu2204-20230812T065949Z`
+###  `docker run --name jorgecardona-mongodb --rm -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=12345678 mongodb/mongodb-community-server:8.0-ubuntu2204`
 
 # STRING CONNECTION FOR SPECIFIC MONGO DB HOST
 # `mongodb://admin:12345678@localhost:27017` 
@@ -179,14 +208,24 @@ cd  dbt_poc
 dbt debug # test connection
 dbt run # creates the tables
 dbt docs generate # generates documentation
-dbt docs serve --port 8081
+dbt docs serve --host 0.0.0.0 --port 8081
 ```
 ## 🌀 dbt_poc DOCUMENTATION <a href="http://localhost:8081" target="_blank">CLICK HERE</a> 🌀
 
 # AIRFLOW TESTING
+# Airflow 2.x.x
 ```
 airflow scheduler
 airflow webserver -p 8082
+user : admin
+pass: 12345678
+```
+
+# Airflow 3.x.x
+```
+yes y | airflow scheduler
+airflow dag-processor
+airflow api-server -p 8082
 user : admin
 pass: 12345678
 ```
